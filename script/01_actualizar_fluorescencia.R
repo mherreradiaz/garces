@@ -84,7 +84,7 @@
   }
 } # LIBRERIA GENERAL
 
-# actualizar_fluorescencia ####
+# ACTUALIZAR FLUORESCENCIA ####
 
 data_fluo <- read_rds('data/data_processed/rds/data_fluorescencia.rds')
 
