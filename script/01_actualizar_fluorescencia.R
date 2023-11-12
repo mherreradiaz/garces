@@ -18,7 +18,7 @@ ind <- which(!(ymd(dates_new) %in% ymd(dates_fluo$fecha)))
 
 sit <- str_remove_all(sapply(str_split(files[ind],'/'),function(x) x[4]),'fluor_|_[0-9]{8}.txt')
 
-names_cols <- as.data.frame(read_csv('data/data_raw/fluorescencia/ubicacion_muestreo.csv'))
+names_cols <- as.data.frame(read_csv('data/metadata/codigos_fluor.csv'))
 
 for (x in 1:length(ind)) {
   

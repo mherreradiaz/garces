@@ -1,0 +1,99 @@
+identificador;tipo;device_id
+40;Base Station (NG, 9xx MHz);10332
+126;Base Station (NG, 9xx MHz);32348
+2358;Transmitter (9xx MHz);603650
+2359;Transmitter (9xx MHz);603906
+2360;Transmitter (9xx MHz);604162
+2361;Transmitter (9xx MHz);604418
+2362;Transmitter (9xx MHz);604674
+2363;Transmitter (9xx MHz);604930
+2364;Transmitter (9xx MHz);605186
+2365;Transmitter (9xx MHz);605442
+2366;Transmitter (9xx MHz);605698
+2367;Transmitter (9xx MHz);605954
+2368;Transmitter (9xx MHz);606210
+2369;Transmitter (9xx MHz);606466
+2370;Transmitter (9xx MHz);606722
+2371;Transmitter (9xx MHz);606978
+2372;Transmitter (9xx MHz);607234
+2373;Transmitter (9xx MHz);607490
+2374;Transmitter (9xx MHz);607746
+2375;Transmitter (9xx MHz);608002
+2376;Transmitter (9xx MHz);608258
+2377;Transmitter (9xx MHz);608514
+2378;Transmitter (9xx MHz);608770
+2379;Transmitter (9xx MHz);609026
+2380;Transmitter (9xx MHz);609282
+2381;Transmitter (9xx MHz);609538
+2644;Soil Moisture-Sensor;676945
+2645;Soil Moisture-Sensor;677201
+2646;Soil Moisture-Sensor;677457
+2647;Soil Moisture-Sensor;677713
+2648;Soil Moisture-Sensor;677969
+2649;Soil Moisture-Sensor;678225
+2650;Soil Moisture-Sensor;678481
+2652;Soil Moisture-Sensor;678993
+2653;Soil Moisture-Sensor;679249
+2654;Soil Moisture-Sensor;679505
+2655;Soil Moisture-Sensor;679761
+2656;Soil Moisture-Sensor;680017
+2657;Soil Moisture-Sensor;680273
+2658;Soil Moisture-Sensor;680529
+2659;Soil Moisture-Sensor;680785
+2660;Soil Moisture-Sensor;681041
+2661;Soil Moisture-Sensor;681297
+2662;Soil Moisture-Sensor;681553
+2663;Soil Moisture-Sensor;681809
+2664;Soil Moisture-Sensor;682065
+2665;Soil Moisture-Sensor;682321
+2666;Soil Moisture-Sensor;682577
+2667;Soil Moisture-Sensor;682833
+2668;Soil Moisture-Sensor;683089
+8063;Yara Water-Sensor;2064168
+8064;Yara Water-Sensor;2064424
+8066;Yara Water-Sensor;2064936
+8067;Yara Water-Sensor;2065192
+8174;Yara Water-Sensor;2092584
+8180;Yara Water-Sensor;2094120
+8225;Yara Water-Sensor;2105640
+8228;Yara Water-Sensor;2106408
+8456;Yara Water-Sensor;2164776
+8479;Yara Water-Sensor;2170664
+8480;Yara Water-Sensor;2170920
+8482;Yara Water-Sensor;2171432
+8483;Yara Water-Sensor;2171688
+8527;Yara Water-Sensor;2182952
+8568;Yara Water-Sensor;2193448
+8569;Yara Water-Sensor;2193704
+8571;Yara Water-Sensor;2194216
+8572;Yara Water-Sensor;2194472
+8573;Yara Water-Sensor;2194728
+8574;Yara Water-Sensor;2194984
+8645;Yara Water-Sensor;2213160
+8646;Yara Water-Sensor;2213416
+8658;Yara Water-Sensor;2216488
+8664;Yara Water-Sensor;2218024
+8679;Yara Water-Sensor;2221864
+8683;Yara Water-Sensor;2222888
+8685;Yara Water-Sensor;2223400
+8694;Yara Water-Sensor;2225704
+8719;Yara Water-Sensor;2232104
+8782;Yara Water-Sensor;2248232
+8783;Yara Water-Sensor;2248488
+8784;Yara Water-Sensor;2248744
+8785;Yara Water-Sensor;2249000
+8786;Yara Water-Sensor;2249256
+8787;Yara Water-Sensor;2249512
+8842;Yara Water-Sensor;2263592
+8878;Yara Water-Sensor;2272808
+8879;Yara Water-Sensor;2273064
+8880;Yara Water-Sensor;2273320
+8881;Yara Water-Sensor;2273576
+8882;Yara Water-Sensor;2273832
+8883;Yara Water-Sensor;2274088
+8885;Yara Water-Sensor;2274600
+8886;Yara Water-Sensor;2274856
+8887;Yara Water-Sensor;2275112
+8901;Yara Water-Sensor;2278696
+8902;Yara Water-Sensor;2278952
+8905;Yara Water-Sensor;2279720
