@@ -64,3 +64,4 @@ data_tur <- rbind(read_rds('data/data_processed/rds/data_zim_turgor.rds'),
 write_rds(data_sm,'data/data_processed/rds/data_zim_sm.rds')
 write_rds(data_tur,'data/data_processed/rds/data_zim_turgor.rds')
 
+
