@@ -15,7 +15,7 @@ dates_potencial <- data_potencial |>
 files <- dir_ls('data/data_raw/potencial',regexp = 'potencial_')
 dates_new <- str_extract(files,'[0-9]{8}')
 
-ind <- which(!(ymd(dates_new) %in% ymd(dates_cep$fecha)))
+ind <- which(!(ymd(dates_new) %in% ymd(dates_potencial$fecha)))
 
 sit <- str_remove_all(sapply(str_split(files[ind],'/'),function(x) x[4]),'potencial_|_[0-9]{8}.xlsx')
 

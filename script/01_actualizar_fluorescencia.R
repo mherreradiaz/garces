@@ -42,7 +42,7 @@ for (x in 1:length(ind)) {
            codigo = names_cols[which(names_cols$sitio == sit[x]),2], 
            .before = Bckg) |>
     group_by(sitio, fecha, codigo) |> 
-    summarise(across(Bckg:`DIo.RC`,.fns= mean,na.rm = TRUE))
+    summarise(across(Bckg:`DIo.RC`, \(x) mean(x, na.rm = T)))
   
   names(data_new) <- names(data_fluo)
   data_fluo <- rbind(data_fluo, data_new)
