@@ -7,6 +7,8 @@ library(readr)
 data_fluo <- read_rds('data/data_processed/rds/data_fluorescencia.rds')
 data_potencial <- read_rds('data/data_processed/rds/data_potencial.rds')
 data_lai <- read_rds('data/data_processed/rds/data_ceptometro.rds')
+data_sm <- read_rds('data/data_processed/rds/data_zim_sm.rds')
+data_turgor <- read_rds('data/data_processed/rds/data_zim_turgor.rds')
 
 codigos <- read.csv('data/metadata/codigos_arboles.csv', sep = ';')
 
