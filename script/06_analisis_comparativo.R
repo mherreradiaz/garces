@@ -129,15 +129,11 @@ data_cld <- data_turgor |> # ESTANDARIZADO
 (data_turgor |>
     filter(!codigo %in% descarte) |>
     mutate(value_sc = scale(value)) |> 
-    ggplot(aes(tratamiento,value)) +
+    ggplot(aes(tratamiento,value_sc)) +
     labs(y = 'Presión de parche') +
     geom_boxplot() +
     facet_grid(~sitio) +
-    geom_text(data = data_cld, aes(tratamiento,350,label = cld),size=3) +
+    geom_text(data = data_cld, aes(tratamiento,5,label = cld),size=3) +
     theme_light()) %>%
   ggsave('reporte/png/zim_turgor_dunn_std.png', ., width = 7, height = 5, units = "in")
-
-
-
-
 
