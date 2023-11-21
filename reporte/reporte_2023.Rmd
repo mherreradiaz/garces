@@ -1,0 +1,309 @@
+---
+title: "Reporte Temporada 2023 (Oct-Nov)"
+author: "M. Abel Herrera"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r set_up, echo = F, warning = F, message = F}
+library(ggplot2)
+library(tidyverse)
+library(highcharter)
+library(gt)
+library(readr)
+data_fluo <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/rds/data_fluorescencia.rds')
+data_potencial <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/rds/data_potencial.rds')
+data_cepto <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/rds/data_ceptometro.rds')
+data_sm <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/rds/data_zim_sm.rds')
+data_turgor <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/rds/data_zim_turgor.rds')
+codigos <- read.csv('C:/HEMERA/ID2023/id23_10297/data/metadata/codigos_arboles.csv', sep = ';')
+data_info <- codigos |>
+  select(codigo,unidad)
+```
+
+# Análisis explotatorio
+
+## Fluorescencia
+
+La siguiente tabla presenta la cantidad de dias de muestreo, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio. Los datos no contienen NA's.
+
+```{r fluorescencia_stats, echo = F, message = F, warning = F}
+data_fluo |>
+  group_by(sitio, fecha) |>
+  summarise(n = sum(!is.na(`Fv/Fm`))) |>
+  group_by(sitio) |>
+  summarise(n_muestreos = n(),
+            n_datos_promedio = round(mean(n, na.rm =T),1),
+            n_datos_totales = sum(n, na.rm=T)) |>
+  ungroup() |>
+  as.data.frame()
+```
+
+A continuación se muestran los resultados de tres indicadores de fluorescencia: ΦP0 (Rendimiento Cuántico Máximo del Fotosistema II), ΦE0 (Rendimiento Cuántico Efectivo del Fotosistema II) y Ψ0 (Eficiencia Cuántica Máxima del Fotosistema II).
+
+#### Boxplot
+
+```{r fluo_boxplot phi_po, echo = F, message = F, warning = F}
+data_fluo |> 
+  left_join(data_info, by = 'codigo') |>
+  mutate(unidad = as.factor(unidad)) |> 
+  separate(codigo,2,into =c('tratamiento','codigo')) |>
+  ggplot(aes(unidad,Phi_Po)) +
+  labs(y = expression(Phi[P0])) +
+  geom_boxplot() +
+  facet_grid(sitio~tratamiento) +
+  geom_text(aes(unidad,1,label = codigo),size=2) +
+  theme_light()
+data_fluo |> 
+  left_join(data_info, by = 'codigo') |>
+  mutate(unidad = as.factor(unidad)) |> 
+  separate(codigo,2,into =c('tratamiento','codigo')) |>
+  ggplot(aes(unidad,Phi_Eo)) +
+  labs(y = expression(Phi[E0])) +
+  geom_boxplot() +
+  facet_grid(sitio~tratamiento) +
+  geom_text(aes(unidad,1,label = codigo),size=2) +
+  theme_light()
+data_fluo |> 
+  left_join(data_info, by = 'codigo') |>
+  mutate(unidad = as.factor(unidad)) |> 
+  separate(codigo,2,into =c('tratamiento','codigo')) |>
+  ggplot(aes(unidad,Psi_o)) +
+  labs(y = expression(Psi[0])) +
+  geom_boxplot() +
+  facet_grid(sitio~tratamiento) +
+  geom_text(aes(unidad,1,label = codigo),size=2) +
+  theme_light()
+```
+
+### Serie temporal
+
+```{r fluo_serie, echo = F, message = F, warning = F}
+data_fluo |>
+  left_join(data_info, by = 'codigo') |>
+  mutate(unidad = as.factor(unidad)) |> 
+  separate(codigo,2,into =c('tratamiento','codigo')) |>
+  ggplot(aes(fecha,Phi_Po,color=unidad)) +
+  labs(y = expression(Phi[P0])) +
+  geom_point(size=1) +
+  geom_line(linewidth = .5) +
+  facet_grid(tratamiento~sitio) +
+  theme_bw()
+data_fluo |>
+  left_join(data_info, by = 'codigo') |>
+  mutate(unidad = as.factor(unidad)) |> 
+  separate(codigo,2,into =c('tratamiento','codigo')) |>
+  ggplot(aes(fecha,Phi_Eo,color=unidad)) +
+  labs(y = expression(Phi[E0])) +
+  geom_point(size=1) +
+  geom_line(linewidth = .5) +
+  facet_grid(tratamiento~sitio) +
+  theme_bw()
+data_fluo |>
+  left_join(data_info, by = 'codigo') |>
+  mutate(unidad = as.factor(unidad)) |> 
+  separate(codigo,2,into =c('tratamiento','codigo')) |>
+  ggplot(aes(fecha,Psi_o,color=unidad)) +
+  labs(y = expression(Psi[0])) +
+  geom_point(size=1) +
+  geom_line(linewidth = .5) +
+  facet_grid(tratamiento~sitio) +
+  theme_bw()
+```
+
+## Potencial
+
+La siguiente tabla presenta la cantidad de días de muestreo, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio. Los datos no contienen NA's.
+
+```{r potencial_stats, echo = F, message = F, warning = F}
+data_potencial |>
+  group_by(sitio, fecha) |>
+  summarise(n = sum(!is.na(potencial_bar))) |>
+  group_by(sitio) |>
+  summarise(n_dias = n(),
+            n_datos_promedio = round(mean(n, na.rm =T),1),
+            n_datos_totales = sum(n, na.rm=T)) |>
+  ungroup() |>
+  as.data.frame()
+```
+
+### Boxplot
+
+```{r potencial_boxplot, echo = F, message = F, warning = F}
+data_potencial |> 
+  mutate(unidad = as.factor(unidad)) |> 
+  mutate(MPa = -potencial_bar/10) |>
+  separate(codigo,2,into =c('tratamiento','codigo')) |>
+  ggplot(aes(unidad,MPa)) +
+  geom_boxplot() +
+  facet_grid(sitio~tratamiento) +
+  geom_text(aes(unidad,-.4,label = codigo),size=2) +
+  theme_light()
+```
+
+### Serie temporal
+
+```{r potencial_serie, echo = F, message = F, warning = F}
+data_potencial |>
+  mutate(unidad = as.factor(unidad)) |> 
+  mutate(MPa = -potencial_bar/10) |>
+  separate(codigo,2,into =c('tratamiento','codigo')) |>
+  ggplot(aes(fecha,MPa,color=unidad)) +
+  geom_point(size=1) +
+  geom_line(linewidth = .5) +
+  facet_grid(tratamiento~sitio) +
+  theme_bw()
+```
+
+## PAR
+
+La siguiente tabla presenta la cantidad de dias de muestreo, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio. Los datos no contienen NA's.
+
+```{r par_stats, echo = F, message = F, warning = F}
+data_cepto |>
+  group_by(sitio, fecha) |>
+  summarise(n = sum(!is.na(above_par))) |>
+  group_by(sitio) |>
+  summarise(n_dias = n(),
+            n_datos_promedios = round(mean(n, na.rm =T),1),
+            n_datos_totales = sum(n, na.rm=T)) |>
+  ungroup() |>
+  as.data.frame()
+```
+
+### Boxplot
+
+```{r par_boxplot, echo = F, message = F, warning = F}
+data_cepto |>
+  mutate(tratamiento = as.factor(tratamiento)) |>
+  ggplot(aes(tratamiento,above_par)) +
+  geom_boxplot() +
+  facet_grid(~sitio) +
+  theme_light()
+
+```
+
+### Serie temporal
+
+```{r par_serie, echo = F, message = F, warning = F}
+data_cepto |>
+  mutate(tratamiento = as.factor(tratamiento)) |>
+  ggplot(aes(fecha,above_par,color=tratamiento)) +
+  geom_point(size=1) +
+  geom_line(linewidth = .5) +
+  facet_grid(~sitio) +
+  theme_bw()
+```
+
+## Humedad del suelo
+
+La siguiente tabla presenta la cantidad de dias de muestreo desde la instalación de los zim, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio. Los datos no contienen NA's.
+
+```{r sm_stats, echo = F, message = F, warning = F}
+data_sm |>
+  mutate(fecha = date(fecha)) |>
+  group_by(sitio, fecha) |>
+  summarise(n = sum(!is.na(value))) |>
+  group_by(sitio) |>
+  summarise(n_dias = n(),
+            n_datos_promedio = round(mean(n, na.rm =T),1),
+            n_datos_totales = sum(n, na.rm=T)) |>
+  ungroup() |>
+  as.data.frame()
+```
+
+### Boxplot
+
+```{r sm_boxplot, echo = F, message = F, warning = F}
+data_sm |>
+  mutate(unidad = factor(unidad, levels = 1:3)) |> 
+  ggplot(aes(unidad,value)) +
+  geom_boxplot() +
+  labs(y = 'VWC (%)') +
+  facet_grid(sitio~tratamiento) +
+  geom_text(aes(unidad,75,label = codigo),size=2) +
+  theme_light()
+```
+
+### Serie temporal
+
+```{r sm_serie, echo = F, message = F, warning = F}
+data_sm |>
+  mutate(unidad = factor(unidad, levels = 1:3)) |>
+  ggplot(aes(fecha,value,color=unidad)) +
+  geom_point(size = .2) +
+  labs(y = 'VWC (%)') +
+  facet_grid(tratamiento~sitio) +
+  theme_bw() +
+  guides(color = guide_legend(override.aes = list(size = 2)))
+```
+
+## Presión de parche
+
+La siguiente tabla presenta la cantidad de dias de muestreo desde la instalación de los zim, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio. Los datos no contienen NA's.
+
+```{r turgor_stats, echo = F, message = F, warning = F}
+data_turgor |>
+  mutate(fecha = date(fecha)) |>
+  group_by(sitio, fecha) |>
+  summarise(n = sum(!is.na(value))) |>
+  group_by(sitio) |>
+  summarise(n_dias = n(),
+            n_datos_promedio = round(mean(n, na.rm =T),1),
+            n_datos_totales = sum(n, na.rm=T)) |>
+  ungroup() |>
+  as.data.frame()
+```
+
+### Boxplot
+
+```{r turgor_boxplot, echo = F, message = F, warning = F}
+data_turgor |>
+   mutate(unidad = factor(unidad, levels = 1:3),
+          codigo_arbol = substr(codigo,1,str_length(codigo)-2)) |>
+   ggplot(aes(unidad,value)) +
+   geom_boxplot() +
+   labs(y = 'Presión de parche') +
+   facet_grid(sitio~tratamiento) +
+   geom_text(aes(unidad,350,label = codigo_arbol),size=2) +
+   theme_light()
+```
+
+### Serie temporal
+
+```{r turgor_serie, echo = F, message = F, warning = F}
+data_turgor |>
+    drop_na() |> 
+    separate(codigo,into = c('codigo','zim'),sep="Z") |> 
+    mutate(unidad = factor(unidad, levels = 1:3)) |> 
+    group_by(sitio,codigo,zim) |> 
+    ggplot(aes(fecha,value,color=zim)) +
+    geom_point(size=.05) +
+    labs(y = 'Presión de parche') +
+    facet_grid(tratamiento+sitio~unidad) +
+    theme_bw() +
+    guides(color = guide_legend(override.aes = list(size = 2)))
+```
+
+### Ciclo diario
+
+```{r turgor_ciclo_std, echo = F, message = F, warning = F}
+data_turgor |> 
+  drop_na() |> 
+  mutate(unidad = as.factor(unidad)) |> 
+  group_by(sitio,codigo) |> 
+  mutate(value_sc = scale(value)) |> 
+  drop_na() |> 
+  arrange(sitio,tratamiento,unidad) |> 
+  mutate(unidad = as.factor(unidad),
+         hora_dia = as.numeric(format(fecha,"%H"))) |> 
+  group_by(sitio,tratamiento,unidad,hora_dia) |> 
+  summarize(value_hora = mean(value_sc,na.rm = TRUE)) |> 
+  ggplot(aes(hora_dia,value_hora,color=unidad)) +
+  geom_point(size=.05) +
+  geom_line() +
+  labs(y = 'Presión de parche estandarizada') +
+  facet_grid(tratamiento+unidad~sitio,scales = 'free_y') +
+  theme_bw()
+```
+
