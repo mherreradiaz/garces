@@ -1,0 +1,39 @@
+---
+title: "Reporte de Cracking"
+author: "M. Abel Herrera"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r set_up, echo = F, warning = F, message = F}
+library(ggplot2)
+library(tidyverse)
+library(highcharter)
+library(gt)
+library(readr)
+data <- read_csv2('C:/HEMERA/ID2023/id23_10297/data/data_raw/misc/cracking_la_esperanza_20231123.csv') |>
+  mutate(cracking = fruto_cr/fruto_t*100) |>
+  mutate(unidad = as.factor(unidad)) |> 
+  separate(codigo,2,into =c('tratamiento','codigo')) |>
+  arrange(tratamiento,unidad)
+promedio <- mean(data$cracking)
+sd_valor <- sd(data$cracking)
+```
+
+## La Esperanza
+
+La distribución de los porcentajes de cracking en cada árbol de medición por tratamiento se muestran a continuación:
+
+```{r cracking, echo = F, message = F, warning = F}
+data |> 
+ggplot(aes(x = factor(tratamiento), y = cracking, fill = unidad)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = fruto_t), position = position_dodge(width = 0.9), vjust = -0.5) +
+  theme_light() +
+  scale_y_continuous(expand = expansion(add = c(0, 0)), limits = c(0, 60)) +
+  geom_hline(yintercept = promedio, linetype = "dashed", color = "black", linewidth = .5) +
+  geom_hline(yintercept = promedio - sd_valor, linetype = "dashed", color = "red", linewidth = .5) +
+  geom_hline(yintercept = promedio + sd_valor, linetype = "dashed", color = "red", linewidth = .5)
+```
+
+Los valores sobre las barras representan el número de frutos totales por árbol, la línea negra representa el promedio del cracking en todos los árboles y las rojas la desviación estándar.

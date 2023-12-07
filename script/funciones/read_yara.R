@@ -23,7 +23,7 @@ read_yara <- function(device_id,from_date,until_date,dest_file){
   
   encoded_url <- URLencode(paste0(url,'{',query,'}'))
   
-  download.file(encoded_url,destfile = dest_file,method = 'auto')
+  download.file(encoded_url,destfile = dest_file, mode = "wb")
   
 }
 

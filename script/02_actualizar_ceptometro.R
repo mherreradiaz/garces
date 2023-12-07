@@ -21,7 +21,7 @@ sit <- str_remove_all(sapply(str_split(files[ind],'/'),function(x) x[4]),'cepto_
 
 for (x in 1:length(ind)) {
   
-  data_new <- read.xlsx(files[ind][x], sheetIndex = 1)
+  data_new <- read.xlsx(files[ind][x], sheetIndex = 1) |> filter(!is.na(Record.Type))
   
   t_col <- rep(substr(na.omit(unique(data_new$Annotation))[1:5],1,2), 
                  times = diff(c(which(!is.na(data_new$Annotation)),nrow(data_new)+1))-1)

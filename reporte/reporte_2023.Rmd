@@ -1,5 +1,5 @@
 ---
-title: "Reporte Temporada 2023 (Oct-Nov)"
+title: "Reporte Temporada 2023 (Oct-`r substr(month.abb[as.integer(format(Sys.Date(), '%m'))], 1, 3)`)"
 author: "M. Abel Herrera"
 date: "`r Sys.Date()`"
 output: html_document
