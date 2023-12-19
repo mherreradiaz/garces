@@ -6,7 +6,7 @@ library(lubridate)
 library(tidyr)
 library(dplyr)
 
-data_fluo <- read_rds('data/data_processed/rds/data_fluorescencia.rds')
+data_fluo <- read_rds('data/data_processed/data_fluorescencia.rds')
 
 dates_fluo <- data_fluo |> 
   group_by(sitio) |> 
@@ -50,7 +50,8 @@ for (x in 1:length(ind)) {
   
 }
 
-data_fluo <- data_fluo[order(data_fluo$fecha),]
+data_fluo <- data_fluo |>
+  arrange(fecha, codigo)
 
-write_rds(data_fluo,'data/data_processed/rds/data_fluorescencia.rds')
+write_rds(data_fluo,'data/data_processed/data_fluorescencia.rds')
 

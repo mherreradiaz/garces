@@ -7,7 +7,7 @@ library(tidyr)
 library(dplyr)
 library(xlsx)
 
-data_potencial <- read_rds('data/data_processed/rds/data_potencial.rds')
+data_potencial <- read_rds('data/data_processed/data_potencial.rds')
 
 dates_potencial <- data_potencial |> 
   group_by(sitio) |> 
@@ -37,6 +37,7 @@ for (x in 1:length(ind)) {
   
 }
 
-data_potencial <- data_potencial[order(data_potencial$fecha),]
+data_potencial <- data_potencial |>
+  arrange(fecha,codigo)
 
-write_rds(data_potencial,'data/data_processed/rds/data_potencial.rds')
+write_rds(data_potencial,'data/data_processed/data_potencial.rds')
