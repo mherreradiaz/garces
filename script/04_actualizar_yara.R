@@ -23,7 +23,7 @@ device_id_sm <- data_codigo_sm |>
   filter(grepl('Soil Moisture',tipo)) |> 
   pull(device_id)
 
-data_old <- read_rds('data/data_processed/data_zim_sm.rds') |>
+data_old <- read_rds('data/data_processed/zim_sm.rds')
 from_date <- data_old$fecha |> max() |> substr(1,16)
 
 dest <- paste0('data/data_raw/zim/zim_sm_update',
@@ -50,7 +50,7 @@ data_sm <- data_old |>
   distinct(sensor,fecha,sitio,codigo,unidad,.keep_all = TRUE) |>
   arrange(sensor,fecha,sitio)
 
-write_rds(data_sm, 'data/data_processed/data_zim_sm.rds')
+write_rds(data_sm, 'data/data_processed/zim_sm.rds')
 
 #data_sm |> 
 #  ggplot(aes(fecha, value, color = as.factor(codigo))) +
@@ -66,7 +66,7 @@ device_id_tur <- data_codigo_tur |>
   filter(grepl('Yara Water-Sensor',tipo)) |> 
   pull(device_id)
 
-data_old <- read_rds('data/data_processed/data_zim_turgor.rds')
+data_old <- read_rds('data/data_processed/zim_turgor.rds')
 from_date <- data_old$fecha |> max() |> substr(1,16)
 
 dest <- paste0('data/data_raw/zim/zim_turgor_update',
@@ -95,7 +95,7 @@ data_turgor <- data_old |>
   distinct(sensor,fecha,sitio,codigo,unidad,zim,.keep_all = TRUE) |>
   arrange(sensor,fecha,sitio)
 
-write_rds(data_turgor,'data/data_processed/data_zim_turgor.rds')
+write_rds(data_turgor,'data/data_processed/zim_turgor.rds')
 
 #data_turgor |> 
 #  drop_na() |> 

@@ -7,7 +7,7 @@ library(tidyr)
 library(dplyr)
 library(xlsx)
 
-data_cepto <- read_rds('data/data_processed/data_ceptometro.rds')
+data_cepto <- read_rds('data/data_processed/ceptometro.rds')
 
 dates_cepto <- data_cepto |> 
   group_by(sitio) |> 
@@ -49,4 +49,4 @@ for (x in 1:length(ind)) {
 data_cepto <- data_cepto |>
   arrange(fecha, tratamiento)
 
-write_rds(data_cepto,'data/data_processed/data_ceptometro.rds')
+write_rds(data_cepto,'data/data_processed/ceptometro.rds')

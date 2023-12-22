@@ -11,11 +11,16 @@ library(tidyverse)
 library(highcharter)
 library(gt)
 library(readr)
-data_fluo <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/rds/data_fluorescencia.rds')
-data_potencial <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/rds/data_potencial.rds')
-data_cepto <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/rds/data_ceptometro.rds')
-data_sm <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/rds/data_zim_sm.rds')
-data_turgor <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/rds/data_zim_turgor.rds')
+data_fluo <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/fluorescencia.rds') |>
+  filter(fecha > '2023-06-01')
+data_potencial <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/potencial.rds') |>
+  filter(fecha > '2023-06-01')
+data_cepto <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/ceptometro.rds') |>
+  filter(fecha > '2023-06-01')
+data_sm <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/zim_sm.rds') |>
+  filter(fecha > '2023-06-01')
+data_turgor <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/zim_turgor.rds') |>
+  filter(fecha > '2023-06-01')
 codigos <- read.csv('C:/HEMERA/ID2023/id23_10297/data/metadata/codigos_arboles.csv', sep = ';')
 data_info <- codigos |>
   select(codigo,unidad)
