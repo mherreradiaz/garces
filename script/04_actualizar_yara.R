@@ -43,12 +43,18 @@ data_new <- read_delim(dest,delim = '\t') |>
   summarize(value = mean(value,na.rm = TRUE)) |> 
   mutate(sensor = as.numeric(sensor)) |> 
   left_join(codigo_sm,by = 'sensor') |> 
-  separate(codigo,2,into =c('tratamiento','codigo')) 
+  separate(codigo,2,into =c('tratamiento','codigo')) |>
+  mutate(temporada = '2023-2024',
+         hora = format(as.POSIXct(fecha), format = "%H:%M"),
+         fecha = as.Date(fecha),
+         unidad = as.factor(unidad)) |>
+  select(sitio, temporada, fecha, hora, tratamiento, unidad, codigo, sensor, everything()) |>
+  rename(sm = value)
 
 data_sm <- data_old |>
   bind_rows(data_new) |>
   distinct(sensor,fecha,sitio,codigo,unidad,.keep_all = TRUE) |>
-  arrange(sensor,fecha,sitio)
+  arrange(fecha, sitio, hora, tratamiento, unidad)
 
 write_rds(data_sm, 'data/data_processed/zim_sm.rds')
 
@@ -88,12 +94,19 @@ data_new <- read_delim(dest,delim = '\t') |>
   mutate(sensor = as.numeric(sensor)) |> 
   left_join(codigo_tur,by = 'sensor') |> 
   separate(codigo,2,into =c('tratamiento','codigo')) |> 
-  mutate(zim = substr(codigo,6,7))
+  mutate(temporada = '2023-2024',
+         hora = format(as.POSIXct(fecha), format = "%H:%M"),
+         fecha = as.Date(fecha),
+         zim = substr(codigo,nchar(codigo)-1,nchar(codigo)),
+         codigo = substr(codigo,1,nchar(codigo)-2),
+         unidad = as.factor(unidad)) |>
+  select(sitio, temporada, fecha, hora, tratamiento, unidad, codigo, zim, sensor, everything()) |>
+  rename(turgor = value)
 
 data_turgor <- data_old |>
   bind_rows(data_new) |>
   distinct(sensor,fecha,sitio,codigo,unidad,zim,.keep_all = TRUE) |>
-  arrange(sensor,fecha,sitio)
+  arrange(fecha, sitio, hora, tratamiento, unidad, zim)
 
 write_rds(data_turgor,'data/data_processed/zim_turgor.rds')
 

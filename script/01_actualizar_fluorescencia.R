@@ -7,6 +7,7 @@ library(tidyr)
 library(dplyr)
 
 data_fluo <- read_rds('data/data_processed/fluorescencia.rds')
+codigos <- read_csv2('data/metadata/codigos_arboles.csv')
 
 dates_fluo <- data_fluo |> 
   group_by(sitio) |> 
@@ -43,7 +44,13 @@ for (x in 1:length(ind)) {
            codigo = names_cols[which(names_cols$sitio == sit[x]),2], 
            .before = Bckg) |>
     group_by(sitio, fecha, codigo) |> 
-    summarise(across(Bckg:`DIo.RC`, \(x) mean(x, na.rm = T)))
+    summarise(across(Bckg:`DIo.RC`, \(x) mean(x, na.rm = T))) |>
+    left_join(codigos, by = c('sitio', 'codigo')) |>
+    mutate(temporada = '2023-2024',
+           tratamiento = substr(codigo,1,2),
+           codigo = substr(codigo,3,nchar(codigo)),
+           unidad = as.factor(unidad)) |>
+    select(sitio, temporada, fecha, tratamiento, unidad, codigo, everything())
   
   names(data_new) <- names(data_fluo)
   data_fluo <- rbind(data_fluo, data_new)
@@ -51,7 +58,7 @@ for (x in 1:length(ind)) {
 }
 
 data_fluo <- data_fluo |>
-  arrange(fecha, codigo)
+  arrange(fecha, tratamiento, unidad)
 
 write_rds(data_fluo,'data/data_processed/fluorescencia.rds')
 

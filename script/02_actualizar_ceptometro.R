@@ -40,7 +40,9 @@ for (x in 1:length(ind)) {
            tratamiento = t_col,
            .before = above_par) |>
     group_by(sitio, fecha, tratamiento) |>
-    summarise(across(above_par:longitud, \(x) mean(x, na.rm = TRUE)))
+    summarise(across(above_par:longitud, \(x) mean(x, na.rm = TRUE))) |>
+    mutate(temporada = '2023-2024') |>
+    select(sitio, temporada, fecha, tratamiento, everything())
     
   data_cepto <- rbind(data_cepto, data_new)
   

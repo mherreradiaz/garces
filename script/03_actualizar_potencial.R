@@ -26,11 +26,13 @@ for (x in 1:length(ind)) {
   
   data_new <- data_new |> 
     rename(potencial_bar = bar) |>
-    mutate(fecha = ymd(dates_new[ind][x]),
-           .before = codigo) |>
     mutate(sitio = sit[x],
-           .before = fecha) |>
-    mutate(unidad = rep(1:3,5)) |>
+           temporada = '2023-2024',
+           fecha = ymd(dates_new[ind][x]),
+           tratamiento = substr(codigo,1,2),
+           unidad = as.factor(rep(1:3,5)),
+           .before = codigo) |>
+    mutate(codigo = substr(codigo,3,nchar(codigo))) |>
     group_by(sitio, fecha, codigo)
   
   data_potencial <- rbind(data_potencial, data_new)
@@ -38,6 +40,6 @@ for (x in 1:length(ind)) {
 }
 
 data_potencial <- data_potencial |>
-  arrange(fecha,codigo)
+  arrange(fecha, tratamiento, unidad)
 
 write_rds(data_potencial,'data/data_processed/potencial.rds')
