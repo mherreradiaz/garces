@@ -30,7 +30,7 @@ for (x in 1:length(ind)) {
            temporada = '2023-2024',
            fecha = ymd(dates_new[ind][x]),
            tratamiento = substr(codigo,1,2),
-           unidad = as.factor(rep(1:3,5)),
+           unidad = factor(rep(1:3,5), levels = 1:3),
            .before = codigo) |>
     mutate(codigo = substr(codigo,3,nchar(codigo))) |>
     group_by(sitio, fecha, codigo)

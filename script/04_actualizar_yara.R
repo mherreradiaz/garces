@@ -40,30 +40,33 @@ data_new <- read_delim(dest,delim = '\t') |>
   mutate(sensor =str_extract(str_extract(sensor,'[0-9]{4}\\['),'[0-9]{4}'),
          datetime = as_datetime(datetime,tz = 'America/Santiago')) |> 
   group_by(sensor,fecha = floor_date(datetime,'1 hour')) |> 
-  summarize(value = mean(value,na.rm = TRUE)) |> 
+  summarize(value = mean(value,na.rm = T)) |> 
   mutate(sensor = as.numeric(sensor)) |> 
   left_join(codigo_sm,by = 'sensor') |> 
   separate(codigo,2,into =c('tratamiento','codigo')) |>
+  rename(sm = value) |>
   mutate(temporada = '2023-2024',
-         hora = format(as.POSIXct(fecha), format = "%H:%M"),
-         fecha = as.Date(fecha),
-         unidad = as.factor(unidad)) |>
-  select(sitio, temporada, fecha, hora, tratamiento, unidad, codigo, sensor, everything()) |>
-  rename(sm = value)
+         unidad = factor(unidad, levels = 1:3),
+         hora = as.numeric(format(as.POSIXct(fecha), format = "%H")),
+         fecha = format(as.POSIXct(fecha), format = "%Y-%m-%d")) |>
+  select(sitio,temporada,fecha,hora,tratamiento,unidad,codigo,sensor,sm) |>
+  arrange(fecha, sitio, hora, tratamiento, unidad) |>
+  ungroup()
 
 data_sm <- data_old |>
   bind_rows(data_new) |>
-  distinct(sensor,fecha,sitio,codigo,unidad,.keep_all = TRUE) |>
-  arrange(fecha, sitio, hora, tratamiento, unidad)
+  distinct(sitio,temporada,fecha,hora,tratamiento,unidad,codigo,sensor,.keep_all = T) |>
+  arrange(fecha, sitio, hora, tratamiento, unidad) 
 
 write_rds(data_sm, 'data/data_processed/zim_sm.rds')
 
-#data_sm |> 
-#  ggplot(aes(fecha, value, color = as.factor(codigo))) +
-#  geom_point(size = 0.1) +
-#  facet_grid(tratamiento ~ sitio) +
-#  theme_light() +
-#  guides(color = guide_legend(override.aes = list(size = 2)))
+# data_sm |> 
+#   filter(temporada == '2023-2024') |>
+#   ggplot(aes(fecha, sm, color = codigo)) +
+#   geom_line(linewidth = 0.5) +
+#   facet_grid(tratamiento ~ sitio) +
+#   theme_light() +
+#   guides(color = guide_legend(override.aes = list(size = 2)))
 
 # datos zim turgor
 data_codigo_tur <- left_join(codigo_tur,metadata,by=c('sensor' = 'identificador'))
@@ -90,38 +93,41 @@ data_new <- read_delim(dest,delim = '\t') |>
   mutate(datetime = as_datetime(datetime,tz = 'America/Santiago')) |> 
   mutate(sensor =str_extract(str_extract(sensor,'[0-9]{4}\\['),'[0-9]{4}')) |> 
   group_by(sensor,fecha = floor_date(datetime,'1 hour')) |> 
-  summarize(value = mean(value,na.rm = TRUE)) |> 
+  summarize(value = mean(value,na.rm = T)) |> 
   mutate(sensor = as.numeric(sensor)) |> 
   left_join(codigo_tur,by = 'sensor') |> 
   separate(codigo,2,into =c('tratamiento','codigo')) |> 
+  rename(turgor = value) |>
   mutate(temporada = '2023-2024',
-         hora = format(as.POSIXct(fecha), format = "%H:%M"),
-         fecha = as.Date(fecha),
+         unidad = factor(unidad, levels = 1:3),
+         hora = as.numeric(format(as.POSIXct(fecha), format = "%H")),
          zim = substr(codigo,nchar(codigo)-1,nchar(codigo)),
          codigo = substr(codigo,1,nchar(codigo)-2),
-         unidad = as.factor(unidad)) |>
-  select(sitio, temporada, fecha, hora, tratamiento, unidad, codigo, zim, sensor, everything()) |>
-  rename(turgor = value)
+         fecha = format(as.POSIXct(fecha), format = "%Y-%m-%d")) |>
+  select(sitio,temporada,fecha,hora,tratamiento,unidad,codigo,zim,sensor,turgor) |>
+  arrange(fecha,sitio,hora,tratamiento,unidad,zim) |>
+  ungroup()
 
 data_turgor <- data_old |>
   bind_rows(data_new) |>
-  distinct(sensor,fecha,sitio,codigo,unidad,zim,.keep_all = TRUE) |>
-  arrange(fecha, sitio, hora, tratamiento, unidad, zim)
+  distinct(sitio,temporada,fecha,hora,tratamiento,unidad,codigo,zim,sensor,.keep_all = T) |>
+  arrange(fecha,sitio,hora,tratamiento,unidad,zim)
 
 write_rds(data_turgor,'data/data_processed/zim_turgor.rds')
 
-#data_turgor |> 
-#  drop_na() |> 
-#  ggplot(aes(fecha,value,color=unidad)) +
-#  geom_point(size=.1) +
-#  facet_grid(unidad~tratamiento) +
-#  theme_light()
+# data_turgor |>
+#   filter(temporada == '2023-2024',
+#          sitio == 'rio_claro') |>
+#   drop_na() |>
+#   ggplot(aes(fecha,turgor,color=unidad)) +
+#   geom_point(size = .1) +
+#   facet_grid(unidad~tratamiento) +
+#   theme_light()
 
-#data_turgor |> 
-#  mutate(hora_dia = as.numeric(format(fecha,"%H"))) |> 
-#  group_by(sitio,codigo,tratamiento,hora_dia) |>
-#  summarize(presion = mean(value,na.rm = TRUE)) |> 
-#  ggplot(aes(hora_dia,presion,color=codigo)) +
+# data_turgor |>
+#  group_by(sitio,codigo,tratamiento,hora) |>
+#  summarize(presion = mean(turgor,na.rm = TRUE)) |>
+#  ggplot(aes(hora,presion,color=codigo)) +
 #  geom_point(size=.1) +
 #  geom_line(size=.1) +
 #  facet_grid(tratamiento~.)

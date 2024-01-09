@@ -49,7 +49,7 @@ for (x in 1:length(ind)) {
     mutate(temporada = '2023-2024',
            tratamiento = substr(codigo,1,2),
            codigo = substr(codigo,3,nchar(codigo)),
-           unidad = as.factor(unidad)) |>
+           unidad = factor(unidad, levels = 1:3)) |>
     select(sitio, temporada, fecha, tratamiento, unidad, codigo, everything())
   
   names(data_new) <- names(data_fluo)

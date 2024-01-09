@@ -1,3 +1,4 @@
+
 library(fs)
 library(readr)
 library(stringr)
@@ -46,21 +47,36 @@ write_rds(data_potencial,'data/data_processed/data_potencial.rds')
 
 data_sm_new <- read_rds('data/data_processed_new/rds/data_zim_sm.rds')
 data_sm_old <- read_rds('data/data_processed_old/rds/data_zim_sm.rds') |>
-  rename(fecha = hora)
+  rename(fecha = hora,
+         sm = value) |>
+  mutate(temporada = '2022-2023',
+         unidad = as.factor(unidad),
+         hora = as.numeric(format(as.POSIXct(fecha), format = "%H"))) |>
+  mutate(fecha = format(as.POSIXct(fecha), format = "%Y-%m-%d")) |>
+  select(sitio,temporada,fecha,hora,tratamiento,unidad,codigo,sensor,sm) |>
+  arrange(fecha, sitio, hora, tratamiento, unidad)
 
 data_sm <- rbind(data_sm_old,data_sm_new) |>
   arrange(sensor,fecha,sitio)
 
-write_rds(data_sm,'data/data_processed/data_zim_sm.rds')
+write_rds(data_sm,'data/data_processed/zim_sm.rds')
 
 # turgor
 
 data_turgor_new <- read_rds('data/data_processed_new/rds/data_zim_turgor.rds')
 data_turgor_old <- read_rds('data/data_processed_old/rds/data_zim_turgor.rds') |>
-  rename(fecha = hora)
+  rename(fecha = hora,
+         turgor = value) |>
+  mutate(temporada = '2022-2023',
+         unidad = as.factor(unidad),
+         hora = as.numeric(format(as.POSIXct(fecha), format = "%H")),
+         codigo = substr(codigo,1,nchar(codigo)-2)) |>
+  mutate(fecha = format(as.POSIXct(fecha), format = "%Y-%m-%d")) |>
+  select(sitio,temporada,fecha,hora,tratamiento,unidad,codigo,zim,sensor,turgor) |>
+  arrange(fecha,sitio,hora,tratamiento,unidad,zim)
 
 data_turgor <- rbind(data_turgor_old,data_turgor_new) |>
   arrange(sensor,fecha,sitio)
 
-write_rds(data_turgor,'data/data_processed/data_zim_turgor.rds')
+write_rds(data_turgor,'data/data_processed/zim_turgor.rds')
 
