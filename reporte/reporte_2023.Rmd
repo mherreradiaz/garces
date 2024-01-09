@@ -236,7 +236,6 @@ data_turgor |>
   group_by(sensor) |>
   drop_na() |> 
   mutate(turgor_sc = scale(turgor)) |> 
-  drop_na() |> 
   group_by(sitio,tratamiento,unidad,hora) |> 
   summarize(turgor_hora = mean(turgor_sc,na.rm = TRUE)) |> 
   ggplot(aes(hora,turgor_hora,color=unidad)) +
