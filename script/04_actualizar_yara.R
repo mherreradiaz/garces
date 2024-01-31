@@ -132,13 +132,3 @@ write_rds(data_turgor,'data/data_processed/zim_turgor.rds')
 #  geom_line(size=.1) +
 #  facet_grid(tratamiento~.)
 
-
-
-
-data_turgor |>
-  mutate(fecha = as.POSIXct(paste(fecha, hora), format="%Y-%m-%d %H", tz="UTC")) |>
-  filter(sensor == 8879,
-         fecha > '2024-01-05') |>
-  ggplot(aes(x= fecha, y = turgor)) +
-  geom_line()
-
