@@ -16,7 +16,8 @@ metadata <- read_csv2('data/metadata/metadata_yara.csv')
 codigo_sm <- read_csv2('data/metadata/codigos_zim_sm.csv')
 codigo_tur <- read_csv2('data/metadata/codigos_zim_turgor.csv')
 
-# datos yara humedad de suelo
+# DATOS HUMEDAD DE SUELO ####
+
 data_codigo_sm <- left_join(codigo_sm,metadata,by=c('sensor' = 'identificador'))
 
 device_id_sm <- data_codigo_sm |> 
@@ -68,7 +69,8 @@ write_rds(data_sm, 'data/data_processed/zim_sm.rds')
 #   theme_light() +
 #   guides(color = guide_legend(override.aes = list(size = 2)))
 
-# datos zim turgor
+# DATOS TURGOR ####
+
 data_codigo_tur <- left_join(codigo_tur,metadata,by=c('sensor' = 'identificador'))
 
 device_id_tur <- data_codigo_tur |> 

@@ -1,0 +1,166 @@
+---
+title: "Reporte Proyecto ID23|10297"
+author: "M. Abel Herrera"
+format: html
+editor: visual
+---
+
+```{r}
+#| echo: false
+#| warnings: false
+#| message: false 
+library(fs)
+library(readr)
+library(dplyr)
+library(lubridate)
+library(tidyr)
+library(stringr)
+library(tidyverse)
+library(dbscan)
+library(purrr)
+library(grid)
+library(cowplot)
+library(ggpubr)
+library(scales)
+
+data_fluo <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/fluorescencia.rds')
+data_potencial <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/potencial.rds')
+data_cepto <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/ceptometro.rds')
+data_sm <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/zim_sm.rds')
+data_turgor <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/zim_turgor.rds')
+data_daño <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/cosecha/daño.rds')
+codigos <- read.csv('C:/HEMERA/ID2023/id23_10297/data/metadata/codigos_arboles.csv', sep = ';')
+data_info <- codigos |>
+  select(codigo,unidad)
+```
+
+# Capítulo 1: Análisis Explotatorio
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## 1.1.- Producción
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+a <- 3
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+a
+```
+
+## 1.2.- Calidad
+
+## 1.3.- Parámetros fisiológicos
+
+### Fluorescencia
+
+La siguiente tabla presenta la cantidad de dias de muestreo, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio (sin considerar NA).
+
+```{r}
+#| echo: false
+#| message: false
+#| warnings: false
+data_fluo |>
+  group_by(temporada,sitio, fecha) |>
+  summarise(n = sum(!is.na(`Fv/Fm`))) |>
+  group_by(temporada,sitio) |>
+  summarise(n_muestreos = n(),
+            n_datos_promedio = round(mean(n, na.rm =T),1),
+            n_datos_totales = sum(n, na.rm=T)) |>
+  ungroup() |>
+  as.data.frame()
+```
+
+A continuación se muestran los resultados del Rendimiento Cuántico Máximo del Fotosistema II (ΦP0) para ambas temporadas:
+
+#### Distribución
+
+```{r}
+#| echo: false
+#| message: false
+#| warnings: false
+
+fluo_info_2022 <- data_fluo |>
+  filter(temporada == '2022-2023') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+fluo_info_2023 <- data_fluo |>
+  filter(temporada == '2023-2024') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+data_fluo |> 
+  filter(temporada == '2022-2023') |>
+  ggplot(aes(unidad,Phi_Po)) +
+  geom_boxplot() +
+  geom_text(data = fluo_info_2022, aes(unidad,1,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(c(la_esperanza = 'La Esperanza',
+                                                         rio_claro = 'Rio Claro',
+                                                         T0 = 'T0',
+                                                         T1 = 'T1',
+                                                         T2 = 'T2',
+                                                         T3 = 'T3',
+                                                         T4 = 'T4'))) +
+  labs(title = 'Temporada 2022-2023',
+       y = expression(Phi[P0]),
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_fluo |> 
+  filter(temporada == '2023-2024') |>
+  ggplot(aes(unidad,Phi_Po)) +
+  geom_boxplot() +
+  geom_text(data = fluo_info_2023, aes(unidad,1,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(c(la_esperanza = 'La Esperanza',
+                                                         rio_claro = 'Rio Claro'))) +
+  labs(title = 'Temporada 2023-2024',
+       y = expression(Phi[P0]),
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+#### Serie temporal
+
+```{r}
+#| echo: false
+#| message: false
+#| warnings: false
+
+data_fluo |>
+  filter(temporada == '2022-2023') |>
+  ggplot(aes(fecha,Phi_Po,color=unidad)) +
+  labs(title = 'Temporada 2022-2023',
+       y = expression(Phi[P0]),
+       x = 'Fecha',
+       color = 'Unidad') +
+  geom_point(size=1) +
+  geom_line(linewidth = .5) +
+  facet_grid(tratamiento~sitio) +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_fluo |>
+  filter(temporada == '2023-2024') |>
+  ggplot(aes(fecha,Phi_Po,color=unidad)) +
+  labs(title = 'Temporada 2023-2024',
+       y = expression(Phi[P0]),
+       x = 'Fecha',
+       color = 'Unidad') +
+  geom_point(size=1) +
+  geom_line(linewidth = .5) +
+  facet_grid(tratamiento~sitio) +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
