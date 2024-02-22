@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.3.450">
@@ -21,40 +21,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -72,11 +38,72 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="fullcontent">
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
-<main class="content" id="quarto-document-content">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#capítulo-1-análisis-explotatorio" id="toc-capítulo-1-análisis-explotatorio" class="nav-link active" data-scroll-target="#capítulo-1-análisis-explotatorio">Capítulo 1: Análisis Explotatorio</a>
+  <ul>
+  <li><a href="#producción" id="toc-producción" class="nav-link" data-scroll-target="#producción">1.1.- Producción</a>
+  <ul class="collapse">
+  <li><a href="#peso-total" id="toc-peso-total" class="nav-link" data-scroll-target="#peso-total">1.1.1.- Peso total</a></li>
+  <li><a href="#rendimiento" id="toc-rendimiento" class="nav-link" data-scroll-target="#rendimiento">1.1.2.- Rendimiento</a></li>
+  <li><a href="#densidad" id="toc-densidad" class="nav-link" data-scroll-target="#densidad">1.1.3.- Densidad</a></li>
+  </ul></li>
+  <li><a href="#calidad" id="toc-calidad" class="nav-link" data-scroll-target="#calidad">1.2.- Calidad</a>
+  <ul class="collapse">
+  <li><a href="#apariencia" id="toc-apariencia" class="nav-link" data-scroll-target="#apariencia">1.2.1.- Apariencia</a>
+  <ul class="collapse">
+  <li><a href="#peso" id="toc-peso" class="nav-link" data-scroll-target="#peso">Peso</a></li>
+  <li><a href="#diametro" id="toc-diametro" class="nav-link" data-scroll-target="#diametro">Diametro</a></li>
+  <li><a href="#color" id="toc-color" class="nav-link" data-scroll-target="#color">Color</a></li>
+  </ul></li>
+  <li><a href="#contenido-de-azucar" id="toc-contenido-de-azucar" class="nav-link" data-scroll-target="#contenido-de-azucar">1.2.2.- Contenido de azucar</a></li>
+  <li><a href="#daño" id="toc-daño" class="nav-link" data-scroll-target="#daño">1.2.3.- Daño</a></li>
+  </ul></li>
+  <li><a href="#parámetros-fisiológicos" id="toc-parámetros-fisiológicos" class="nav-link" data-scroll-target="#parámetros-fisiológicos">1.3.- Parámetros fisiológicos</a>
+  <ul class="collapse">
+  <li><a href="#fluorescencia" id="toc-fluorescencia" class="nav-link" data-scroll-target="#fluorescencia">1.3.1.- Fluorescencia</a>
+  <ul class="collapse">
+  <li><a href="#distribución" id="toc-distribución" class="nav-link" data-scroll-target="#distribución">Distribución</a></li>
+  <li><a href="#serie-temporal" id="toc-serie-temporal" class="nav-link" data-scroll-target="#serie-temporal">Serie temporal</a></li>
+  </ul></li>
+  <li><a href="#potencial" id="toc-potencial" class="nav-link" data-scroll-target="#potencial">1.3.2.- Potencial</a>
+  <ul class="collapse">
+  <li><a href="#distribución-1" id="toc-distribución-1" class="nav-link" data-scroll-target="#distribución-1">Distribución</a></li>
+  <li><a href="#serie-temporal-1" id="toc-serie-temporal-1" class="nav-link" data-scroll-target="#serie-temporal-1">Serie temporal</a></li>
+  </ul></li>
+  <li><a href="#lai" id="toc-lai" class="nav-link" data-scroll-target="#lai">1.3.3.- LAI</a>
+  <ul class="collapse">
+  <li><a href="#distribución-2" id="toc-distribución-2" class="nav-link" data-scroll-target="#distribución-2">Distribución</a></li>
+  <li><a href="#serie-temporal-2" id="toc-serie-temporal-2" class="nav-link" data-scroll-target="#serie-temporal-2">Serie temporal</a></li>
+  </ul></li>
+  <li><a href="#turgor-presión-de-parche" id="toc-turgor-presión-de-parche" class="nav-link" data-scroll-target="#turgor-presión-de-parche">1.3.4.- Turgor: presión de parche</a>
+  <ul class="collapse">
+  <li><a href="#distribución-3" id="toc-distribución-3" class="nav-link" data-scroll-target="#distribución-3">Distribución</a></li>
+  <li><a href="#serie-temporal-3" id="toc-serie-temporal-3" class="nav-link" data-scroll-target="#serie-temporal-3">Serie temporal</a></li>
+  <li><a href="#ciclo-diario" id="toc-ciclo-diario" class="nav-link" data-scroll-target="#ciclo-diario">Ciclo diario</a></li>
+  <li><a href="#preprocesamiento-de-datos-de-turgor" id="toc-preprocesamiento-de-datos-de-turgor" class="nav-link" data-scroll-target="#preprocesamiento-de-datos-de-turgor">Preprocesamiento de datos de turgor</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#humedad-de-suelo" id="toc-humedad-de-suelo" class="nav-link" data-scroll-target="#humedad-de-suelo">1.4.- Humedad de suelo</a></li>
+  <li><a href="#clima" id="toc-clima" class="nav-link" data-scroll-target="#clima">1.5.- Clima</a></li>
+  </ul></li>
+  <li><a href="#capítulo-2-procesamiento-de-datos" id="toc-capítulo-2-procesamiento-de-datos" class="nav-link" data-scroll-target="#capítulo-2-procesamiento-de-datos">Capítulo 2: Procesamiento de datos</a>
+  <ul>
+  <li><a href="#modelo-de-potencial" id="toc-modelo-de-potencial" class="nav-link" data-scroll-target="#modelo-de-potencial">2.1.- Modelo de potencial</a>
+  <ul class="collapse">
+  <li><a href="#dependencia-de-potencial-y-variables-climáticas" id="toc-dependencia-de-potencial-y-variables-climáticas" class="nav-link" data-scroll-target="#dependencia-de-potencial-y-variables-climáticas">2.1.1.- Dependencia de potencial y variables climáticas</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -88,7 +115,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="quarto-title-meta">
 
     <div>
-    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-heading">Autor/a</div>
     <div class="quarto-title-meta-contents">
              <p>M. Abel Herrera </p>
           </div>
@@ -101,62 +128,592 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<section id="capítulo-1-análisis-explotatorio" class="level1">
+<section id="capítulo-1-análisis-explotatorio" class="level1 page-columns page-full">
 <h1>Capítulo 1: Análisis Explotatorio</h1>
-<p>Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <a href="https://quarto.org" class="uri">https://quarto.org</a>.</p>
-<section id="producción" class="level2">
+<p>[Introducción]</p>
+<section id="producción" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="producción">1.1.- Producción</h2>
-<p>When you click the <strong>Render</strong> button a document will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="peso-total" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="peso-total">1.1.1.- Peso total</h3>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<p>You can add options to executable code like this</p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 3</code></pre>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 </div>
 </section>
-<section id="calidad" class="level2">
+<section id="rendimiento" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="rendimiento">1.1.2.- Rendimiento</h3>
+<p>Considerando el área de influencia de cada árbol como 8 m<sup>2</sup>, el rendimiento se determinó dividiendo el peso total de la producción del árbol entre su área de influencia en hectareas (0.0008 ha).</p>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="densidad" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="densidad">1.1.3.- Densidad</h3>
+<p>Para estimar la densidad de la producción, se tomó una muestra aleatoria de 1 kg de la producción total del árbol. Posteriormente se contabilizaron los frutos de aquella muestra para obtener la densidad como la cantidad de frutos por kilogramo.</p>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="calidad" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="calidad">1.2.- Calidad</h2>
+<section id="apariencia" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="apariencia">1.2.1.- Apariencia</h3>
+<p>La apariencia de los frutos se evaluó considerando su peso, diámetro y color. Para llevar a cabo este análisis, se seleccionaron al azar 20 frutos de una muestra representativa equivalente a 1 kg de la producción total.</p>
+<section id="peso" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="peso">Peso</h4>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </section>
-<section id="parámetros-fisiológicos" class="level2">
+<section id="diametro" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="diametro">Diametro</h4>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="color" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="color">Color</h4>
+<p>Para cuantificar y calificar el color dentro de las muestras, se categorizó el color de cada fruto utilizando la siguiente tabla de colores.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="plots/misc/10-tabla%20de%20color%20cerezas.jpg" class="fig-align-center img-fluid figure-img"></p>
+</figure>
+</div>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="contenido-de-azucar" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="contenido-de-azucar">1.2.2.- Contenido de azucar</h3>
+<p>Para determinar el contenido de azúcar, se midieron los grados Brix de cada fruto mediante la utilización de un refractrometro. Los frutos utilizados correspondieron a cinco frutos de cada árbol escogidos al azar, a partir de una selección de frutos de buena apariencia dentro de la muestra de 1 kg.</p>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="daño" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="daño">1.2.3.- Daño</h3>
+<p>Para determinar el daño de la producción, se estimó el porcentaje de frutos dañados a partir de una muesrtra aleatoria de 1 kg de la producción total. Los frutos dañados se consideraron como aquellos que presentaban desde daños severos o de la marchitez total del fruto hasta cracking leves, además de frutos dobles.</p>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="parámetros-fisiológicos" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="parámetros-fisiológicos">1.3.- Parámetros fisiológicos</h2>
-<section id="fluorescencia" class="level3">
-<h3 class="anchored" data-anchor-id="fluorescencia">Fluorescencia</h3>
+<section id="fluorescencia" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="fluorescencia">1.3.1.- Fluorescencia</h3>
 <p>La siguiente tabla presenta la cantidad de dias de muestreo, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio (sin considerar NA).</p>
-<div class="cell" data-warnings="false">
-<div class="cell-output cell-output-stdout">
-<pre><code>  temporada        sitio n_muestreos n_datos_promedio n_datos_totales
-1 2022-2023 la_esperanza          16             14.6             234
-2 2022-2023    rio_claro          18             14.7             264
-3 2023-2024 la_esperanza          11             15.0             165
-4 2023-2024    rio_claro           8             15.0             120</code></pre>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 19%">
+<col style="width: 17%">
+<col style="width: 25%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">temporada</th>
+<th style="text-align: left;">sitio</th>
+<th style="text-align: right;">n_muestreos</th>
+<th style="text-align: right;">n_datos_promedio</th>
+<th style="text-align: right;">n_datos_totales</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2022-2023</td>
+<td style="text-align: left;">la_esperanza</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">14.6</td>
+<td style="text-align: right;">234</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2022-2023</td>
+<td style="text-align: left;">rio_claro</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">14.7</td>
+<td style="text-align: right;">264</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2023-2024</td>
+<td style="text-align: left;">la_esperanza</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">15.0</td>
+<td style="text-align: right;">225</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2023-2024</td>
+<td style="text-align: left;">rio_claro</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">15.0</td>
+<td style="text-align: right;">195</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <p>A continuación se muestran los resultados del Rendimiento Cuántico Máximo del Fotosistema II (ΦP0) para ambas temporadas:</p>
-<section id="distribución" class="level4">
+<section id="distribución" class="level4 page-columns page-full">
 <h4 class="anchored" data-anchor-id="distribución">Distribución</h4>
-<div class="cell" data-warnings="false">
-<div class="cell-output-display">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<div class="cell-output-display">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 </div>
 </section>
-<section id="serie-temporal" class="level4">
+<section id="serie-temporal" class="level4 page-columns page-full">
 <h4 class="anchored" data-anchor-id="serie-temporal">Serie temporal</h4>
-<div class="cell" data-warnings="false">
-<div class="cell-output-display">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<div class="cell-output-display">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-15-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 </div>
 </section>
+</section>
+<section id="potencial" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="potencial">1.3.2.- Potencial</h3>
+<p>La siguiente tabla presenta la cantidad de dias de muestreo, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio (sin considerar NA).</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">temporada</th>
+<th style="text-align: left;">sitio</th>
+<th style="text-align: right;">n_dias</th>
+<th style="text-align: right;">n_datos_promedio</th>
+<th style="text-align: right;">n_datos_totales</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2022-2023</td>
+<td style="text-align: left;">la_esperanza</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">14.7</td>
+<td style="text-align: right;">176</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2022-2023</td>
+<td style="text-align: left;">rio_claro</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">14.1</td>
+<td style="text-align: right;">212</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2023-2024</td>
+<td style="text-align: left;">la_esperanza</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">14.9</td>
+<td style="text-align: right;">223</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2023-2024</td>
+<td style="text-align: left;">rio_claro</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">14.2</td>
+<td style="text-align: right;">142</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="distribución-1" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="distribución-1">Distribución</h4>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-17-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="serie-temporal-1" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="serie-temporal-1">Serie temporal</h4>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-18-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="lai" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="lai">1.3.3.- LAI</h3>
+<p>La siguiente tabla presenta la cantidad de dias de muestreo, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio (sin considerar NA).</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">temporada</th>
+<th style="text-align: left;">sitio</th>
+<th style="text-align: right;">n_dias</th>
+<th style="text-align: right;">n_datos_promedio</th>
+<th style="text-align: right;">n_datos_totales</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2022-2023</td>
+<td style="text-align: left;">la_esperanza</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">45</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2022-2023</td>
+<td style="text-align: left;">rio_claro</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">50</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2023-2024</td>
+<td style="text-align: left;">la_esperanza</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">55</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2023-2024</td>
+<td style="text-align: left;">rio_claro</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">55</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="distribución-2" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="distribución-2">Distribución</h4>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-20-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="serie-temporal-2" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="serie-temporal-2">Serie temporal</h4>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-21-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="turgor-presión-de-parche" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="turgor-presión-de-parche">1.3.4.- Turgor: presión de parche</h3>
+<p>La siguiente tabla presenta la cantidad de dias de muestreo desde la instalación de los zim, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio (sin considerar NA).</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">sitio</th>
+<th style="text-align: right;">n_dias</th>
+<th style="text-align: right;">n_datos_promedio</th>
+<th style="text-align: right;">n_datos_totales</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">la_esperanza</td>
+<td style="text-align: right;">296</td>
+<td style="text-align: right;">475.0</td>
+<td style="text-align: right;">140603</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rio_claro</td>
+<td style="text-align: right;">444</td>
+<td style="text-align: right;">292.4</td>
+<td style="text-align: right;">129839</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="distribución-3" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="distribución-3">Distribución</h4>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-23-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="serie-temporal-3" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="serie-temporal-3">Serie temporal</h4>
+<div class="cell column-screen quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-24-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="ciclo-diario" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="ciclo-diario">Ciclo diario</h4>
+<div class="cell column-screen quarto-layout-panel" data-fig-heigth="80">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-25-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="preprocesamiento-de-datos-de-turgor" class="level4">
+<h4 class="anchored" data-anchor-id="preprocesamiento-de-datos-de-turgor"><a href="analisis_turgor.html">Preprocesamiento de datos de turgor</a></h4>
+</section>
+</section>
+</section>
+<section id="humedad-de-suelo" class="level2">
+<h2 class="anchored" data-anchor-id="humedad-de-suelo">1.4.- Humedad de suelo</h2>
+</section>
+<section id="clima" class="level2">
+<h2 class="anchored" data-anchor-id="clima">1.5.- Clima</h2>
+</section>
+</section>
+<section id="capítulo-2-procesamiento-de-datos" class="level1">
+<h1>Capítulo 2: Procesamiento de datos</h1>
+<section id="modelo-de-potencial" class="level2">
+<h2 class="anchored" data-anchor-id="modelo-de-potencial">2.1.- Modelo de potencial</h2>
+<section id="dependencia-de-potencial-y-variables-climáticas" class="level3">
+<h3 class="anchored" data-anchor-id="dependencia-de-potencial-y-variables-climáticas">2.1.1.- Dependencia de potencial y variables climáticas</h3>
 </section>
 </section>
 </section>
@@ -217,12 +774,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // flash "checked"
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
+    button.setAttribute("title", "Copiado");
     let tooltip;
     if (window.bootstrap) {
       button.setAttribute("data-bs-toggle", "tooltip");
       button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
+      button.setAttribute("data-bs-title", "Copiado");
       tooltip = new bootstrap.Tooltip(button, 
         { trigger: "manual", 
           customClass: "code-copy-button-tooltip",

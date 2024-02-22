@@ -1,14 +1,19 @@
 ---
 title: "Reporte Proyecto ID23|10297"
+lang: es
 author: "M. Abel Herrera"
 format: html
+execute:
+  echo: false
+  warning: false
+  message: false
 editor: visual
+toc: true
+toc-depth: 4
 ---
 
 ```{r}
-#| echo: false
-#| warnings: false
-#| message: false 
+
 library(fs)
 library(readr)
 library(dplyr)
@@ -22,7 +27,355 @@ library(grid)
 library(cowplot)
 library(ggpubr)
 library(scales)
+names <- c(la_esperanza = 'La Esperanza',rio_claro = 'Rio Claro',
+           T1 = 'T1',T2 = 'T2',T3 = 'T3',T4 = 'T4',T0 = 'T0')
+```
 
+# Capítulo 1: Análisis Explotatorio
+
+\[Introducción\]
+
+## 1.1.- Producción
+
+```{r}
+data_produccion <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/cosecha/produccion.rds')
+
+produccion_info_2022 <- data_produccion |>
+  filter(temporada == '2022-2023') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+produccion_info_2023 <- data_produccion |>
+  filter(temporada == '2023-2024') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+```
+
+### 1.1.1.- Peso total
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+data_produccion |>
+  filter(temporada == '2022-2023') |>
+  ggplot(aes(unidad,peso_total)) +
+  geom_bar(stat = "identity", fill = 'midnightblue', alpha = .5) +
+  geom_text(data = produccion_info_2022, aes(unidad,25,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(title = 'Temporada 2022-2023',
+       y = 'Peso total (kg)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_produccion |>
+  filter(temporada == '2023-2024') |>
+  ggplot(aes(unidad,peso_total)) +
+  geom_bar(stat = "identity", fill = 'midnightblue', alpha = .5) +
+  geom_text(data = produccion_info_2023, aes(unidad,25,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names[-2])) +
+  labs(title = 'Temporada 2023-2024',
+       y = 'Peso total (kg)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### 1.1.2.- Rendimiento
+
+Considerando el área de influencia de cada árbol como 8 m^2^, el rendimiento se determinó dividiendo el peso total de la producción del árbol entre su área de influencia en hectareas (0.0008 ha).
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+data_produccion |>
+  filter(temporada == '2022-2023') |>
+  ggplot(aes(unidad,rendimiento)) +
+  geom_bar(stat = "identity", fill = 'midnightblue', alpha = .5) +
+  geom_text(data = produccion_info_2022, aes(unidad,35000,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(title = 'Temporada 2022-2023',
+       y = 'Rendimiento (kg/ha)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_produccion |>
+  filter(temporada == '2023-2024') |>
+  ggplot(aes(unidad,rendimiento)) +
+  geom_bar(stat = "identity", fill = 'midnightblue', alpha = .5) +
+  geom_text(data = produccion_info_2023, aes(unidad,35000,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names[-2])) +
+  labs(title = 'Temporada 2023-2024',
+       y = 'Rendimiento (kg/ha)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### 1.1.3.- Densidad
+
+Para estimar la densidad de la producción, se tomó una muestra aleatoria de 1 kg de la producción total del árbol. Posteriormente se contabilizaron los frutos de aquella muestra para obtener la densidad como la cantidad de frutos por kilogramo.
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+data_produccion |>
+  filter(temporada == '2022-2023') |>
+  ggplot(aes(unidad,densidad)) +
+  geom_bar(stat = "identity", fill = 'midnightblue', alpha = .5) +
+  geom_text(data = produccion_info_2022, aes(unidad,300,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(title = 'Temporada 2022-2023',
+       y = 'Densidad (frutos/kg)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_produccion |>
+  filter(temporada == '2023-2024') |>
+  ggplot(aes(unidad,densidad)) +
+  geom_bar(stat = "identity", fill = 'midnightblue', alpha = .5) +
+  geom_text(data = produccion_info_2023, aes(unidad,300,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names[-2])) +
+  labs(title = 'Temporada 2023-2024',
+       y = 'Densidad (frutos/kg)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+## 1.2.- Calidad
+
+### 1.2.1.- Apariencia
+
+La apariencia de los frutos se evaluó considerando su peso, diámetro y color. Para llevar a cabo este análisis, se seleccionaron al azar 20 frutos de una muestra representativa equivalente a 1 kg de la producción total.
+
+```{r}
+data_apariencia <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/cosecha/apariencia.rds')
+
+apariencia_info_2022 <- data_apariencia |>
+  filter(temporada == '2022-2023') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+apariencia_info_2023 <- data_apariencia |>
+  filter(temporada == '2023-2024') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+```
+
+#### Peso
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+data_apariencia |>
+  filter(temporada == '2022-2023') |>
+  ggplot(aes(unidad,peso)) +
+  geom_boxplot() +
+  geom_text(data = apariencia_info_2022, aes(unidad,20,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(title = 'Temporada 2022-2023',
+       y = 'Peso (gr)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_apariencia |>
+  filter(temporada == '2023-2024') |>
+  ggplot(aes(unidad,peso)) +
+  geom_boxplot() +
+  geom_text(data = apariencia_info_2023, aes(unidad,20,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names[-2])) +
+  labs(title = 'Temporada 2023-2024',
+       y = 'Peso (gr)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+  
+```
+
+#### Diametro
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+data_apariencia |>
+  filter(temporada == '2022-2023') |>
+  ggplot(aes(unidad,diametro)) +
+  geom_boxplot() +
+  geom_text(data = apariencia_info_2022, aes(unidad,10,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(title = 'Temporada 2022-2023',
+       y = 'Diametro (mm)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_apariencia |>
+  filter(temporada == '2023-2024') |>
+  ggplot(aes(unidad,diametro)) +
+  geom_boxplot() +
+  geom_text(data = apariencia_info_2023, aes(unidad,10,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names[-2])) +
+  labs(title = 'Temporada 2023-2024',
+       y = 'Diametro (mm)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+#### Color
+
+Para cuantificar y calificar el color dentro de las muestras, se categorizó el color de cada fruto utilizando la siguiente tabla de colores.
+
+![](plots/misc/10-tabla de color cerezas.jpg){.fig-align-center fig-align="center"}
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+data_apariencia |>
+  filter(temporada == '2022-2023') |>
+  ggplot(aes(unidad,color)) +
+  geom_boxplot() +
+  geom_text(data = apariencia_info_2022, aes(unidad,7.5,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(title = 'Temporada 2022-2023',
+       y = 'Grado de color',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_apariencia |>
+  filter(temporada == '2023-2024') |>
+  ggplot(aes(unidad,color)) +
+  geom_boxplot() +
+  geom_text(data = apariencia_info_2023, aes(unidad,7.5,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names[-2])) +
+  labs(title = 'Temporada 2023-2024',
+       y = 'Grado de color',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### 1.2.2.- Contenido de azucar
+
+Para determinar el contenido de azúcar, se midieron los grados Brix de cada fruto mediante la utilización de un refractrometro. Los frutos utilizados correspondieron a cinco frutos de cada árbol escogidos al azar, a partir de una selección de frutos de buena apariencia dentro de la muestra de 1 kg.
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+data_brix <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/cosecha/brix.rds')
+
+brix_info_2022 <- data_brix |>
+  filter(temporada == '2022-2023') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+brix_info_2023 <- data_brix |>
+  filter(temporada == '2023-2024') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+data_brix |>
+  filter(temporada == '2022-2023') |>
+  ggplot(aes(unidad,brix)) +
+  geom_boxplot() +
+  geom_text(data = apariencia_info_2022, aes(unidad,10,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(title = 'Temporada 2022-2023',
+       y = 'Grado de color',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_brix |>
+  filter(temporada == '2023-2024') |>
+  ggplot(aes(unidad,brix)) +
+  geom_boxplot() +
+  geom_text(data = apariencia_info_2023, aes(unidad,15,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names[-2])) +
+  labs(title = 'Temporada 2023-2024',
+       y = 'Grado de color',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### 1.2.3.- Daño
+
+Para determinar el daño de la producción, se estimó el porcentaje de frutos dañados a partir de una muesrtra aleatoria de 1 kg de la producción total. Los frutos dañados se consideraron como aquellos que presentaban desde daños severos o de la marchitez total del fruto hasta cracking leves, además de frutos dobles.
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+data_daño <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/cosecha/daño.rds')
+
+daño_info_2022 <- data_daño |>
+  filter(temporada == '2022-2023') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+daño_info_2023 <- data_daño |>
+  filter(temporada == '2023-2024') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+data_daño |>
+  filter(temporada == '2022-2023') |>
+  mutate(daño = 100-(d_nulo/n)*100) |>
+  ggplot(aes(unidad,daño)) +
+  geom_bar(stat = "identity", fill = 'midnightblue', alpha = .5) +
+  geom_text(data = apariencia_info_2022, aes(unidad,30,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(title = 'Temporada 2022-2023',
+       y = 'Daño (%)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_daño |>
+  filter(temporada == '2023-2024') |>
+  mutate(daño = 100-(d_nulo/n)*100) |>
+  ggplot(aes(unidad,daño)) +
+  geom_bar(stat = "identity", fill = 'midnightblue', alpha = .5) +
+  geom_text(data = apariencia_info_2023, aes(unidad,70,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names[-2])) +
+  labs(title = 'Temporada 2023-2024',
+       y = 'Daño (%)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+## 1.3.- Parámetros fisiológicos
+
+```{r}
 data_fluo <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/fluorescencia.rds')
 data_potencial <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/potencial.rds')
 data_cepto <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/ceptometro.rds')
@@ -34,38 +387,13 @@ data_info <- codigos |>
   select(codigo,unidad)
 ```
 
-# Capítulo 1: Análisis Explotatorio
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## 1.1.- Producción
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-a <- 3
-```
-
-You can add options to executable code like this
-
-```{r}
-#| echo: false
-a
-```
-
-## 1.2.- Calidad
-
-## 1.3.- Parámetros fisiológicos
-
-### Fluorescencia
+### 1.3.1.- Fluorescencia
 
 La siguiente tabla presenta la cantidad de dias de muestreo, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio (sin considerar NA).
 
 ```{r}
-#| echo: false
-#| message: false
-#| warnings: false
-data_fluo |>
+
+tabla <- data_fluo |>
   group_by(temporada,sitio, fecha) |>
   summarise(n = sum(!is.na(`Fv/Fm`))) |>
   group_by(temporada,sitio) |>
@@ -74,6 +402,8 @@ data_fluo |>
             n_datos_totales = sum(n, na.rm=T)) |>
   ungroup() |>
   as.data.frame()
+
+knitr::kable(tabla)
 ```
 
 A continuación se muestran los resultados del Rendimiento Cuántico Máximo del Fotosistema II (ΦP0) para ambas temporadas:
@@ -81,9 +411,9 @@ A continuación se muestran los resultados del Rendimiento Cuántico Máximo del
 #### Distribución
 
 ```{r}
-#| echo: false
-#| message: false
-#| warnings: false
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
 
 fluo_info_2022 <- data_fluo |>
   filter(temporada == '2022-2023') |>
@@ -102,13 +432,7 @@ data_fluo |>
   ggplot(aes(unidad,Phi_Po)) +
   geom_boxplot() +
   geom_text(data = fluo_info_2022, aes(unidad,1,label = codigo),size=2.5) +
-  facet_grid(sitio~tratamiento, labeller = as_labeller(c(la_esperanza = 'La Esperanza',
-                                                         rio_claro = 'Rio Claro',
-                                                         T0 = 'T0',
-                                                         T1 = 'T1',
-                                                         T2 = 'T2',
-                                                         T3 = 'T3',
-                                                         T4 = 'T4'))) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
   labs(title = 'Temporada 2022-2023',
        y = expression(Phi[P0]),
        x = 'Unidad') +
@@ -120,8 +444,7 @@ data_fluo |>
   ggplot(aes(unidad,Phi_Po)) +
   geom_boxplot() +
   geom_text(data = fluo_info_2023, aes(unidad,1,label = codigo),size=2.5) +
-  facet_grid(sitio~tratamiento, labeller = as_labeller(c(la_esperanza = 'La Esperanza',
-                                                         rio_claro = 'Rio Claro'))) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
   labs(title = 'Temporada 2023-2024',
        y = expression(Phi[P0]),
        x = 'Unidad') +
@@ -133,9 +456,9 @@ data_fluo |>
 #### Serie temporal
 
 ```{r}
-#| echo: false
-#| message: false
-#| warnings: false
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
 
 data_fluo |>
   filter(temporada == '2022-2023') |>
@@ -146,7 +469,7 @@ data_fluo |>
        color = 'Unidad') +
   geom_point(size=1) +
   geom_line(linewidth = .5) +
-  facet_grid(tratamiento~sitio) +
+  facet_grid(tratamiento~sitio, labeller = as_labeller(names)) +
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5))
 
@@ -159,8 +482,353 @@ data_fluo |>
        color = 'Unidad') +
   geom_point(size=1) +
   geom_line(linewidth = .5) +
-  facet_grid(tratamiento~sitio) +
+  facet_grid(tratamiento~sitio, labeller = as_labeller(names)) +
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5))
 
 ```
+
+### 1.3.2.- Potencial
+
+La siguiente tabla presenta la cantidad de dias de muestreo, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio (sin considerar NA).
+
+```{r}
+
+tabla <- data_potencial |>
+  group_by(temporada,sitio, fecha) |>
+  summarise(n = sum(!is.na(potencial_bar))) |>
+  group_by(temporada,sitio) |>
+  summarise(n_dias = n(),
+            n_datos_promedio = round(mean(n, na.rm =T),1),
+            n_datos_totales = sum(n, na.rm=T)) |>
+  ungroup() |>
+  as.data.frame()
+
+knitr::kable(tabla)
+```
+
+#### Distribución
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+pote_info_2022 <- data_potencial |>
+  filter(temporada == '2022-2023') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+pote_info_2023 <- data_potencial |>
+  filter(temporada == '2023-2024') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+data_potencial |> 
+  filter(temporada == '2022-2023') |>
+  mutate(MPa = -potencial_bar/10) |>
+  ggplot(aes(unidad,MPa)) +
+  geom_boxplot() +
+  geom_text(data = pote_info_2022, aes(unidad,1,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(title = 'Temporada 2022-2023',
+       y = 'Potencial (MPa)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_potencial |> 
+  filter(temporada == '2023-2024') |>
+  mutate(MPa = -potencial_bar/10) |>
+  ggplot(aes(unidad,MPa)) +
+  geom_boxplot() +
+  geom_text(data = pote_info_2023, aes(unidad,1,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(title = 'Temporada 2023-2024',
+       y = 'Potencial (MPa)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+#### Serie temporal
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+data_potencial |>
+  filter(temporada == '2022-2023') |>
+  mutate(MPa = -potencial_bar/10) |>
+  ggplot(aes(fecha,MPa,color=unidad)) +
+  labs(title = 'Temporada 2022-2023',
+       y = 'Potencial (MPa)',
+       x = 'Fecha',
+       color = 'Unidad') +
+  geom_point(size=1) +
+  geom_line(linewidth = .5) +
+  facet_grid(tratamiento~sitio, labeller = as_labeller(names)) +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_potencial |>
+  filter(temporada == '2023-2024') |>
+  mutate(MPa = -potencial_bar/10) |>
+  ggplot(aes(fecha,MPa,color=unidad)) +
+  labs(title = 'Temporada 2023-2024',
+       y = 'Potencial (MPa)',
+       x = 'Fecha',
+       color = 'Unidad') +
+  geom_point(size=1) +
+  geom_line(linewidth = .5) +
+  facet_grid(tratamiento~sitio, labeller = as_labeller(names)) +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### 1.3.3.- LAI
+
+La siguiente tabla presenta la cantidad de dias de muestreo, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio (sin considerar NA).
+
+```{r}
+
+tabla <- data_cepto |>
+  group_by(temporada,sitio, fecha) |>
+  summarise(n = sum(!is.na(lai))) |>
+  group_by(temporada,sitio) |>
+  summarise(n_dias = n(),
+            n_datos_promedio = round(mean(n, na.rm =T),1),
+            n_datos_totales = sum(n, na.rm=T)) |>
+  ungroup() |>
+  as.data.frame()
+
+knitr::kable(tabla)
+```
+
+#### Distribución
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+data_cepto |>
+  filter(temporada == '2022-2023') |>
+  mutate(tratamiento = as.factor(tratamiento)) |>
+  ggplot(aes(tratamiento,lai)) +
+  geom_boxplot() +
+  facet_grid(~sitio, labeller = as_labeller(names[1:2])) +
+  labs(title = 'Temporada 2022-2023',
+       y = 'LAI',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_cepto |>
+  filter(temporada == '2023-2024') |>
+  mutate(tratamiento = as.factor(tratamiento)) |>
+  ggplot(aes(tratamiento,lai)) +
+  geom_boxplot() +
+  facet_grid(~sitio, labeller = as_labeller(names[1:2])) +
+  labs(title = 'Temporada 2023-2024',
+       y = 'LAI',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+#### Serie temporal
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+data_cepto |>
+  filter(temporada == '2022-2023') |>
+  mutate(tratamiento = as.factor(tratamiento)) |>
+  ggplot(aes(fecha,lai,color=tratamiento)) +
+  geom_point(size=1) +
+  geom_line(linewidth = .5) +
+  facet_grid(~sitio, labeller = as_labeller(names[1:2])) +
+  labs(title = 'Temporada 2022-2023',
+       y = 'LAI',
+       x = 'Fecha') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_cepto |>
+  filter(temporada == '2023-2024') |>
+  mutate(tratamiento = as.factor(tratamiento)) |>
+  ggplot(aes(fecha,lai,color=tratamiento)) +
+  geom_point(size=1) +
+  geom_line(linewidth = .5) +
+  facet_grid(~sitio, labeller = as_labeller(names[1:2])) +
+  labs(title = 'Temporada 2023-2024',
+       y = 'LAI',
+       x = 'Fecha') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### 1.3.4.- Turgor: presión de parche
+
+La siguiente tabla presenta la cantidad de dias de muestreo desde la instalación de los zim, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio (sin considerar NA).
+
+```{r}
+
+tabla <- data_turgor |>
+  group_by(sitio, fecha) |>
+  summarise(n = sum(!is.na(turgor))) |>
+  group_by(sitio) |>
+  summarise(n_dias = n(),
+            n_datos_promedio = round(mean(n, na.rm =T),1),
+            n_datos_totales = sum(n, na.rm=T)) |>
+  ungroup() |>
+  as.data.frame()
+
+knitr::kable(tabla)
+```
+
+#### Distribución
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+turgor_info_2022 <- data_turgor |>
+  filter(temporada == '2022-2023') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+turgor_info_2023 <- data_turgor |>
+  filter(temporada == '2023-2024') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+data_turgor |> 
+  filter(temporada == '2022-2023') |>
+  ggplot(aes(unidad,turgor)) +
+  geom_boxplot() +
+  geom_text(data = turgor_info_2022, aes(unidad,350,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(title = 'Temporada 2022-2023',
+       y = 'Presión de parche (bar)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_turgor |> 
+  filter(temporada == '2023-2024') |>
+  ggplot(aes(unidad,turgor)) +
+  geom_boxplot() +
+  geom_text(data = turgor_info_2022, aes(unidad,350,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(title = 'Temporada 2023-2024',
+       y = 'Presión de parche (bar)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+#### Serie temporal
+
+```{r}
+#| column: screen
+#| layout-nrow: 1
+#| fig-align: center
+
+lim_22 <-  c(as.POSIXct('2022-09-30'), as.POSIXct('2023-04-01'))
+lim_23 <-  c(as.POSIXct('2023-09-30'), as.POSIXct(max(data_turgor$fecha)))
+
+data_turgor |>
+  filter(temporada == '2022-2023') |>
+  mutate(fecha_hora = as.POSIXct(paste0(fecha,' ',hora,':00'), format = "%Y-%m-%d %H:%M")) |>
+  ggplot(aes(fecha_hora,turgor,color=zim)) +
+  geom_point(size = .2) +
+  labs(title = 'Temporada 2022-2023',
+       x = "Fecha", y = "Turgor",
+       color = 'Zim') +
+  facet_grid(tratamiento+unidad~sitio, labeller = as_labeller(c(names,'1' = '1','2' = '2','3' = '3'))) +
+  theme_light() +
+  guides(color = guide_legend(override.aes = list(size = 2))) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_x_datetime(limits = lim_22)
+
+data_turgor |>
+  filter(temporada == '2023-2024') |>
+  mutate(fecha_hora = as.POSIXct(paste0(fecha,' ',hora,':00'), format = "%Y-%m-%d %H:%M")) |>
+  ggplot(aes(fecha_hora,turgor,color=zim)) +
+  geom_point(size = .2) +
+  labs(title = 'Temporada 2023-2024',
+       x = "Fecha", y = "Turgor",
+       color = 'Zim') +
+  facet_grid(tratamiento+unidad~sitio, labeller = as_labeller(c(names,'1' = '1','2' = '2','3' = '3'))) +
+  theme_light() +
+  guides(color = guide_legend(override.aes = list(size = 2))) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_x_datetime(limits = lim_23)
+
+```
+
+#### Ciclo diario
+
+```{r}
+#| column: screen
+#| layout-nrow: 1
+#| fig-align: center
+
+data_turgor |> 
+  filter(temporada == '2022-2023') |>
+  group_by(sensor) |>
+  drop_na() |> 
+  mutate(turgor_sc = scale(turgor)) |> 
+  group_by(sitio,tratamiento,unidad,hora) |> 
+  summarize(turgor_hora = mean(turgor_sc,na.rm = TRUE)) |> 
+  ggplot(aes(hora,turgor_hora,color=unidad)) +
+  geom_point(size=.05) +
+  geom_line() +
+  labs(title = 'Temporada 2022-2023',
+       x = 'Hora',
+       y = 'Presión de parche estandarizada') +
+  facet_grid(tratamiento+unidad~sitio,scales = 'free_y', labeller = as_labeller(c(names,'1' = '1','2' = '2','3' = '3'))) +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_turgor |> 
+  filter(temporada == '2023-2024') |>
+  group_by(sensor) |>
+  drop_na() |> 
+  mutate(turgor_sc = scale(turgor)) |> 
+  group_by(sitio,tratamiento,unidad,hora) |> 
+  summarize(turgor_hora = mean(turgor_sc,na.rm = TRUE)) |> 
+  ggplot(aes(hora,turgor_hora,color=unidad)) +
+  geom_point(size=.05) +
+  geom_line() +
+  labs(title = 'Temporada 2023-2024',
+       x = 'Hora',
+       y = 'Presión de parche estandarizada') +
+  facet_grid(tratamiento+unidad~sitio,scales = 'free_y', labeller = as_labeller(c(names,'1' = '1','2' = '2','3' = '3'))) +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+#### [Preprocesamiento de datos de turgor](analisis_turgor.html)
+
+## 1.4.- Humedad de suelo
+
+## 1.5.- Clima
+
+# Capítulo 2: Procesamiento de datos
+
+## 2.1.- Modelo de potencial
+
+### 2.1.1.- Dependencia de potencial y variables climáticas

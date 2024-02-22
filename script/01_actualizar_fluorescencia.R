@@ -58,7 +58,7 @@ for (x in 1:length(ind)) {
 }
 
 data_fluo <- data_fluo |>
-  arrange(fecha, tratamiento, unidad)
+  arrange(sitio,fecha, tratamiento, unidad)
 
 write_rds(data_fluo,'data/data_processed/fluorescencia.rds')
 

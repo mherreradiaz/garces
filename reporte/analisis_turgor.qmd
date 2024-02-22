@@ -1,0 +1,1396 @@
+---
+title: "Análisis de turgor"
+lang: es
+author: "M. Abel Herrera"
+format: 
+  html:
+    fig-width: 15
+    fig-height: 7
+    monobackgroundcolor: white
+execute:
+  echo: false
+  warning: false
+  message: false
+editor: visual
+toc: true
+toc-depth: 3
+toc-location: left
+toc-expand: true
+---
+
+```{r}
+
+library(fs)
+library(readr)
+library(dplyr)
+library(lubridate)
+library(tidyr)
+library(stringr)
+library(tidyverse)
+library(dbscan)
+library(purrr)
+library(grid)
+library(cowplot)
+library(ggpubr)
+library(scales)
+options(max.print = 10000)
+
+```
+
+# Preprocesamiento de datos de turgor
+
+## Pre-análisis por sensor
+
+\[Metodología de clustering\]
+
+```{r}
+png_files <- tibble(file = list.files('C:/HEMERA/ID2023/id23_10297/reporte/plots/turgor_sensor/',full.names = T)) |>
+  mutate(temporada = unlist(str_extract_all(file, '2022_2023|2023_2024')),
+         sitio = tolower(unlist(str_extract_all(file, 'La_Esperanza|Rio_Claro'))),
+         tratamiento = unlist(str_extract_all(file, 'T[1-4]')),
+         unidad = unlist(str_extract_all(unlist(str_extract_all(file,'Unidad_[1-3]')),'[1-3]')))
+
+```
+
+### Temporada 2022-2023
+
+```{=html}
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">La Esperanza
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_La_Esperanza_T1_Unidad_1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_La_Esperanza_T1_Unidad_2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_La_Esperanza_T1_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_La_Esperanza_T2_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_La_Esperanza_T2_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_La_Esperanza_T2_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_La_Esperanza_T3_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_La_Esperanza_T3_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_La_Esperanza_T3_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_La_Esperanza_T4_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_La_Esperanza_T4_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_La_Esperanza_T4_Unidad_3.png" width = 140%>
+</details>
+</details>
+</details>
+
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">Rio Claro
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_Rio_Claro_T1_Unidad_1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_Rio_Claro_T1_Unidad_2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_Rio_Claro_T1_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_Rio_Claro_T2_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_Rio_Claro_T2_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_Rio_Claro_T2_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_Rio_Claro_T3_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_Rio_Claro_T3_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_Rio_Claro_T3_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_Rio_Claro_T4_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_Rio_Claro_T4_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/01_turgor_sensor/2022_2023_Rio_Claro_T4_Unidad_3.png" width = 140%>
+</details>
+</details>
+</details>
+```
+### Temporada 2023-2024
+
+```{=html}
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">La Esperanza
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_La_Esperanza_T1_Unidad_1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_La_Esperanza_T1_Unidad_2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_La_Esperanza_T1_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_La_Esperanza_T2_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_La_Esperanza_T2_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_La_Esperanza_T2_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_La_Esperanza_T3_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_La_Esperanza_T3_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_La_Esperanza_T3_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_La_Esperanza_T4_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_La_Esperanza_T4_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_La_Esperanza_T4_Unidad_3.png" width = 140%>
+</details>
+</details>
+</details>
+
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">Rio Claro
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_Rio_Claro_T1_Unidad_1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_Rio_Claro_T1_Unidad_2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_Rio_Claro_T1_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_Rio_Claro_T2_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_Rio_Claro_T2_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_Rio_Claro_T2_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_Rio_Claro_T3_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_Rio_Claro_T3_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_Rio_Claro_T3_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_Rio_Claro_T4_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_Rio_Claro_T4_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/01_turgor_sensor/2023_2024_Rio_Claro_T4_Unidad_3.png" width = 140%>
+</details>
+</details>
+</details>
+```
+## Limpieza de datos
+
+Para limpiar los datos de turgor, se emplearon series temporales de VPD y temperatura provenientes de las estaciones meteorológicas de los dos sitios de estudio. Se procedió a calcular el coeficiente de correlación entre cada cluster y los valores de VPD y temperatura respecto al tiempo (escala horaria) y el sitio. Se obtuvo un coeficiente de correlación promedio en relación con ambas variables, y se estableció un umbral de corte de r \> 0.5. Aquellos clusters de turgor cuyo promedio de correlación resultó menor a 0.5 fueron descartados.
+
+### Temporada 2022-2023
+
+```{=html}
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">La Esperanza
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_La_Esperanza_T1_Unidad_1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_La_Esperanza_T1_Unidad_2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_La_Esperanza_T1_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_La_Esperanza_T2_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_La_Esperanza_T2_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_La_Esperanza_T2_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_La_Esperanza_T3_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_La_Esperanza_T3_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_La_Esperanza_T3_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_La_Esperanza_T4_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_La_Esperanza_T4_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_La_Esperanza_T4_Unidad_3.png" width = 140%>
+</details>
+</details>
+</details>
+
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">Rio Claro
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_Rio_Claro_T1_Unidad_1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_Rio_Claro_T1_Unidad_2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_Rio_Claro_T1_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_Rio_Claro_T2_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_Rio_Claro_T2_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_Rio_Claro_T2_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_Rio_Claro_T3_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_Rio_Claro_T3_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_Rio_Claro_T3_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_Rio_Claro_T4_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_Rio_Claro_T4_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/02_turgor_limpiado/2022_2023_Rio_Claro_T4_Unidad_3.png" width = 140%>
+</details>
+</details>
+</details>
+```
+### Temporada 2023-2024
+
+```{=html}
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">La Esperanza
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_La_Esperanza_T1_Unidad_1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_La_Esperanza_T1_Unidad_2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_La_Esperanza_T1_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_La_Esperanza_T2_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_La_Esperanza_T2_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_La_Esperanza_T2_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_La_Esperanza_T3_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_La_Esperanza_T3_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_La_Esperanza_T3_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_La_Esperanza_T4_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_La_Esperanza_T4_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_La_Esperanza_T4_Unidad_3.png" width = 140%>
+</details>
+</details>
+</details>
+
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">Rio Claro
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_Rio_Claro_T1_Unidad_1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_Rio_Claro_T1_Unidad_2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_Rio_Claro_T1_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_Rio_Claro_T2_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_Rio_Claro_T2_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_Rio_Claro_T2_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_Rio_Claro_T3_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_Rio_Claro_T3_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_Rio_Claro_T3_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_Rio_Claro_T4_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_Rio_Claro_T4_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/02_turgor_limpiado/2023_2024_Rio_Claro_T4_Unidad_3.png" width = 140%>
+</details>
+</details>
+</details>
+```
+## Estandarización y unificación de clusters por sensor
+
+### Temporada 2022-2023
+
+```{=html}
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">La Esperanza
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/03_turgor_union/2022_2023_La_Esperanza_T1_Unidad_1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/03_turgor_union/2022_2023_La_Esperanza_T1_Unidad_2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/03_turgor_union/2022_2023_La_Esperanza_T1_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/03_turgor_union/2022_2023_La_Esperanza_T2_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/03_turgor_union/2022_2023_La_Esperanza_T2_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/03_turgor_union/2022_2023_La_Esperanza_T2_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/03_turgor_union/2022_2023_La_Esperanza_T3_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/03_turgor_union/2022_2023_La_Esperanza_T3_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/03_turgor_union/2022_2023_La_Esperanza_T3_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/03_turgor_union/2022_2023_La_Esperanza_T4_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/03_turgor_union/2022_2023_La_Esperanza_T4_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/03_turgor_union/2022_2023_La_Esperanza_T4_Unidad_3.png" width = 140%>
+</details>
+</details>
+</details>
+
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">Rio Claro
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/03_turgor_union/2022_2023_Rio_Claro_T1_Unidad_1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/03_turgor_union/2022_2023_Rio_Claro_T1_Unidad_2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/03_turgor_union/2022_2023_Rio_Claro_T1_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/03_turgor_union/2022_2023_Rio_Claro_T2_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/03_turgor_union/2022_2023_Rio_Claro_T2_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/03_turgor_union/2022_2023_Rio_Claro_T2_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/03_turgor_union/2022_2023_Rio_Claro_T3_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/03_turgor_union/2022_2023_Rio_Claro_T3_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/03_turgor_union/2022_2023_Rio_Claro_T3_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/03_turgor_union/2022_2023_Rio_Claro_T4_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/03_turgor_union/2022_2023_Rio_Claro_T4_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/03_turgor_union/2022_2023_Rio_Claro_T4_Unidad_3.png" width = 140%>
+</details>
+</details>
+</details>
+```
+### Temporada 2023-2024
+
+```{=html}
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">La Esperanza
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/03_turgor_union/2023_2024_La_Esperanza_T1_Unidad_1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/03_turgor_union/2023_2024_La_Esperanza_T1_Unidad_2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/03_turgor_union/2023_2024_La_Esperanza_T1_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/03_turgor_union/2023_2024_La_Esperanza_T2_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/03_turgor_union/2023_2024_La_Esperanza_T2_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/03_turgor_union/2023_2024_La_Esperanza_T2_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/03_turgor_union/2023_2024_La_Esperanza_T3_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/03_turgor_union/2023_2024_La_Esperanza_T3_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/03_turgor_union/2023_2024_La_Esperanza_T3_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/03_turgor_union/2023_2024_La_Esperanza_T4_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/03_turgor_union/2023_2024_La_Esperanza_T4_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/03_turgor_union/2023_2024_La_Esperanza_T4_Unidad_3.png" width = 140%>
+</details>
+</details>
+</details>
+
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">Rio Claro
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/03_turgor_union/2023_2024_Rio_Claro_T1_Unidad_1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/03_turgor_union/2023_2024_Rio_Claro_T1_Unidad_2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/03_turgor_union/2023_2024_Rio_Claro_T1_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/03_turgor_union/2023_2024_Rio_Claro_T2_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/03_turgor_union/2023_2024_Rio_Claro_T2_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/03_turgor_union/2023_2024_Rio_Claro_T2_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/03_turgor_union/2023_2024_Rio_Claro_T3_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/03_turgor_union/2023_2024_Rio_Claro_T3_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/03_turgor_union/2023_2024_Rio_Claro_T3_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/03_turgor_union/2023_2024_Rio_Claro_T4_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/03_turgor_union/2023_2024_Rio_Claro_T4_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/03_turgor_union/2023_2024_Rio_Claro_T4_Unidad_3.png" width = 140%>
+</details>
+</details>
+</details>
+```
+# Datos preprocesados
+
+## Por unidad
+
+### Temporada 2022-2023
+
+```{=html}
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">La Esperanza
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_La_Esperanza_T1_Unidad_1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_La_Esperanza_T1_Unidad_2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_La_Esperanza_T1_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_La_Esperanza_T2_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_La_Esperanza_T2_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_La_Esperanza_T2_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_La_Esperanza_T3_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_La_Esperanza_T3_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_La_Esperanza_T3_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_La_Esperanza_T4_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_La_Esperanza_T4_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_La_Esperanza_T4_Unidad_3.png" width = 140%>
+</details>
+</details>
+</details>
+
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">Rio Claro
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_Rio_Claro_T1_Unidad_1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_Rio_Claro_T1_Unidad_2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_Rio_Claro_T1_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_Rio_Claro_T2_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_Rio_Claro_T2_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_Rio_Claro_T2_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_Rio_Claro_T3_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_Rio_Claro_T3_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_Rio_Claro_T3_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_Rio_Claro_T4_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_Rio_Claro_T4_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/04_turgor_unidad/2022_2023_Rio_Claro_T4_Unidad_3.png" width = 140%>
+</details>
+</details>
+</details>
+```
+### Temporada 2023-2024
+
+```{=html}
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">La Esperanza
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_La_Esperanza_T1_Unidad_1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_La_Esperanza_T1_Unidad_2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_La_Esperanza_T1_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_La_Esperanza_T2_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_La_Esperanza_T2_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_La_Esperanza_T2_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_La_Esperanza_T3_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_La_Esperanza_T3_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_La_Esperanza_T3_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_La_Esperanza_T4_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_La_Esperanza_T4_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_La_Esperanza_T4_Unidad_3.png" width = 140%>
+</details>
+</details>
+</details>
+
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">Rio Claro
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_Rio_Claro_T1_Unidad_1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_Rio_Claro_T1_Unidad_2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_Rio_Claro_T1_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_Rio_Claro_T2_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_Rio_Claro_T2_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_Rio_Claro_T2_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_Rio_Claro_T3_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_Rio_Claro_T3_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_Rio_Claro_T3_Unidad_3.png" width = 140%>
+</details>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 1
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_Rio_Claro_T4_Unidad_1.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 2
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_Rio_Claro_T4_Unidad_2.png" width = 140%>
+</details> <details style="margin-left: 2%;"> 
+<summary style="font-size: 100%; color: #474747; ; font-weight: 600;">Unidad 3
+</summary>
+<img src="plots/04_turgor_unidad/2023_2024_Rio_Claro_T4_Unidad_3.png" width = 140%>
+</details>
+</details>
+</details>
+```
+## Por Tratamiento
+
+### Temporada 2022-2023
+
+```{=html}
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">La Esperanza
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<img src="plots/05_turgor_tratamiento/2022_2023_La_Esperanza_T1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<img src="plots/05_turgor_tratamiento/2022_2023_La_Esperanza_T2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<img src="plots/05_turgor_tratamiento/2022_2023_La_Esperanza_T3.png" width = 140%>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<img src="plots/05_turgor_tratamiento/2022_2023_La_Esperanza_T4.png" width = 140%>
+</details>
+</details>
+
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">Rio Claro
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<img src="plots/05_turgor_tratamiento/2022_2023_Rio_Claro_T1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<img src="plots/05_turgor_tratamiento/2022_2023_Rio_Claro_T2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<img src="plots/05_turgor_tratamiento/2022_2023_Rio_Claro_T3.png" width = 140%>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<img src="plots/05_turgor_tratamiento/2022_2023_Rio_Claro_T4.png" width = 140%>
+</details>
+</details>
+```
+### Temporada 2023-2024
+
+```{=html}
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">La Esperanza
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<img src="plots/05_turgor_tratamiento/2023_2024_La_Esperanza_T1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<img src="plots/05_turgor_tratamiento/2023_2024_La_Esperanza_T2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<img src="plots/05_turgor_tratamiento/2023_2024_La_Esperanza_T3.png" width = 140%>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<img src="plots/05_turgor_tratamiento/2023_2024_La_Esperanza_T4.png" width = 140%>
+</details>
+</details>
+
+<details style="margin-left: 5%;">
+<summary style="font-size: 145%; color: #474747; ; font-weight: 600;">Rio Claro
+</summary>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 1
+</summary>
+<img src="plots/05_turgor_tratamiento/2023_2024_Rio_Claro_T1.png" width = 140%>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 2
+</summary>
+<img src="plots/05_turgor_tratamiento/2023_2024_Rio_Claro_T2.png" width = 140%>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 3
+</summary>
+<img src="plots/05_turgor_tratamiento/2023_2024_Rio_Claro_T3.png" width = 140%>
+</details>
+<details style="margin-left: 2%;">
+<summary style="font-size: 120%; color: #474747; ; font-weight: 600;">Tratamiento 4
+</summary>
+<img src="plots/05_turgor_tratamiento/2023_2024_Rio_Claro_T4.png" width = 140%>
+</details>
+</details>
+```
