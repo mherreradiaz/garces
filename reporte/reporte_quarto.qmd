@@ -28,12 +28,11 @@ library(cowplot)
 library(ggpubr)
 library(scales)
 names <- c(la_esperanza = 'La Esperanza',rio_claro = 'Rio Claro',
-           T1 = 'T1',T2 = 'T2',T3 = 'T3',T4 = 'T4',T0 = 'T0')
+           T1 = 'T1',T2 = 'T2',T3 = 'T3',T4 = 'T4',T0 = 'T0',
+           '1' = '1','2' = '2','3' = '3')
 ```
 
 # Capítulo 1: Análisis Explotatorio
-
-\[Introducción\]
 
 ## 1.1.- Producción
 
@@ -244,7 +243,7 @@ data_apariencia |>
 
 Para cuantificar y calificar el color dentro de las muestras, se categorizó el color de cada fruto utilizando la siguiente tabla de colores.
 
-![](plots/misc/10-tabla de color cerezas.jpg){.fig-align-center fig-align="center"}
+![](plots/misc/10-tabla%20de%20color%20cerezas.jpg){.fig-align-center fig-align="center"}
 
 ```{r}
 #| column: page-inset
@@ -332,6 +331,7 @@ Para determinar el daño de la producción, se estimó el porcentaje de frutos d
 #| column: page-inset
 #| layout-nrow: 1
 #| fig-align: center
+
 data_daño <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/cosecha/daño.rds')
 
 daño_info_2022 <- data_daño |>
@@ -375,23 +375,12 @@ data_daño |>
 
 ## 1.3.- Parámetros fisiológicos
 
-```{r}
-data_fluo <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/fluorescencia.rds')
-data_potencial <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/potencial.rds')
-data_cepto <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/ceptometro.rds')
-data_sm <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/zim_sm.rds')
-data_turgor <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/zim_turgor.rds')
-data_daño <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/cosecha/daño.rds')
-codigos <- read.csv('C:/HEMERA/ID2023/id23_10297/data/metadata/codigos_arboles.csv', sep = ';')
-data_info <- codigos |>
-  select(codigo,unidad)
-```
-
 ### 1.3.1.- Fluorescencia
 
 La siguiente tabla presenta la cantidad de dias de muestreo, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio (sin considerar NA).
 
 ```{r}
+data_fluo <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/fluorescencia.rds')
 
 tabla <- data_fluo |>
   group_by(temporada,sitio, fecha) |>
@@ -404,16 +393,6 @@ tabla <- data_fluo |>
   as.data.frame()
 
 knitr::kable(tabla)
-```
-
-A continuación se muestran los resultados del Rendimiento Cuántico Máximo del Fotosistema II (ΦP0) para ambas temporadas:
-
-#### Distribución
-
-```{r}
-#| column: page-inset
-#| layout-nrow: 1
-#| fig-align: center
 
 fluo_info_2022 <- data_fluo |>
   filter(temporada == '2022-2023') |>
@@ -426,6 +405,16 @@ fluo_info_2023 <- data_fluo |>
   select(sitio,temporada,tratamiento,unidad,codigo) |>
   distinct() |>
   arrange(temporada,sitio,tratamiento,unidad)
+```
+
+A continuación se muestran los resultados del Rendimiento Cuántico Máximo del Fotosistema II (ΦP0) para ambas temporadas:
+
+#### Distribución
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
 
 data_fluo |> 
   filter(temporada == '2022-2023') |>
@@ -493,6 +482,7 @@ data_fluo |>
 La siguiente tabla presenta la cantidad de dias de muestreo, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio (sin considerar NA).
 
 ```{r}
+data_potencial <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/potencial.rds')
 
 tabla <- data_potencial |>
   group_by(temporada,sitio, fecha) |>
@@ -505,14 +495,6 @@ tabla <- data_potencial |>
   as.data.frame()
 
 knitr::kable(tabla)
-```
-
-#### Distribución
-
-```{r}
-#| column: page-inset
-#| layout-nrow: 1
-#| fig-align: center
 
 pote_info_2022 <- data_potencial |>
   filter(temporada == '2022-2023') |>
@@ -525,6 +507,14 @@ pote_info_2023 <- data_potencial |>
   select(sitio,temporada,tratamiento,unidad,codigo) |>
   distinct() |>
   arrange(temporada,sitio,tratamiento,unidad)
+```
+
+#### Distribución
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
 
 data_potencial |> 
   filter(temporada == '2022-2023') |>
@@ -594,6 +584,7 @@ data_potencial |>
 La siguiente tabla presenta la cantidad de dias de muestreo, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio (sin considerar NA).
 
 ```{r}
+data_cepto <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/ceptometro.rds')
 
 tabla <- data_cepto |>
   group_by(temporada,sitio, fecha) |>
@@ -679,6 +670,7 @@ data_cepto |>
 La siguiente tabla presenta la cantidad de dias de muestreo desde la instalación de los zim, el promedio de datos recopilados en cada uno de ellos, y el total recopilado durante toda la temporada por sitio (sin considerar NA).
 
 ```{r}
+data_turgor <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/zim_turgor.rds')
 
 tabla <- data_turgor |>
   group_by(sitio, fecha) |>
@@ -691,14 +683,6 @@ tabla <- data_turgor |>
   as.data.frame()
 
 knitr::kable(tabla)
-```
-
-#### Distribución
-
-```{r}
-#| column: page-inset
-#| layout-nrow: 1
-#| fig-align: center
 
 turgor_info_2022 <- data_turgor |>
   filter(temporada == '2022-2023') |>
@@ -711,6 +695,14 @@ turgor_info_2023 <- data_turgor |>
   select(sitio,temporada,tratamiento,unidad,codigo) |>
   distinct() |>
   arrange(temporada,sitio,tratamiento,unidad)
+```
+
+#### Distribución
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
 
 data_turgor |> 
   filter(temporada == '2022-2023') |>
@@ -742,8 +734,8 @@ data_turgor |>
 
 ```{r}
 #| column: screen
-#| layout-nrow: 1
 #| fig-align: center
+#| out-width: 60%
 
 lim_22 <-  c(as.POSIXct('2022-09-30'), as.POSIXct('2023-04-01'))
 lim_23 <-  c(as.POSIXct('2023-09-30'), as.POSIXct(max(data_turgor$fecha)))
@@ -752,28 +744,30 @@ data_turgor |>
   filter(temporada == '2022-2023') |>
   mutate(fecha_hora = as.POSIXct(paste0(fecha,' ',hora,':00'), format = "%Y-%m-%d %H:%M")) |>
   ggplot(aes(fecha_hora,turgor,color=zim)) +
-  geom_point(size = .2) +
+  geom_point(size = .1) +
   labs(title = 'Temporada 2022-2023',
-       x = "Fecha", y = "Turgor",
+       x = "Fecha", y = "Presión de parche (bar)",
        color = 'Zim') +
-  facet_grid(tratamiento+unidad~sitio, labeller = as_labeller(c(names,'1' = '1','2' = '2','3' = '3'))) +
+  facet_grid(tratamiento+unidad~sitio, labeller = as_labeller(names)) +
   theme_light() +
   guides(color = guide_legend(override.aes = list(size = 2))) +
-  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.y = element_text(size = 6)) +
   scale_x_datetime(limits = lim_22)
 
 data_turgor |>
   filter(temporada == '2023-2024') |>
   mutate(fecha_hora = as.POSIXct(paste0(fecha,' ',hora,':00'), format = "%Y-%m-%d %H:%M")) |>
   ggplot(aes(fecha_hora,turgor,color=zim)) +
-  geom_point(size = .2) +
+  geom_point(size = .1) +
   labs(title = 'Temporada 2023-2024',
-       x = "Fecha", y = "Turgor",
+       x = "Fecha", y = "Presión de parche (bar)",
        color = 'Zim') +
-  facet_grid(tratamiento+unidad~sitio, labeller = as_labeller(c(names,'1' = '1','2' = '2','3' = '3'))) +
+  facet_grid(tratamiento+unidad~sitio, labeller = as_labeller(names)) +
   theme_light() +
   guides(color = guide_legend(override.aes = list(size = 2))) +
-  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.y = element_text(size = 6)) +
   scale_x_datetime(limits = lim_23)
 
 ```
@@ -797,10 +791,12 @@ data_turgor |>
   geom_line() +
   labs(title = 'Temporada 2022-2023',
        x = 'Hora',
-       y = 'Presión de parche estandarizada') +
-  facet_grid(tratamiento+unidad~sitio,scales = 'free_y', labeller = as_labeller(c(names,'1' = '1','2' = '2','3' = '3'))) +
+       y = 'Presión de parche (estand.)') +
+  facet_grid(tratamiento+unidad~sitio,scales = 'free_y', labeller = as_labeller(names)) +
   theme_light() +
-  theme(plot.title = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.margin = margin(10, 1, 10, 1),
+        axis.text.y = element_text(size = 6))
 
 data_turgor |> 
   filter(temporada == '2023-2024') |>
@@ -814,10 +810,12 @@ data_turgor |>
   geom_line() +
   labs(title = 'Temporada 2023-2024',
        x = 'Hora',
-       y = 'Presión de parche estandarizada') +
-  facet_grid(tratamiento+unidad~sitio,scales = 'free_y', labeller = as_labeller(c(names,'1' = '1','2' = '2','3' = '3'))) +
+       y = 'Presión de parche (estand.)') +
+  facet_grid(tratamiento+unidad~sitio,scales = 'free_y', labeller = as_labeller(names)) +
   theme_light() +
-  theme(plot.title = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.margin = margin(10, 1, 10, 1),
+        axis.text.y = element_text(size = 6))
 
 ```
 
@@ -825,10 +823,216 @@ data_turgor |>
 
 ## 1.4.- Humedad de suelo
 
+```{r}
+data_sm <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/zim_sm.rds')
+
+tabla <- data_sm |>
+  group_by(sitio, fecha) |>
+  summarise(n = sum(!is.na(sm))) |>
+  group_by(sitio) |>
+  summarise(n_dias = n(),
+            n_datos_promedio = round(mean(n, na.rm =T),1),
+            n_datos_totales = sum(n, na.rm=T)) |>
+  ungroup() |>
+  as.data.frame()
+
+knitr::kable(tabla)
+
+sm_info_2022 <- data_sm |>
+  filter(temporada == '2022-2023') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+sm_info_2023 <- data_sm |>
+  filter(temporada == '2023-2024') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+```
+
+### 1.4.1.- Distribución
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+data_sm |> 
+  filter(temporada == '2022-2023') |>
+  ggplot(aes(unidad,sm)) +
+  geom_boxplot() +
+  geom_text(data = sm_info_2022, aes(unidad,110,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(title = 'Temporada 2022-2023',
+       y = 'Humedad de suelo (%VWC)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_sm |> 
+  filter(temporada == '2023-2024') |>
+  ggplot(aes(unidad,sm)) +
+  geom_boxplot() +
+  geom_text(data = sm_info_2023, aes(unidad,110,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(title = 'Temporada 2023-2024',
+       y = 'Humedad de suelo (%VWC)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### 1.4.2.- Serie temporal
+
+```{r}
+#| column: screen
+#| fig-align: center
+#| out-width: 60%
+
+lim_22 <-  c(as.POSIXct('2022-09-30'), as.POSIXct('2023-04-01'))
+lim_23 <-  c(as.POSIXct('2023-09-30'), as.POSIXct(max(data_sm$fecha)))
+
+data_sm |>
+  filter(temporada == '2022-2023') |>
+  mutate(fecha_hora = as.POSIXct(paste0(fecha,' ',hora,':00'), format = "%Y-%m-%d %H:%M")) |>
+  ggplot(aes(fecha_hora,sm)) +
+  geom_point(size = .1) +
+  labs(title = 'Temporada 2022-2023',
+       x = "Fecha", y = "Humedad de suelo (%VWC)",
+       color = 'Zim') +
+  facet_grid(tratamiento+unidad~sitio, labeller = as_labeller(names)) +
+  theme_light() +
+  guides(color = guide_legend(override.aes = list(size = 2))) +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.y = element_text(size = 5)) +
+  scale_x_datetime(limits = lim_22)
+
+data_sm |>
+  filter(temporada == '2023-2024') |>
+  mutate(fecha_hora = as.POSIXct(paste0(fecha,' ',hora,':00'), format = "%Y-%m-%d %H:%M")) |>
+  ggplot(aes(fecha_hora,sm)) +
+  geom_point(size = .1) +
+  labs(title = 'Temporada 2023-2024',
+       x = "Fecha", y = "Humedad de suelo (%VWC)",
+       color = 'Zim') +
+  facet_grid(tratamiento+unidad~sitio, labeller = as_labeller(names)) +
+  theme_light() +
+  guides(color = guide_legend(override.aes = list(size = 2))) +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.y = element_text(size = 5)) +
+  scale_x_datetime(limits = lim_23)
+
+```
+
 ## 1.5.- Clima
+
+Las variables climáticas fueron obtenidas de las estaciones meteorológicas de Garces Fruits ubicadas en ambos sitios.
+
+```{r}
+data_clima <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/clima.rds') |>
+  mutate(fecha_hora = as.POSIXct(paste0(fecha,' ',hora,':00'), format = "%Y-%m-%d %H:%M"),
+         temporada = as.factor(temporada),
+         sitio = as.factor(sitio))
+  
+```
+
+### 1.5.1.- Temperatura
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+data_clima |>
+  mutate(fecha = ifelse(temporada == '2023-2024',gsub("^2023", "2022", fecha),fecha),
+         fecha = ifelse(temporada == '2023-2024',gsub("^2024", "2023", fecha),fecha),
+         fecha = as.Date(fecha)) |>
+  group_by(temporada,sitio,fecha) |>
+  summarise(t_dia = mean(t_media,na.rm=F)) |>
+  ggplot(aes(fecha,t_dia,color = sitio)) +
+  geom_line() +
+  facet_wrap(~temporada, scales = 'fixed', ncol = 2, labeller = as_labeller(c('2022-2023'= 'Temporada 2022-2023','2023-2024' = 'Temporada 2023-2024'))) +
+  labs(x = 'Fecha',
+       y = 'Temperatura media (°C/dia)',
+       color = 'Sitio') +
+  scale_color_hue(labels=c('La Esperanza','Rio Claro')) +
+  theme_light()
+```
+
+### 1.5.2.- Déficit de presión de vapor (VPD)
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+data_clima |>
+  mutate(fecha = ifelse(temporada == '2023-2024',gsub("^2023", "2022", fecha),fecha),
+         fecha = ifelse(temporada == '2023-2024',gsub("^2024", "2023", fecha),fecha),
+         fecha = as.Date(fecha)) |>
+  group_by(temporada,sitio,fecha) |>
+  summarise(vpd_dia = mean(vpd_media,na.rm=F)) |>
+  ggplot(aes(fecha,vpd_dia,color = sitio)) +
+  geom_line() +
+  facet_wrap(~temporada, scales = 'fixed', ncol = 2, labeller = as_labeller(c('2022-2023'= 'Temporada 2022-2023','2023-2024' = 'Temporada 2023-2024'))) +
+  labs(x = 'Fecha',
+       y = 'VPD medio (mbar/dia)',
+       color = 'Sitio') +
+  scale_color_hue(labels=c('La Esperanza','Rio Claro')) +
+  theme_light()
+```
+
+### 1.5.3.- Evapotranspiración de referencia (ET0)
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+data_clima |>
+  mutate(fecha = ifelse(temporada == '2023-2024',gsub("^2023", "2022", fecha),fecha),
+         fecha = ifelse(temporada == '2023-2024',gsub("^2024", "2023", fecha),fecha),
+         fecha = as.Date(fecha)) |>
+  group_by(temporada,sitio,fecha) |>
+  summarise(eto_dia = mean(eto,na.rm=F)) |>
+  ggplot(aes(fecha,eto_dia,color = sitio)) +
+  geom_line() +
+  facet_wrap(~temporada, scales = 'fixed', ncol = 2, labeller = as_labeller(c('2022-2023'= 'Temporada 2022-2023','2023-2024' = 'Temporada 2023-2024'))) +
+  labs(x = 'Fecha',
+       y = 'ET0 (mm)',
+       color = 'Sitio') +
+  scale_color_hue(labels=c('La Esperanza','Rio Claro')) +
+  theme_light()
+```
+
+### 1.5.4.- Precipitación
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+data_clima |>
+  mutate(fecha = ifelse(temporada == '2023-2024',gsub("^2023", "2022", fecha),fecha),
+         fecha = ifelse(temporada == '2023-2024',gsub("^2024", "2023", fecha),fecha),
+         fecha = as.Date(fecha)) |>
+  group_by(temporada,sitio,fecha) |>
+  summarise(pp_dia = sum(pp,na.rm=T)) |>
+  ggplot(aes(fecha,pp_dia,color = sitio)) +
+  geom_line() +
+  facet_wrap(~temporada, scales = 'fixed', ncol = 2, labeller = as_labeller(c('2022-2023'= 'Temporada 2022-2023','2023-2024' = 'Temporada 2023-2024'))) +
+  labs(x = 'Fecha',
+       y = 'PP diaria (mm/dia)',
+       color = 'Sitio') +
+  scale_color_hue(labels=c('La Esperanza','Rio Claro')) +
+  theme_light()
+```
 
 # Capítulo 2: Procesamiento de datos
 
-## 2.1.- Modelo de potencial
+## 2.1.- Punto de pérdida de turgor
 
-### 2.1.1.- Dependencia de potencial y variables climáticas
+## 2.2.- Modelo de potencial
+
+### 2.2.1.- Dependencia de potencial y variables climáticas

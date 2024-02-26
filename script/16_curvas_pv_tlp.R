@@ -2,7 +2,7 @@ library(drc)
 library(xlsx)
 library(readxl)
 
-codigos <- excel_sheets('data/data_raw/pv/rio_claro_pv_pr.xlsx')[-8]
+codigos <- excel_sheets('data/data_raw/pv/la_esperanza_pv.xlsx')[-8]
 
 df <- data.frame(sitio = 'rio_claro',
                  codigo = codigos,
@@ -22,3 +22,4 @@ df[n,3] <- -1/(lm(minus_y ~ RWD, datos[(x+1):nrow(datos),])$coefficients[1]+
       lm(minus_y ~ RWD, datos[(x+1):nrow(datos),])$coefficients[2]*datos$RWD[x+1])
 
 write_rds(df,'data/data_postprocessed/tlp.rds')
+

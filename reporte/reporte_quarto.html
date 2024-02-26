@@ -90,14 +90,25 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#preprocesamiento-de-datos-de-turgor" id="toc-preprocesamiento-de-datos-de-turgor" class="nav-link" data-scroll-target="#preprocesamiento-de-datos-de-turgor">Preprocesamiento de datos de turgor</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#humedad-de-suelo" id="toc-humedad-de-suelo" class="nav-link" data-scroll-target="#humedad-de-suelo">1.4.- Humedad de suelo</a></li>
-  <li><a href="#clima" id="toc-clima" class="nav-link" data-scroll-target="#clima">1.5.- Clima</a></li>
+  <li><a href="#humedad-de-suelo" id="toc-humedad-de-suelo" class="nav-link" data-scroll-target="#humedad-de-suelo">1.4.- Humedad de suelo</a>
+  <ul class="collapse">
+  <li><a href="#distribución-4" id="toc-distribución-4" class="nav-link" data-scroll-target="#distribución-4">1.4.1.- Distribución</a></li>
+  <li><a href="#serie-temporal-4" id="toc-serie-temporal-4" class="nav-link" data-scroll-target="#serie-temporal-4">1.4.2.- Serie temporal</a></li>
+  </ul></li>
+  <li><a href="#clima" id="toc-clima" class="nav-link" data-scroll-target="#clima">1.5.- Clima</a>
+  <ul class="collapse">
+  <li><a href="#temperatura" id="toc-temperatura" class="nav-link" data-scroll-target="#temperatura">1.5.1.- Temperatura</a></li>
+  <li><a href="#déficit-de-presión-de-vapor-vpd" id="toc-déficit-de-presión-de-vapor-vpd" class="nav-link" data-scroll-target="#déficit-de-presión-de-vapor-vpd">1.5.2.- Déficit de presión de vapor (VPD)</a></li>
+  <li><a href="#evapotranspiración-de-referencia-et0" id="toc-evapotranspiración-de-referencia-et0" class="nav-link" data-scroll-target="#evapotranspiración-de-referencia-et0">1.5.3.- Evapotranspiración de referencia (ET0)</a></li>
+  <li><a href="#precipitación" id="toc-precipitación" class="nav-link" data-scroll-target="#precipitación">1.5.4.- Precipitación</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#capítulo-2-procesamiento-de-datos" id="toc-capítulo-2-procesamiento-de-datos" class="nav-link" data-scroll-target="#capítulo-2-procesamiento-de-datos">Capítulo 2: Procesamiento de datos</a>
   <ul>
-  <li><a href="#modelo-de-potencial" id="toc-modelo-de-potencial" class="nav-link" data-scroll-target="#modelo-de-potencial">2.1.- Modelo de potencial</a>
+  <li><a href="#punto-de-pérdida-de-turgor" id="toc-punto-de-pérdida-de-turgor" class="nav-link" data-scroll-target="#punto-de-pérdida-de-turgor">2.1.- Punto de pérdida de turgor</a></li>
+  <li><a href="#modelo-de-potencial" id="toc-modelo-de-potencial" class="nav-link" data-scroll-target="#modelo-de-potencial">2.2.- Modelo de potencial</a>
   <ul class="collapse">
-  <li><a href="#dependencia-de-potencial-y-variables-climáticas" id="toc-dependencia-de-potencial-y-variables-climáticas" class="nav-link" data-scroll-target="#dependencia-de-potencial-y-variables-climáticas">2.1.1.- Dependencia de potencial y variables climáticas</a></li>
+  <li><a href="#dependencia-de-potencial-y-variables-climáticas" id="toc-dependencia-de-potencial-y-variables-climáticas" class="nav-link" data-scroll-target="#dependencia-de-potencial-y-variables-climáticas">2.2.1.- Dependencia de potencial y variables climáticas</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -130,7 +141,6 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="capítulo-1-análisis-explotatorio" class="level1 page-columns page-full">
 <h1>Capítulo 1: Análisis Explotatorio</h1>
-<p>[Introducción]</p>
 <section id="producción" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="producción">1.1.- Producción</h2>
 <section id="peso-total" class="level3 page-columns page-full">
@@ -384,14 +394,14 @@ ul.task-list li input[type="checkbox"] {
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -405,14 +415,14 @@ ul.task-list li input[type="checkbox"] {
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-15-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -475,14 +485,14 @@ ul.task-list li input[type="checkbox"] {
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-17-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-16-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -496,14 +506,14 @@ ul.task-list li input[type="checkbox"] {
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-18-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-17-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -566,14 +576,14 @@ ul.task-list li input[type="checkbox"] {
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-20-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-19-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -587,14 +597,14 @@ ul.task-list li input[type="checkbox"] {
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-21-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-20-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -640,14 +650,14 @@ ul.task-list li input[type="checkbox"] {
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-23-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-22-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -656,6 +666,25 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="serie-temporal-3" class="level4 page-columns page-full">
 <h4 class="anchored" data-anchor-id="serie-temporal-3">Serie temporal</h4>
+<div class="cell page-columns page-full" data-layout-align="center">
+<div class="cell-output-display column-screen">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display column-screen">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-23-2.png" class="img-fluid figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="ciclo-diario" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="ciclo-diario">Ciclo diario</h4>
 <div class="cell column-screen quarto-layout-panel">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
@@ -675,45 +704,152 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </section>
-<section id="ciclo-diario" class="level4 page-columns page-full">
-<h4 class="anchored" data-anchor-id="ciclo-diario">Ciclo diario</h4>
-<div class="cell column-screen quarto-layout-panel" data-fig-heigth="80">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-25-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</section>
 <section id="preprocesamiento-de-datos-de-turgor" class="level4">
 <h4 class="anchored" data-anchor-id="preprocesamiento-de-datos-de-turgor"><a href="analisis_turgor.html">Preprocesamiento de datos de turgor</a></h4>
 </section>
 </section>
 </section>
-<section id="humedad-de-suelo" class="level2">
+<section id="humedad-de-suelo" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="humedad-de-suelo">1.4.- Humedad de suelo</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">sitio</th>
+<th style="text-align: right;">n_dias</th>
+<th style="text-align: right;">n_datos_promedio</th>
+<th style="text-align: right;">n_datos_totales</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">la_esperanza</td>
+<td style="text-align: right;">257</td>
+<td style="text-align: right;">229.4</td>
+<td style="text-align: right;">58947</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rio_claro</td>
+<td style="text-align: right;">267</td>
+<td style="text-align: right;">223.0</td>
+<td style="text-align: right;">59554</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="distribución-4" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="distribución-4">1.4.1.- Distribución</h3>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-26-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </section>
-<section id="clima" class="level2">
+<section id="serie-temporal-4" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="serie-temporal-4">1.4.2.- Serie temporal</h3>
+<div class="cell page-columns page-full" data-layout-align="center">
+<div class="cell-output-display column-screen">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display column-screen">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-27-2.png" class="img-fluid figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="clima" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="clima">1.5.- Clima</h2>
+<p>Las variables climáticas fueron obtenidas de las estaciones meteorológicas de Garces Fruits ubicadas en ambos sitios.</p>
+<section id="temperatura" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="temperatura">1.5.1.- Temperatura</h3>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="déficit-de-presión-de-vapor-vpd" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="déficit-de-presión-de-vapor-vpd">1.5.2.- Déficit de presión de vapor (VPD)</h3>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="evapotranspiración-de-referencia-et0" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="evapotranspiración-de-referencia-et0">1.5.3.- Evapotranspiración de referencia (ET0)</h3>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="precipitación" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="precipitación">1.5.4.- Precipitación</h3>
+<div class="cell column-page-inset quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="reporte_quarto_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
 </section>
 </section>
 <section id="capítulo-2-procesamiento-de-datos" class="level1">
 <h1>Capítulo 2: Procesamiento de datos</h1>
+<section id="punto-de-pérdida-de-turgor" class="level2">
+<h2 class="anchored" data-anchor-id="punto-de-pérdida-de-turgor">2.1.- Punto de pérdida de turgor</h2>
+</section>
 <section id="modelo-de-potencial" class="level2">
-<h2 class="anchored" data-anchor-id="modelo-de-potencial">2.1.- Modelo de potencial</h2>
+<h2 class="anchored" data-anchor-id="modelo-de-potencial">2.2.- Modelo de potencial</h2>
 <section id="dependencia-de-potencial-y-variables-climáticas" class="level3">
-<h3 class="anchored" data-anchor-id="dependencia-de-potencial-y-variables-climáticas">2.1.1.- Dependencia de potencial y variables climáticas</h3>
+<h3 class="anchored" data-anchor-id="dependencia-de-potencial-y-variables-climáticas">2.2.1.- Dependencia de potencial y variables climáticas</h3>
 </section>
 </section>
 </section>
