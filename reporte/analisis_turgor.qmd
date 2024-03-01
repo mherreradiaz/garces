@@ -43,15 +43,6 @@ options(max.print = 10000)
 
 \[Metodología de clustering\]
 
-```{r}
-png_files <- tibble(file = list.files('C:/HEMERA/ID2023/id23_10297/reporte/plots/turgor_sensor/',full.names = T)) |>
-  mutate(temporada = unlist(str_extract_all(file, '2022_2023|2023_2024')),
-         sitio = tolower(unlist(str_extract_all(file, 'La_Esperanza|Rio_Claro'))),
-         tratamiento = unlist(str_extract_all(file, 'T[1-4]')),
-         unidad = unlist(str_extract_all(unlist(str_extract_all(file,'Unidad_[1-3]')),'[1-3]')))
-
-```
-
 ### Temporada 2022-2023
 
 ```{=html}
