@@ -640,11 +640,14 @@ for (x in 1:nrow(codigos)) {
     pivot_longer(cols = c(vpd_trans,t_media), names_to = 'variable',values_to = 'valor') |>
     na.omit()
   
-  p1 <- data |>
-    ggplot(aes(fecha_hora,turgor_sc, group = fecha)) +
+  p1 <- tibble(fecha_hora = seq(min(data$fecha_hora),
+                                max(data$fecha_hora),
+                                by = '1 hour')) |>
+    left_join(data,by='fecha_hora') |>
+    ggplot(aes(fecha_hora,turgor_sc)) +
     geom_line(color = "darkblue", alpha = 0.5) +
     labs(title = 'Serie temporal',
-         y = 'Presión de parche (estand.') +
+         y = 'Presión de parche (estand.)') +
     xlab(NULL) +
     theme_bw() +
     theme(plot.title = element_text(hjust = 0.5, margin = margin(b = 15)),
@@ -751,8 +754,11 @@ for (x in 1:nrow(codigos)) {
     pivot_longer(cols = c(vpd_trans,t_media), names_to = 'variable',values_to = 'valor') |>
     na.omit()
   
-  p1 <- data |>
-    ggplot(aes(fecha_hora,turgor_sc, group = fecha)) +
+  p1 <- tibble(fecha_hora = seq(min(data$fecha_hora),
+                     max(data$fecha_hora),
+                     by = '1 hour')) |>
+    left_join(data,by='fecha_hora') |>
+    ggplot(aes(fecha_hora,turgor_sc)) +
     geom_line(color = "darkblue", alpha = 0.5) +
     labs(title = 'Serie temporal',
          y = 'Presión de parche (estand.)') +
