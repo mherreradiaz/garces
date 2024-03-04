@@ -1,0 +1,62 @@
+---
+title: "Análisis de turgor"
+filters:
+   - lightbox
+lang: es
+author: "M. Abel Herrera"
+format: 
+  html:
+    fig-width: 15
+    fig-height: 7
+    monobackgroundcolor: white
+execute:
+  echo: false
+  warning: false
+  message: false
+editor: visual
+toc: true
+toc-depth: 3
+toc-location: left
+toc-expand: true
+---
+
+```{r}
+
+library(fs)
+library(readr)
+library(dplyr)
+library(lubridate)
+library(tidyr)
+library(stringr)
+library(tidyverse)
+library(dbscan)
+library(purrr)
+library(grid)
+library(cowplot)
+library(ggpubr)
+library(scales)
+library(quarto)
+options(max.print = 10000)
+
+```
+
+# Preprocesamiento de datos de turgor
+
+## Pre-análisis por sensor
+
+\[Metodología de clustering\]
+
+### Temporada 2022-2023
+
+![](reporte/plots/01_turgor_sensor/2022_2023_La_Esperanza_T1_Unidad_1.png){.lightbox}
+
+::: {.panel-tabset}
+
+## hOLA
+
+![](reporte/plots/01_turgor_sensor/2022_2023_La_Esperanza_T1_Unidad_1.png){.lightbox}
+
+## Chao
+
+![](reporte/plots/01_turgor_sensor/2022_2023_La_Esperanza_T1_Unidad_1.png){.lightbox}
+:::
