@@ -8,8 +8,11 @@ book:
   chapters:
     - index.qmd
     - part: 'Capítulo 1: Análisis Explotatorio'
-      chapters:: 
-    - produccion.qmd
+      chapters:
+        - intro_cap_1.qmd
+        - produccion.qmd
+        - calidad.qmd
+    - part: 'Capítulo 2: Análisis Comparativo'
 
 bibliography: references.bib
 
@@ -23,7 +26,12 @@ format:
         theme: neutral
   pdf:
     documentclass: scrreprt
+execute:
+  echo: false
+  warning: false
+  message: false
 
 editor: visual
-number-depth: 1
+number-depth: 4
+lang: es
 

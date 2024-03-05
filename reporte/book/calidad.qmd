@@ -1,0 +1,90 @@
+# Calidad
+
+Aquí vendría el texto sobre la calidad y la metodología sobre la toma de muestras.
+
+```{r}
+source('C:/Hemera/garces/reporte/book/paquetes.R')
+```
+
+## Apariencia
+
+La apariencia de los frutos se evaluó considerando su peso, diámetro y color. Para llevar a cabo este análisis, se seleccionaron al azar 20 frutos de una muestra representativa equivalente a 1 kg de la producción total.
+
+```{r}
+data_apariencia <- read_rds('C:/HEMERA/garces/data/data_processed/cosecha/apariencia.rds')
+
+apariencia_info <- data_apariencia |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+```
+
+### Peso
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+#| fig-align: center
+#| lightbox: true
+
+data_apariencia |>
+  ggplot(aes(unidad,peso, fill = sitio)) +
+  geom_boxplot() +
+  geom_text(data = apariencia_info, aes(unidad,20,label = codigo),size=3) +
+  facet_grid(temporada+sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(y = 'Peso (gr)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(legend.position = "none",
+        text = element_text(size = 14),
+        axis.title.y = element_text(margin = margin(r = 17)),
+        axis.title.x = element_text(margin = margin(t = 17)))
+```
+
+### Diametro
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+#| fig-align: center
+#| lightbox: true
+
+data_apariencia |>
+  ggplot(aes(unidad,diametro, fill = sitio)) +
+  geom_boxplot() +
+  geom_text(data = apariencia_info, aes(unidad,42,label = codigo),size=3) +
+  facet_grid(temporada+sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(y = 'Diametro (mm)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(legend.position = "none",
+        text = element_text(size = 14),
+        axis.title.y = element_text(margin = margin(r = 17)),
+        axis.title.x = element_text(margin = margin(t = 17)))
+```
+
+### Color
+
+Para cuantificar y calificar el color dentro de las muestras, se categorizó el color de cada fruto utilizando la siguiente tabla de colores.
+
+![](C:/Hemera/garces/reporte/plots/misc/10_tabla_de_color.jpg)
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+#| fig-align: center
+#| lightbox: true
+
+data_apariencia |>
+  ggplot(aes(unidad,color, fill = sitio)) +
+  geom_boxplot() +
+  geom_text(data = apariencia_info, aes(unidad,7.5,label = codigo),size=3) +
+  facet_grid(temporada+sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(y = 'Grado de color',
+       x = 'Unidad') +
+  theme_light() +
+  theme(legend.position = "none",
+        text = element_text(size = 14),
+        axis.title.y = element_text(margin = margin(r = 17)),
+        axis.title.x = element_text(margin = margin(t = 17)))
+```
