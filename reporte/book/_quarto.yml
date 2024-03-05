@@ -12,6 +12,7 @@ book:
         - intro_cap_1.qmd
         - produccion.qmd
         - calidad.qmd
+        - parametros_fisio.qmd
     - part: 'Capítulo 2: Análisis Comparativo'
 
 bibliography: references.bib

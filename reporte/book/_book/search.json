@@ -94,5 +94,82 @@
       "Capítulo 1: Análisis Explotatorio",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calidad</span>"
     ]
+  },
+  {
+    "objectID": "calidad.html#contenido-de-azucar",
+    "href": "calidad.html#contenido-de-azucar",
+    "title": "2  Calidad",
+    "section": "2.2 Contenido de azucar",
+    "text": "2.2 Contenido de azucar\nPara determinar el contenido de azúcar, se midieron los grados Brix de cada fruto mediante la utilización de un refractrometro. Los frutos utilizados correspondieron a cinco frutos de cada árbol escogidos al azar, a partir de una selección de frutos de buena apariencia dentro de la muestra de 1 kg.",
+    "crumbs": [
+      "Capítulo 1: Análisis Explotatorio",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calidad</span>"
+    ]
+  },
+  {
+    "objectID": "calidad.html#daño",
+    "href": "calidad.html#daño",
+    "title": "2  Calidad",
+    "section": "2.3 Daño",
+    "text": "2.3 Daño\nPara determinar el daño de la producción, se estimó el porcentaje de frutos dañados a partir de una muesrtra aleatoria de 1 kg de la producción total. Los frutos dañados se consideraron como aquellos que presentaban desde daños severos o de la marchitez total del fruto hasta cracking leves, además de frutos dobles.",
+    "crumbs": [
+      "Capítulo 1: Análisis Explotatorio",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calidad</span>"
+    ]
+  },
+  {
+    "objectID": "parametros_fisio.html",
+    "href": "parametros_fisio.html",
+    "title": "3  Parámetros fisiológicos",
+    "section": "",
+    "text": "3.1 Fluorescencia\nLos datos de fluorescencia han sido recopilados mediante el uso de fluorómetro FluorPen (FUENTE), entre 13:00 y 14:00 de forma semanal, en ambos sitios para la temporada 2022-2023 y 2023-2024.\nEl índice utilizado es el Rendimiento Cuántico Máximo del Fotosistema II (ΦP0).",
+    "crumbs": [
+      "Capítulo 1: Análisis Explotatorio",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Parámetros fisiológicos</span>"
+    ]
+  },
+  {
+    "objectID": "parametros_fisio.html#fluorescencia",
+    "href": "parametros_fisio.html#fluorescencia",
+    "title": "3  Parámetros fisiológicos",
+    "section": "",
+    "text": "Población de datosDistribuciónSerie temporal\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT0\n42\n\n\n\n\nT1\n48\n\n\n\n\nT2\n48\n\n\n\n\nT3\n48\n\n\n\n\nT4\n48\n\n\n\nRio Claro\nT0\n48\n\n\n\n\nT1\n54\n\n\n\n\nT2\n54\n\n\n\n\nT3\n54\n\n\n\n\nT4\n54\n\n\n2023-2024\nLa Esperanza\nT0\n45\n\n\n\n\nT1\n45\n\n\n\n\nT2\n45\n\n\n\n\nT3\n45\n\n\n\n\nT4\n45\n\n\n\nRio Claro\nT0\n39\n\n\n\n\nT1\n39\n\n\n\n\nT2\n39\n\n\n\n\nT3\n39\n\n\n\n\nT4\n39",
+    "crumbs": [
+      "Capítulo 1: Análisis Explotatorio",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Parámetros fisiológicos</span>"
+    ]
+  },
+  {
+    "objectID": "parametros_fisio.html#potencial",
+    "href": "parametros_fisio.html#potencial",
+    "title": "3  Parámetros fisiológicos",
+    "section": "3.2 Potencial",
+    "text": "3.2 Potencial\nLos datos de potencial hídrico xilemático han sido recopilados mediante el uso de una camara de presión o bomba Scholander (FUENTE), entre 13:00 y 14:00 de forma semanal, en ambos sitios para la temporada 2022-2023 y 2023-2024.\n\nPoblación de datosDistribuciónSerie temporal\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT0\n33\n\n\n\n\nT1\n35\n\n\n\n\nT2\n36\n\n\n\n\nT3\n36\n\n\n\n\nT4\n36\n\n\n\nRio Claro\nT0\n39\n\n\n\n\nT1\n43\n\n\n\n\nT2\n44\n\n\n\n\nT3\n43\n\n\n\n\nT4\n43\n\n\n2023-2024\nLa Esperanza\nT0\n45\n\n\n\n\nT1\n44\n\n\n\n\nT2\n45\n\n\n\n\nT3\n44\n\n\n\n\nT4\n45\n\n\n\nRio Claro\nT0\n29\n\n\n\n\nT1\n29\n\n\n\n\nT2\n28\n\n\n\n\nT3\n27\n\n\n\n\nT4\n29",
+    "crumbs": [
+      "Capítulo 1: Análisis Explotatorio",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Parámetros fisiológicos</span>"
+    ]
+  },
+  {
+    "objectID": "parametros_fisio.html#lai",
+    "href": "parametros_fisio.html#lai",
+    "title": "3  Parámetros fisiológicos",
+    "section": "3.3 LAI",
+    "text": "3.3 LAI\nLos datos de LAI han sido recopilados mediante el uso de ceptometro LP80 (FUENTE), entre 12:30 y 13:30 de forma semanal, en ambos sitios para la temporada 2022-2023 y 2023-2024.\n\nPoblación de datosDistribuciónSerie temporal\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT0\n9\n\n\n\n\nT1\n9\n\n\n\n\nT2\n9\n\n\n\n\nT3\n9\n\n\n\n\nT4\n9\n\n\n\nRio Claro\nT0\n10\n\n\n\n\nT1\n10\n\n\n\n\nT2\n10\n\n\n\n\nT3\n10\n\n\n\n\nT4\n10\n\n\n2023-2024\nLa Esperanza\nT0\n11\n\n\n\n\nT1\n11\n\n\n\n\nT2\n11\n\n\n\n\nT3\n11\n\n\n\n\nT4\n11\n\n\n\nRio Claro\nT0\n11\n\n\n\n\nT1\n11\n\n\n\n\nT2\n11\n\n\n\n\nT3\n11\n\n\n\n\nT4\n11",
+    "crumbs": [
+      "Capítulo 1: Análisis Explotatorio",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Parámetros fisiológicos</span>"
+    ]
+  },
+  {
+    "objectID": "parametros_fisio.html#turgor-presión-de-parche",
+    "href": "parametros_fisio.html#turgor-presión-de-parche",
+    "title": "3  Parámetros fisiológicos",
+    "section": "3.4 Turgor: presión de parche",
+    "text": "3.4 Turgor: presión de parche\nLos datos de turgor han sido recopilados mediante el uso de sensores ZIM (FUENTE), los cuales miden presión de parche en una determinada hoja cada media hora de forma continua. Estos fueron dispuestos en cada unidad de los tratamientos (dos sensores por unidad), en ambos sitios durante la temporada 2022-2023 y 2023-2024.\nEn estos datos se observó presencia de ruido, atribuida a factores como la marchitez de las hojas muestreadas, fuerzas externas que provocaban el desalineamiento de los imanes del sensor y otras causas que llevaron a la recalibración de los sensores. Como resultado, se presentan a continuación tanto los datos crudos, con el ruido presente, como los datos preprocesados limpios, los cuales han sido depurados de dicho ruido.\n\n3.4.1 Datos crudos\n\nPoblación de datosDistribuciónSerie temporal 2022-2023Serie temporal 2023-2024Ciclo diario 2022-2023Ciclo diario 2023-2024\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT1\n20430\n\n\n\n\nT2\n17147\n\n\n\n\nT3\n19924\n\n\n\n\nT4\n20089\n\n\n\nRio Claro\nT1\n19916\n\n\n\n\nT2\n15370\n\n\n\n\nT3\n20773\n\n\n\n\nT4\n19434\n\n\n2023-2024\nLa Esperanza\nT1\n16062\n\n\n\n\nT2\n14860\n\n\n\n\nT3\n16028\n\n\n\n\nT4\n16063\n\n\n\nRio Claro\nT1\n10822\n\n\n\n\nT2\n13840\n\n\n\n\nT3\n15152\n\n\n\n\nT4\n14532\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n3.4.2 Datos preprocesados\nPara el preprocesamiento de los datos se llevó a cabo una limpieza de cluster para cada sensor, permitiendo diferenciar entre periodos en donde existía un ruido en las series temporales y eliminando aquellas que se alejaban del comportamiento normal del turgor. Este preprocesamiento se encuentra detallado y descrito en el siguiente enlace.\n\n3.4.2.1 A nivel de sensor\n\nPoblación de datosSerie temporal 2022-2023Serie temporal 2023-2024Ciclo diario 2022-2023Ciclo diario 2023-2024\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT1\n13154\n\n\n\n\nT2\n8383\n\n\n\n\nT3\n14537\n\n\n\n\nT4\n12668\n\n\n\nRio Claro\nT1\n11938\n\n\n\n\nT2\n5438\n\n\n\n\nT3\n9874\n\n\n\n\nT4\n9581\n\n\n2023-2024\nLa Esperanza\nT1\n6397\n\n\n\n\nT2\n6474\n\n\n\n\nT3\n12151\n\n\n\n\nT4\n8539\n\n\n\nRio Claro\nT1\n4702\n\n\n\n\nT2\n1758\n\n\n\n\nT3\n4780\n\n\n\n\nT4\n4317",
+    "crumbs": [
+      "Capítulo 1: Análisis Explotatorio",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Parámetros fisiológicos</span>"
+    ]
   }
 ]
