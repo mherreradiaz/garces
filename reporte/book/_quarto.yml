@@ -1,0 +1,29 @@
+project:
+  type: book
+
+book:
+  title: "Reporte Proyecto ID23|10297"
+  author: "M. Abel Herrera"
+  date: "4/3/2024"
+  chapters:
+    - index.qmd
+    - part: 'Capítulo 1: Análisis Explotatorio'
+      chapters:: 
+    - produccion.qmd
+
+bibliography: references.bib
+
+filters:
+  - lightbox
+
+format:
+  html:
+    theme: cosmo
+    mermaid: 
+        theme: neutral
+  pdf:
+    documentclass: scrreprt
+
+editor: visual
+number-depth: 1
+

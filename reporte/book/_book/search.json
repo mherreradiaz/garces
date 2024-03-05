@@ -1,0 +1,22 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Reporte Proyecto ID23|10297",
+    "section": "",
+    "text": "Prefacio\n[Qué es el reporte?]",
+    "crumbs": [
+      "Prefacio"
+    ]
+  },
+  {
+    "objectID": "produccion.html",
+    "href": "produccion.html",
+    "title": "1  Producción",
+    "section": "",
+    "text": "Aquí vendría el texto sobre la producción y etc.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Producción</span>"
+    ]
+  }
+]

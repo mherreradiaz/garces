@@ -37,6 +37,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="analisis_turgor_files/libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="analisis_turgor_files/libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="analisis_turgor_files/libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<meta name="mermaid-theme" content="neutral">
+<script src="analisis_turgor_files/libs/quarto-diagram/mermaid.min.js"></script>
+<script src="analisis_turgor_files/libs/quarto-diagram/mermaid-init.js"></script>
+<link href="analisis_turgor_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 </head>
@@ -51,7 +55,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#preprocesamiento-de-datos-de-turgor" id="toc-preprocesamiento-de-datos-de-turgor" class="nav-link active" data-scroll-target="#preprocesamiento-de-datos-de-turgor">Preprocesamiento de datos de turgor</a>
   <ul>
-  <li><a href="#pre-análisis-por-sensor" id="toc-pre-análisis-por-sensor" class="nav-link" data-scroll-target="#pre-análisis-por-sensor">Pre-análisis por sensor</a>
+  <li><a href="#datos-clusterizados-sensor" id="toc-datos-clusterizados-sensor" class="nav-link" data-scroll-target="#datos-clusterizados-sensor">Datos clusterizados (sensor)</a>
   <ul class="collapse">
   <li><a href="#temporada-2022-2023" id="toc-temporada-2022-2023" class="nav-link" data-scroll-target="#temporada-2022-2023">Temporada 2022-2023</a>
   <ul class="collapse">
@@ -64,7 +68,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#rio-claro-1" id="toc-rio-claro-1" class="nav-link" data-scroll-target="#rio-claro-1">Rio Claro</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#limpieza-de-datos" id="toc-limpieza-de-datos" class="nav-link" data-scroll-target="#limpieza-de-datos">Limpieza de datos</a>
+  <li><a href="#datos-clusterizados-limpios-sensor" id="toc-datos-clusterizados-limpios-sensor" class="nav-link" data-scroll-target="#datos-clusterizados-limpios-sensor">Datos clusterizados limpios (sensor)</a>
   <ul class="collapse">
   <li><a href="#temporada-2022-2023-1" id="toc-temporada-2022-2023-1" class="nav-link" data-scroll-target="#temporada-2022-2023-1">Temporada 2022-2023</a>
   <ul class="collapse">
@@ -77,7 +81,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#rio-claro-3" id="toc-rio-claro-3" class="nav-link" data-scroll-target="#rio-claro-3">Rio Claro</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#estandarización-y-unificación-de-clusters-por-sensor" id="toc-estandarización-y-unificación-de-clusters-por-sensor" class="nav-link" data-scroll-target="#estandarización-y-unificación-de-clusters-por-sensor">Estandarización y unificación de clusters por sensor</a>
+  <li><a href="#datos-preprocesados-sensor" id="toc-datos-preprocesados-sensor" class="nav-link" data-scroll-target="#datos-preprocesados-sensor">Datos preprocesados (sensor)</a>
   <ul class="collapse">
   <li><a href="#temporada-2022-2023-2" id="toc-temporada-2022-2023-2" class="nav-link" data-scroll-target="#temporada-2022-2023-2">Temporada 2022-2023</a>
   <ul class="collapse">
@@ -90,7 +94,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#rio-claro-5" id="toc-rio-claro-5" class="nav-link" data-scroll-target="#rio-claro-5">Rio Claro</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#turgor-preprocesado-a-nivel-de-unidad" id="toc-turgor-preprocesado-a-nivel-de-unidad" class="nav-link" data-scroll-target="#turgor-preprocesado-a-nivel-de-unidad">Turgor preprocesado a nivel de unidad</a>
+  <li><a href="#datos-preprocesados-unidad" id="toc-datos-preprocesados-unidad" class="nav-link" data-scroll-target="#datos-preprocesados-unidad">Datos preprocesados (unidad)</a>
   <ul class="collapse">
   <li><a href="#temporada-2022-2023-3" id="toc-temporada-2022-2023-3" class="nav-link" data-scroll-target="#temporada-2022-2023-3">Temporada 2022-2023</a>
   <ul class="collapse">
@@ -103,7 +107,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#rio-claro-7" id="toc-rio-claro-7" class="nav-link" data-scroll-target="#rio-claro-7">Rio Claro</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#turgor-preprocesado-a-nivel-de-tratamiento" id="toc-turgor-preprocesado-a-nivel-de-tratamiento" class="nav-link" data-scroll-target="#turgor-preprocesado-a-nivel-de-tratamiento">Turgor preprocesado a nivel de tratamiento</a>
+  <li><a href="#datos-preprocesados-tratamiento" id="toc-datos-preprocesados-tratamiento" class="nav-link" data-scroll-target="#datos-preprocesados-tratamiento">Datos preprocesados (tratamiento)</a>
   <ul class="collapse">
   <li><a href="#temporada-2022-2023-4" id="toc-temporada-2022-2023-4" class="nav-link" data-scroll-target="#temporada-2022-2023-4">Temporada 2022-2023</a>
   <ul class="collapse">
@@ -151,8 +155,30 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="preprocesamiento-de-datos-de-turgor" class="level1">
 <h1>Preprocesamiento de datos de turgor</h1>
-<section id="pre-análisis-por-sensor" class="level2">
-<h2 class="anchored" data-anchor-id="pre-análisis-por-sensor">Pre-análisis por sensor</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+  A["Datos brutos de turgor\n (sensor)"] --&gt; B(Clustering)
+  B --&gt; C["Datos clusterizados\n (sensor)"]
+  D[Temperatura y VPD] --&gt; E("Limpieza de datos:\n eliminación de clusters")
+  C --&gt; E
+  E --&gt; F["Datos clusterizados limpios\n (sensor)"]
+  F --&gt; G(Estandarización y\n unificación de cluster)
+  G --&gt; H["Datos preprocesados (sensor)"]
+  H --&gt; I["Datos preprocesados (unidad)"]
+  H --&gt; J["Datos preprocesados (tratamiento)"]
+
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="datos-clusterizados-sensor" class="level2">
+<h2 class="anchored" data-anchor-id="datos-clusterizados-sensor">Datos clusterizados (sensor)</h2>
 <p>[Metodología de clustering]</p>
 <section id="temporada-2022-2023" class="level3">
 <h3 class="anchored" data-anchor-id="temporada-2022-2023">Temporada 2022-2023</h3>
@@ -273,8 +299,8 @@ ul.task-list li input[type="checkbox"] {
 </section>
 </section>
 </section>
-<section id="limpieza-de-datos" class="level2">
-<h2 class="anchored" data-anchor-id="limpieza-de-datos">Limpieza de datos</h2>
+<section id="datos-clusterizados-limpios-sensor" class="level2">
+<h2 class="anchored" data-anchor-id="datos-clusterizados-limpios-sensor">Datos clusterizados limpios (sensor)</h2>
 <p>Para limpiar los datos de turgor, se emplearon series temporales de VPD y temperatura provenientes de las estaciones meteorológicas de los dos sitios de estudio. Se procedió a calcular el coeficiente de correlación entre cada cluster y los valores de VPD y temperatura respecto al tiempo (escala horaria) y el sitio. Se obtuvo un coeficiente de correlación promedio en relación con ambas variables, y se estableció un umbral de corte de r &gt; 0.5. Aquellos clusters de turgor cuyo promedio de correlación resultó menor a 0.5 fueron descartados.</p>
 <section id="temporada-2022-2023-1" class="level3">
 <h3 class="anchored" data-anchor-id="temporada-2022-2023-1">Temporada 2022-2023</h3>
@@ -394,8 +420,8 @@ ul.task-list li input[type="checkbox"] {
 </section>
 </section>
 </section>
-<section id="estandarización-y-unificación-de-clusters-por-sensor" class="level2">
-<h2 class="anchored" data-anchor-id="estandarización-y-unificación-de-clusters-por-sensor">Estandarización y unificación de clusters por sensor</h2>
+<section id="datos-preprocesados-sensor" class="level2">
+<h2 class="anchored" data-anchor-id="datos-preprocesados-sensor">Datos preprocesados (sensor)</h2>
 <section id="temporada-2022-2023-2" class="level3">
 <h3 class="anchored" data-anchor-id="temporada-2022-2023-2">Temporada 2022-2023</h3>
 <section id="la-esperanza-4" class="level4">
@@ -514,8 +540,8 @@ ul.task-list li input[type="checkbox"] {
 </section>
 </section>
 </section>
-<section id="turgor-preprocesado-a-nivel-de-unidad" class="level2">
-<h2 class="anchored" data-anchor-id="turgor-preprocesado-a-nivel-de-unidad">Turgor preprocesado a nivel de unidad</h2>
+<section id="datos-preprocesados-unidad" class="level2">
+<h2 class="anchored" data-anchor-id="datos-preprocesados-unidad">Datos preprocesados (unidad)</h2>
 <p>Para obtener el turgor preprocesado por árbol según tratamiento, se promediaron las series de los sensores pora cada unidad, obteniendo una serie única para cada árbol de los tratamientos.</p>
 <section id="temporada-2022-2023-3" class="level3">
 <h3 class="anchored" data-anchor-id="temporada-2022-2023-3">Temporada 2022-2023</h3>
@@ -635,8 +661,8 @@ ul.task-list li input[type="checkbox"] {
 </section>
 </section>
 </section>
-<section id="turgor-preprocesado-a-nivel-de-tratamiento" class="level2">
-<h2 class="anchored" data-anchor-id="turgor-preprocesado-a-nivel-de-tratamiento">Turgor preprocesado a nivel de tratamiento</h2>
+<section id="datos-preprocesados-tratamiento" class="level2">
+<h2 class="anchored" data-anchor-id="datos-preprocesados-tratamiento">Datos preprocesados (tratamiento)</h2>
 <p>Para obtener el turgor preprocesado a nivel de tratamiento, se promediaron las series promediadas de cada unidad según tratamiento, obteniendo una serie única para cada tratamiento de los sitios.</p>
 <section id="temporada-2022-2023-4" class="level3">
 <h3 class="anchored" data-anchor-id="temporada-2022-2023-4">Temporada 2022-2023</h3>
@@ -1117,7 +1143,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"openEffect":"zoom","descPosition":"bottom","closeEffect":"zoom","selector":".lightbox","loop":false});
+<script>var lightboxQuarto = GLightbox({"selector":".lightbox","loop":false,"closeEffect":"zoom","descPosition":"bottom","openEffect":"zoom"});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;

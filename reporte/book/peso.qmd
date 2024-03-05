@@ -1,0 +1,48 @@
+### Peso total
+
+```{r}
+data_produccion <- read_rds('C:/HEMERA/ID2023/id23_10297/data/data_processed/cosecha/produccion.rds')
+
+produccion_info_2022 <- data_produccion |>
+  filter(temporada == '2022-2023') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+produccion_info_2023 <- data_produccion |>
+  filter(temporada == '2023-2024') |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+```
+
+```{r}
+#| column: page-inset
+#| layout-nrow: 1
+#| fig-align: center
+
+data_produccion |>
+  filter(temporada == '2022-2023') |>
+  ggplot(aes(unidad,peso_total)) +
+  geom_bar(stat = "identity", fill = 'midnightblue', alpha = .5) +
+  geom_text(data = produccion_info_2022, aes(unidad,25,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(title = 'Temporada 2022-2023',
+       y = 'Peso total (kg)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+data_produccion |>
+  filter(temporada == '2023-2024') |>
+  ggplot(aes(unidad,peso_total)) +
+  geom_bar(stat = "identity", fill = 'midnightblue', alpha = .5) +
+  geom_text(data = produccion_info_2023, aes(unidad,25,label = codigo),size=2.5) +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names[-2])) +
+  labs(title = 'Temporada 2023-2024',
+       y = 'Peso total (kg)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(plot.title = element_text(hjust = 0.5))
+```

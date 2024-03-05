@@ -1,0 +1,3 @@
+# Capítulo 1: Análisis Explotatorio
+
+\[Texto de introducción al análisis explotatorio\]
