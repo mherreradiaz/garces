@@ -36,7 +36,7 @@ for (x in 1:length(unique(data_turgor$sensor))) {
     spread(key = hora, value = turgor, sep = "_") |>
     filter(complete.cases(across(hora_0:hora_23)))
   
-  if (nrow(data_sensor) == 0) {next}
+  if (nrow(data_sensor) < 2) {next}
   
   clusters <- data_sensor |>
     rowwise() |>
@@ -63,8 +63,8 @@ for (x in 1:length(unique(data_turgor$sensor))) {
 }
 
 data_turgor <- data_turgor |>
-  mutate(cluster = as.factor(cluster)) |>
-  mutate(fecha_hora = as.POSIXct(paste0(fecha,' ',hora,':00'), format = "%Y-%m-%d %H:%M")) |>
+  mutate(cluster = as.factor(ifelse(is.na(cluster),'no_cluster',cluster)),
+         fecha_hora = as.POSIXct(paste0(fecha,' ',hora,':00'), format = "%Y-%m-%d %H:%M")) |>
   na.omit()
 
 codigos <- data_turgor |>
@@ -94,10 +94,10 @@ for (x in 1:nrow(codigos)) {
       na.omit()
     
     p1 <- data_sensor |>
-      ggplot(aes(fecha_hora, turgor, color = as.factor(cluster))) +
-      geom_point(size = .7) +
+      ggplot(aes(fecha_hora, turgor, color = as.factor(cluster), group = turgor)) +
+      geom_point(size = 1) +
       labs(title = paste('Sensor', sensores[s]),
-           x = "Fecha", y = "Turgor",
+           x = "Fecha", y = "Presión de parche (bar)",
            color = 'Cluster') +
       theme_bw() +
       guides(color = guide_legend(override.aes = list(size = 2))) +
@@ -115,7 +115,7 @@ for (x in 1:nrow(codigos)) {
       geom_line(linewidth = .7) +
       labs(title = 'Ciclo horario del día',
            x = 'Hora',
-           y = 'Turgor estandarizado',
+           y = 'Presión de parche (estand.)',
            color = 'Cluster') +
       facet_wrap(~cluster, scales = 'free_y', ncol = 1, strip.position = 'right') +
       theme_bw()
@@ -131,7 +131,7 @@ for (x in 1:nrow(codigos)) {
       combined_plot_final <- plot_grid(combined_plot_final, combined_plot, ncol = 2, rel_widths = c(1, 1))
     }
   }
-  ggsave(paste0('reporte/analisis_turgor/plot_utlima_semana/', str_replace_all(plot_name, "\\s", "_"), '.png'),
+  ggsave(paste0('reporte/plots/00_turgor_ultima_semana/', str_replace_all(plot_name, "\\s", "_"), '.png'),
          plot = combined_plot_final, width = 14, height = 7, units = "in", dpi = 300)
 }
 
