@@ -16,29 +16,28 @@
     "section": "",
     "text": "1.1 Peso total",
     "crumbs": [
-      "Capítulo 1: Análisis Explotatorio",
+      "Capítulo 1: Análisis explotatorio",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Producción</span>"
     ]
   },
   {
     "objectID": "capitulo_1.html",
     "href": "capitulo_1.html",
-    "title": "Capítulo 1: Análisis Explotatorio",
+    "title": "Capítulo 1: Análisis explotatorio",
     "section": "",
-    "text": "[Texto de introducción al análisis explotatorio]",
+    "text": "[Texto de introducción y resumen del análisis explotatorio",
     "crumbs": [
-      "Capítulo 1: Análisis Explotatorio"
+      "Capítulo 1: Análisis explotatorio"
     ]
   },
   {
     "objectID": "intro_cap_1.html",
     "href": "intro_cap_1.html",
-    "title": "Introducción y resumen",
+    "title": "Capítulo 1: Análisis explotatorio",
     "section": "",
-    "text": "[Texto de introducción y resumen del análisis explotatorio]",
+    "text": "[Texto de introducción y resumen del análisis explotatori",
     "crumbs": [
-      "Capítulo 1: Análisis Explotatorio",
-      "Introducción y resumen"
+      "Capítulo 1: Análisis explotatorio"
     ]
   },
   {
@@ -58,7 +57,7 @@
     "section": "1.2 Rendimiento",
     "text": "1.2 Rendimiento\nConsiderando el área de influencia de cada árbol como 8 m2, el rendimiento se determinó dividiendo el peso total de la producción del árbol entre su área de influencia en hectareas (0.0008 ha).",
     "crumbs": [
-      "Capítulo 1: Análisis Explotatorio",
+      "Capítulo 1: Análisis explotatorio",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Producción</span>"
     ]
   },
@@ -69,7 +68,7 @@
     "section": "1.3 Densidad",
     "text": "1.3 Densidad\nPara estimar la densidad de la producción, se tomó una muestra aleatoria de 1 kg de la producción total del árbol. Posteriormente se contabilizaron los frutos de aquella muestra para obtener la densidad como la cantidad de frutos por kilogramo.",
     "crumbs": [
-      "Capítulo 1: Análisis Explotatorio",
+      "Capítulo 1: Análisis explotatorio",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Producción</span>"
     ]
   },
@@ -80,7 +79,7 @@
     "section": "",
     "text": "2.1 Apariencia\nLa apariencia de los frutos se evaluó considerando su peso, diámetro y color. Para llevar a cabo este análisis, se seleccionaron al azar 20 frutos de una muestra representativa equivalente a 1 kg de la producción total.",
     "crumbs": [
-      "Capítulo 1: Análisis Explotatorio",
+      "Capítulo 1: Análisis explotatorio",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calidad</span>"
     ]
   },
@@ -91,7 +90,7 @@
     "section": "",
     "text": "2.1.1 Peso\n\n\n\n\n\n\n\n\n\n\n\n2.1.2 Diametro\n\n\n\n\n\n\n\n\n\n\n\n2.1.3 Color\nPara cuantificar y calificar el color dentro de las muestras, se categorizó el color de cada fruto utilizando la siguiente tabla de colores.",
     "crumbs": [
-      "Capítulo 1: Análisis Explotatorio",
+      "Capítulo 1: Análisis explotatorio",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calidad</span>"
     ]
   },
@@ -102,7 +101,7 @@
     "section": "2.2 Contenido de azucar",
     "text": "2.2 Contenido de azucar\nPara determinar el contenido de azúcar, se midieron los grados Brix de cada fruto mediante la utilización de un refractrometro. Los frutos utilizados correspondieron a cinco frutos de cada árbol escogidos al azar, a partir de una selección de frutos de buena apariencia dentro de la muestra de 1 kg.",
     "crumbs": [
-      "Capítulo 1: Análisis Explotatorio",
+      "Capítulo 1: Análisis explotatorio",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calidad</span>"
     ]
   },
@@ -113,7 +112,7 @@
     "section": "2.3 Daño",
     "text": "2.3 Daño\nPara determinar el daño de la producción, se estimó el porcentaje de frutos dañados a partir de una muesrtra aleatoria de 1 kg de la producción total. Los frutos dañados se consideraron como aquellos que presentaban desde daños severos o de la marchitez total del fruto hasta cracking leves, además de frutos dobles.",
     "crumbs": [
-      "Capítulo 1: Análisis Explotatorio",
+      "Capítulo 1: Análisis explotatorio",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Calidad</span>"
     ]
   },
@@ -124,7 +123,7 @@
     "section": "",
     "text": "3.1 Fluorescencia\nLos datos de fluorescencia han sido recopilados mediante el uso de fluorómetro FluorPen (FUENTE), entre 13:00 y 14:00 de forma semanal, en ambos sitios para la temporada 2022-2023 y 2023-2024.\nEl índice utilizado es el Rendimiento Cuántico Máximo del Fotosistema II (ΦP0).",
     "crumbs": [
-      "Capítulo 1: Análisis Explotatorio",
+      "Capítulo 1: Análisis explotatorio",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Parámetros fisiológicos</span>"
     ]
   },
@@ -133,9 +132,9 @@
     "href": "parametros_fisio.html#fluorescencia",
     "title": "3  Parámetros fisiológicos",
     "section": "",
-    "text": "Población de datosDistribuciónSerie temporal\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT0\n42\n\n\n\n\nT1\n48\n\n\n\n\nT2\n48\n\n\n\n\nT3\n48\n\n\n\n\nT4\n48\n\n\n\nRio Claro\nT0\n48\n\n\n\n\nT1\n54\n\n\n\n\nT2\n54\n\n\n\n\nT3\n54\n\n\n\n\nT4\n54\n\n\n2023-2024\nLa Esperanza\nT0\n45\n\n\n\n\nT1\n45\n\n\n\n\nT2\n45\n\n\n\n\nT3\n45\n\n\n\n\nT4\n45\n\n\n\nRio Claro\nT0\n39\n\n\n\n\nT1\n39\n\n\n\n\nT2\n39\n\n\n\n\nT3\n39\n\n\n\n\nT4\n39",
+    "text": "DistribuciónSerie temporalPoblación de datos\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio, tratamiento y unidad.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nUnidad\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT0\n1\n14\n\n\n\n\n\n2\n14\n\n\n\n\n\n3\n14\n\n\n\n\nT1\n1\n16\n\n\n\n\n\n2\n16\n\n\n\n\n\n3\n16\n\n\n\n\nT2\n1\n16\n\n\n\n\n\n2\n16\n\n\n\n\n\n3\n16\n\n\n\n\nT3\n1\n16\n\n\n\n\n\n2\n16\n\n\n\n\n\n3\n16\n\n\n\n\nT4\n1\n16\n\n\n\n\n\n2\n16\n\n\n\n\n\n3\n16\n\n\n\nRio Claro\nT0\n1\n16\n\n\n\n\n\n2\n16\n\n\n\n\n\n3\n16\n\n\n\n\nT1\n1\n18\n\n\n\n\n\n2\n18\n\n\n\n\n\n3\n18\n\n\n\n\nT2\n1\n18\n\n\n\n\n\n2\n18\n\n\n\n\n\n3\n18\n\n\n\n\nT3\n1\n18\n\n\n\n\n\n2\n18\n\n\n\n\n\n3\n18\n\n\n\n\nT4\n1\n18\n\n\n\n\n\n2\n18\n\n\n\n\n\n3\n18\n\n\n2023-2024\nLa Esperanza\nT0\n1\n15\n\n\n\n\n\n2\n15\n\n\n\n\n\n3\n15\n\n\n\n\nT1\n1\n15\n\n\n\n\n\n2\n15\n\n\n\n\n\n3\n15\n\n\n\n\nT2\n1\n15\n\n\n\n\n\n2\n15\n\n\n\n\n\n3\n15\n\n\n\n\nT3\n1\n15\n\n\n\n\n\n2\n15\n\n\n\n\n\n3\n15\n\n\n\n\nT4\n1\n15\n\n\n\n\n\n2\n15\n\n\n\n\n\n3\n15\n\n\n\nRio Claro\nT0\n1\n13\n\n\n\n\n\n2\n13\n\n\n\n\n\n3\n13\n\n\n\n\nT1\n1\n13\n\n\n\n\n\n2\n13\n\n\n\n\n\n3\n13\n\n\n\n\nT2\n1\n13\n\n\n\n\n\n2\n13\n\n\n\n\n\n3\n13\n\n\n\n\nT3\n1\n13\n\n\n\n\n\n2\n13\n\n\n\n\n\n3\n13\n\n\n\n\nT4\n1\n13\n\n\n\n\n\n2\n13\n\n\n\n\n\n3\n13",
     "crumbs": [
-      "Capítulo 1: Análisis Explotatorio",
+      "Capítulo 1: Análisis explotatorio",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Parámetros fisiológicos</span>"
     ]
   },
@@ -144,9 +143,9 @@
     "href": "parametros_fisio.html#potencial",
     "title": "3  Parámetros fisiológicos",
     "section": "3.2 Potencial",
-    "text": "3.2 Potencial\nLos datos de potencial hídrico xilemático han sido recopilados mediante el uso de una camara de presión o bomba Scholander (FUENTE), entre 13:00 y 14:00 de forma semanal, en ambos sitios para la temporada 2022-2023 y 2023-2024.\n\nPoblación de datosDistribuciónSerie temporal\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT0\n33\n\n\n\n\nT1\n35\n\n\n\n\nT2\n36\n\n\n\n\nT3\n36\n\n\n\n\nT4\n36\n\n\n\nRio Claro\nT0\n39\n\n\n\n\nT1\n43\n\n\n\n\nT2\n44\n\n\n\n\nT3\n43\n\n\n\n\nT4\n43\n\n\n2023-2024\nLa Esperanza\nT0\n45\n\n\n\n\nT1\n44\n\n\n\n\nT2\n45\n\n\n\n\nT3\n44\n\n\n\n\nT4\n45\n\n\n\nRio Claro\nT0\n29\n\n\n\n\nT1\n29\n\n\n\n\nT2\n28\n\n\n\n\nT3\n27\n\n\n\n\nT4\n29",
+    "text": "3.2 Potencial\nLos datos de potencial hídrico xilemático han sido recopilados mediante el uso de una camara de presión o bomba Scholander (FUENTE), entre 13:00 y 14:00 de forma semanal, en ambos sitios para la temporada 2022-2023 y 2023-2024.\n\nDistribuciónSerie temporalPoblación de datos\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nUnidad\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT0\n1\n11\n\n\n\n\n\n2\n11\n\n\n\n\n\n3\n11\n\n\n\n\nT1\n1\n12\n\n\n\n\n\n2\n12\n\n\n\n\n\n3\n11\n\n\n\n\nT2\n1\n12\n\n\n\n\n\n2\n12\n\n\n\n\n\n3\n12\n\n\n\n\nT3\n1\n12\n\n\n\n\n\n2\n12\n\n\n\n\n\n3\n12\n\n\n\n\nT4\n1\n12\n\n\n\n\n\n2\n12\n\n\n\n\n\n3\n12\n\n\n\nRio Claro\nT0\n1\n13\n\n\n\n\n\n2\n13\n\n\n\n\n\n3\n13\n\n\n\n\nT1\n1\n14\n\n\n\n\n\n2\n14\n\n\n\n\n\n3\n15\n\n\n\n\nT2\n1\n15\n\n\n\n\n\n2\n14\n\n\n\n\n\n3\n15\n\n\n\n\nT3\n1\n14\n\n\n\n\n\n2\n14\n\n\n\n\n\n3\n15\n\n\n\n\nT4\n1\n14\n\n\n\n\n\n2\n14\n\n\n\n\n\n3\n15\n\n\n2023-2024\nLa Esperanza\nT0\n1\n15\n\n\n\n\n\n2\n15\n\n\n\n\n\n3\n15\n\n\n\n\nT1\n1\n15\n\n\n\n\n\n2\n14\n\n\n\n\n\n3\n15\n\n\n\n\nT2\n1\n15\n\n\n\n\n\n2\n15\n\n\n\n\n\n3\n15\n\n\n\n\nT3\n1\n15\n\n\n\n\n\n2\n15\n\n\n\n\n\n3\n14\n\n\n\n\nT4\n1\n15\n\n\n\n\n\n2\n15\n\n\n\n\n\n3\n15\n\n\n\nRio Claro\nT0\n1\n10\n\n\n\n\n\n2\n9\n\n\n\n\n\n3\n10\n\n\n\n\nT1\n1\n10\n\n\n\n\n\n2\n10\n\n\n\n\n\n3\n9\n\n\n\n\nT2\n1\n9\n\n\n\n\n\n2\n9\n\n\n\n\n\n3\n10\n\n\n\n\nT3\n1\n9\n\n\n\n\n\n2\n9\n\n\n\n\n\n3\n9\n\n\n\n\nT4\n1\n10\n\n\n\n\n\n2\n9\n\n\n\n\n\n3\n10",
     "crumbs": [
-      "Capítulo 1: Análisis Explotatorio",
+      "Capítulo 1: Análisis explotatorio",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Parámetros fisiológicos</span>"
     ]
   },
@@ -155,9 +154,9 @@
     "href": "parametros_fisio.html#lai",
     "title": "3  Parámetros fisiológicos",
     "section": "3.3 LAI",
-    "text": "3.3 LAI\nLos datos de LAI han sido recopilados mediante el uso de ceptometro LP80 (FUENTE), entre 12:30 y 13:30 de forma semanal, en ambos sitios para la temporada 2022-2023 y 2023-2024.\n\nPoblación de datosDistribuciónSerie temporal\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT0\n9\n\n\n\n\nT1\n9\n\n\n\n\nT2\n9\n\n\n\n\nT3\n9\n\n\n\n\nT4\n9\n\n\n\nRio Claro\nT0\n10\n\n\n\n\nT1\n10\n\n\n\n\nT2\n10\n\n\n\n\nT3\n10\n\n\n\n\nT4\n10\n\n\n2023-2024\nLa Esperanza\nT0\n11\n\n\n\n\nT1\n11\n\n\n\n\nT2\n11\n\n\n\n\nT3\n11\n\n\n\n\nT4\n11\n\n\n\nRio Claro\nT0\n11\n\n\n\n\nT1\n11\n\n\n\n\nT2\n11\n\n\n\n\nT3\n11\n\n\n\n\nT4\n11",
+    "text": "3.3 LAI\nLos datos de LAI han sido recopilados mediante el uso de ceptometro LP80 (FUENTE), entre 12:30 y 13:30 de forma semanal, en ambos sitios para la temporada 2022-2023 y 2023-2024.\n\nDistribuciónSerie temporalPoblación de datos\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT0\n9\n\n\n\n\nT1\n9\n\n\n\n\nT2\n9\n\n\n\n\nT3\n9\n\n\n\n\nT4\n9\n\n\n\nRio Claro\nT0\n10\n\n\n\n\nT1\n10\n\n\n\n\nT2\n10\n\n\n\n\nT3\n10\n\n\n\n\nT4\n10\n\n\n2023-2024\nLa Esperanza\nT0\n11\n\n\n\n\nT1\n11\n\n\n\n\nT2\n11\n\n\n\n\nT3\n11\n\n\n\n\nT4\n11\n\n\n\nRio Claro\nT0\n11\n\n\n\n\nT1\n11\n\n\n\n\nT2\n11\n\n\n\n\nT3\n11\n\n\n\n\nT4\n11",
     "crumbs": [
-      "Capítulo 1: Análisis Explotatorio",
+      "Capítulo 1: Análisis explotatorio",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Parámetros fisiológicos</span>"
     ]
   },
@@ -166,10 +165,185 @@
     "href": "parametros_fisio.html#turgor-presión-de-parche",
     "title": "3  Parámetros fisiológicos",
     "section": "3.4 Turgor: presión de parche",
-    "text": "3.4 Turgor: presión de parche\nLos datos de turgor han sido recopilados mediante el uso de sensores ZIM (FUENTE), los cuales miden presión de parche en una determinada hoja cada media hora de forma continua. Estos fueron dispuestos en cada unidad de los tratamientos (dos sensores por unidad), en ambos sitios durante la temporada 2022-2023 y 2023-2024.\nEn estos datos se observó presencia de ruido, atribuida a factores como la marchitez de las hojas muestreadas, fuerzas externas que provocaban el desalineamiento de los imanes del sensor y otras causas que llevaron a la recalibración de los sensores. Como resultado, se presentan a continuación tanto los datos crudos, con el ruido presente, como los datos preprocesados limpios, los cuales han sido depurados de dicho ruido.\n\n3.4.1 Datos crudos\n\nPoblación de datosDistribuciónSerie temporal 2022-2023Serie temporal 2023-2024Ciclo diario 2022-2023Ciclo diario 2023-2024\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT1\n20430\n\n\n\n\nT2\n17147\n\n\n\n\nT3\n19924\n\n\n\n\nT4\n20089\n\n\n\nRio Claro\nT1\n19916\n\n\n\n\nT2\n15370\n\n\n\n\nT3\n20773\n\n\n\n\nT4\n19434\n\n\n2023-2024\nLa Esperanza\nT1\n16062\n\n\n\n\nT2\n14860\n\n\n\n\nT3\n16028\n\n\n\n\nT4\n16063\n\n\n\nRio Claro\nT1\n10822\n\n\n\n\nT2\n13840\n\n\n\n\nT3\n15152\n\n\n\n\nT4\n14532\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n3.4.2 Datos preprocesados\nPara el preprocesamiento de los datos se llevó a cabo una limpieza de cluster para cada sensor, permitiendo diferenciar entre periodos en donde existía un ruido en las series temporales y eliminando aquellas que se alejaban del comportamiento normal del turgor. Este preprocesamiento se encuentra detallado y descrito en el siguiente enlace.\n\n3.4.2.1 A nivel de sensor\n\nPoblación de datosSerie temporal 2022-2023Serie temporal 2023-2024Ciclo diario 2022-2023Ciclo diario 2023-2024\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT1\n13154\n\n\n\n\nT2\n8383\n\n\n\n\nT3\n14537\n\n\n\n\nT4\n12668\n\n\n\nRio Claro\nT1\n11938\n\n\n\n\nT2\n5438\n\n\n\n\nT3\n9874\n\n\n\n\nT4\n9581\n\n\n2023-2024\nLa Esperanza\nT1\n6397\n\n\n\n\nT2\n6474\n\n\n\n\nT3\n12151\n\n\n\n\nT4\n8539\n\n\n\nRio Claro\nT1\n4702\n\n\n\n\nT2\n1758\n\n\n\n\nT3\n4780\n\n\n\n\nT4\n4317",
+    "text": "3.4 Turgor: presión de parche\nLos datos de turgor han sido recopilados mediante el uso de sensores ZIM (FUENTE), los cuales miden presión de parche en una determinada hoja cada media hora de forma continua. Estos fueron dispuestos en cada unidad de los tratamientos (dos sensores por unidad), en ambos sitios durante la temporada 2022-2023 y 2023-2024.\nEn estos datos se observó presencia de ruido, atribuida a factores como la marchitez de las hojas muestreadas, fuerzas externas que provocaban el desalineamiento de los imanes del sensor y otras causas que llevaron a la recalibración de los sensores. Debido a esto, se realizó un preprocesamiento de los datos basado en clustering y la correlación entre el ciclo diario del turgor con variables como la temperatura y el VPD. Este trabajo es desarrollado y detallado en el (capitulo_2?), mientras que los datos crudos se presentan a continuación.\n\nDistribuciónSerie temporal 2022-2023Serie temporal 2023-2024Ciclo diario 2022-2023Ciclo diario 2023-2024Población de datos\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nUnidad\nzim\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT1\n1\nZ1\n3684\n\n\n\n\n\n\nZ2\n3353\n\n\n\n\n\n2\nZ1\n3343\n\n\n\n\n\n\nZ2\n3344\n\n\n\n\n\n3\nZ1\n3353\n\n\n\n\n\n\nZ2\n3353\n\n\n\n\nT2\n1\nZ1\n2941\n\n\n\n\n\n\nZ2\n2941\n\n\n\n\n\n2\nZ1\n2454\n\n\n\n\n\n\nZ2\n2454\n\n\n\n\n\n3\nZ1\n3013\n\n\n\n\n\n\nZ2\n3344\n\n\n\n\nT3\n1\nZ1\n3013\n\n\n\n\n\n\nZ2\n3013\n\n\n\n\n\n2\nZ1\n3640\n\n\n\n\n\n\nZ2\n3309\n\n\n\n\n\n3\nZ1\n3309\n\n\n\n\n\n\nZ2\n3640\n\n\n\n\nT4\n1\nZ1\n3353\n\n\n\n\n\n\nZ2\n3013\n\n\n\n\n\n2\nZ1\n3344\n\n\n\n\n\n\nZ2\n3343\n\n\n\n\n\n3\nZ1\n3353\n\n\n\n\n\n\nZ2\n3683\n\n\n\nRio Claro\nT1\n1\nZ1\n3356\n\n\n\n\n\n\nZ2\n3356\n\n\n\n\n\n2\nZ1\n3331\n\n\n\n\n\n\nZ2\n3331\n\n\n\n\n\n3\nZ1\n3271\n\n\n\n\n\n\nZ2\n3271\n\n\n\n\nT2\n1\nZ1\n3481\n\n\n\n\n\n\nZ2\n3481\n\n\n\n\n\n2\nZ1\n1345\n\n\n\n\n\n\nZ2\n1668\n\n\n\n\n\n3\nZ1\n2649\n\n\n\n\n\n\nZ2\n2746\n\n\n\n\nT3\n1\nZ1\n3687\n\n\n\n\n\n\nZ2\n3356\n\n\n\n\n\n2\nZ1\n3687\n\n\n\n\n\n\nZ2\n3686\n\n\n\n\n\n3\nZ1\n3013\n\n\n\n\n\n\nZ2\n3344\n\n\n\n\nT4\n1\nZ1\n4250\n\n\n\n\n\n\nZ2\n3670\n\n\n\n\n\n2\nZ1\n2535\n\n\n\n\n\n\nZ2\n2535\n\n\n\n\n\n3\nZ1\n3590\n\n\n\n\n\n\nZ2\n2854\n\n\n2023-2024\nLa Esperanza\nT1\n1\nZ1\n3134\n\n\n\n\n\n\nZ2\n3134\n\n\n\n\n\n2\nZ1\n3134\n\n\n\n\n\n\nZ2\n3134\n\n\n\n\n\n3\nZ1\n3133\n\n\n\n\n\n\nZ2\n3133\n\n\n\n\nT2\n1\nZ1\n3135\n\n\n\n\n\n\nZ2\n3135\n\n\n\n\n\n2\nZ1\n2535\n\n\n\n\n\n\nZ2\n2535\n\n\n\n\n\n3\nZ1\n3131\n\n\n\n\n\n\nZ2\n3131\n\n\n\n\nT3\n1\nZ1\n3126\n\n\n\n\n\n\nZ2\n3126\n\n\n\n\n\n2\nZ1\n3130\n\n\n\n\n\n\nZ2\n3130\n\n\n\n\n\n3\nZ1\n3129\n\n\n\n\n\n\nZ2\n3129\n\n\n\n\nT4\n1\nZ1\n3135\n\n\n\n\n\n\nZ2\n3135\n\n\n\n\n\n2\nZ1\n3134\n\n\n\n\n\n\nZ2\n3134\n\n\n\n\n\n3\nZ1\n3134\n\n\n\n\n\n\nZ2\n3133\n\n\n\nRio Claro\nT1\n1\nZ1\n2982\n\n\n\n\n\n\nZ2\n2981\n\n\n\n\n\n2\nZ1\n818\n\n\n\n\n\n\nZ2\n818\n\n\n\n\n\n3\nZ1\n2982\n\n\n\n\n\n\nZ2\n2983\n\n\n\n\nT2\n1\nZ1\n2759\n\n\n\n\n\n\nZ2\n2759\n\n\n\n\n\n2\nZ1\n2794\n\n\n\n\n\n\nZ2\n2794\n\n\n\n\n\n3\nZ1\n2706\n\n\n\n\n\n\nZ2\n2706\n\n\n\n\nT3\n1\nZ1\n2983\n\n\n\n\n\n\nZ2\n2981\n\n\n\n\n\n2\nZ1\n2983\n\n\n\n\n\n\nZ2\n2981\n\n\n\n\n\n3\nZ1\n2983\n\n\n\n\n\n\nZ2\n2981\n\n\n\n\nT4\n1\nZ1\n2982\n\n\n\n\n\n\nZ2\n2982\n\n\n\n\n\n2\nZ1\n2673\n\n\n\n\n\n\nZ2\n2673\n\n\n\n\n\n3\nZ1\n2982\n\n\n\n\n\n\nZ2\n2982",
     "crumbs": [
-      "Capítulo 1: Análisis Explotatorio",
+      "Capítulo 1: Análisis explotatorio",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Parámetros fisiológicos</span>"
+    ]
+  },
+  {
+    "objectID": "capitulo_2.html",
+    "href": "capitulo_2.html",
+    "title": "Capítulo 2: Preprocesamiento de datos de turgor",
+    "section": "",
+    "text": "Como se mencionó en la sección 3.4 Turgor: presión de parche, para el preprocesamiento de los datos se llevó a cabo una limpieza basada en clustering y la correlación con la temperatura y VPD. Esto permitió diferenciar periodos que se alejaban del comportamiento normal del turgor (i.e. puntos máximos a la hora de más demanda hídrica del día y disminución en las horas de la noche). A continuación se presenta el diagrama de flujo del preprocesamiento de los datos de turgor.\n\n\n\n\n\nflowchart TD\n  A[\"Datos brutos de turgor\\n (sensor)\"] --&gt; B(Clustering)\n  B --&gt; C[\"Datos clusterizados\\n (sensor)\"]\n  D[Temperatura y VPD] --&gt; E(\"Limpieza de datos:\\n eliminación de clusters\")\n  C --&gt; E\n  E --&gt; F[\"Datos clusterizados limpios\\n (sensor)\"]\n  F --&gt; G(Estandarización de clusters)\n  G --&gt; H[\"Datos preprocesados (sensor)\"]\n  H --&gt; I[\"Datos preprocesados (unidad)\"]\n  H --&gt; J[\"Datos preprocesados (tratamiento)\"]\n\n\n\n\n\n\n\n\nDatos preprocesados\nPara el preprocesamiento de los datos se llevó a cabo una limpieza de cluster para cada sensor, permitiendo diferenciar entre periodos en donde existía un ruido en las series temporales y eliminando aquellas que se alejaban del comportamiento normal del turgor. Este preprocesamiento se encuentra detallado y descrito en el siguiente enlace.\n\nA nivel de sensor\n\nSerie temporal 2022-2023Serie temporal 2023-2024Ciclo diario 2022-2023Ciclo diario 2023-2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n# Población de datos\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nUnidad\nzim\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT1\n1\nZ1\n3408\n\n\n\n\n\n\nZ2\n1139\n\n\n\n\n\n2\nZ1\n2448\n\n\n\n\n\n\nZ2\n2328\n\n\n\n\n\n3\nZ1\n1800\n\n\n\n\n\n\nZ2\n2031\n\n\n\n\nT2\n1\nZ1\n1248\n\n\n\n\n\n\nZ2\n576\n\n\n\n\n\n2\nZ1\n1512\n\n\n\n\n\n\nZ2\n1175\n\n\n\n\n\n3\nZ1\n2555\n\n\n\n\n\n\nZ2\n1317\n\n\n\n\nT3\n1\nZ1\n2131\n\n\n\n\n\n\nZ2\n2979\n\n\n\n\n\n2\nZ1\n3288\n\n\n\n\n\n\nZ2\n3284\n\n\n\n\n\n3\nZ1\n1247\n\n\n\n\n\n\nZ2\n1608\n\n\n\n\nT4\n1\nZ1\n1150\n\n\n\n\n\n\nZ2\n2829\n\n\n\n\n\n2\nZ1\n2916\n\n\n\n\n\n\nZ2\n24\n\n\n\n\n\n3\nZ1\n2110\n\n\n\n\n\n\nZ2\n3639\n\n\n\nRio Claro\nT1\n1\nZ1\n2094\n\n\n\n\n\n\nZ2\n120\n\n\n\n\n\n2\nZ1\n1854\n\n\n\n\n\n\nZ2\n2908\n\n\n\n\n\n3\nZ1\n2262\n\n\n\n\n\n\nZ2\n2700\n\n\n\n\nT2\n1\nZ1\n1248\n\n\n\n\n\n\nZ2\n1457\n\n\n\n\n\n2\nZ1\n912\n\n\n\n\n\n3\nZ1\n623\n\n\n\n\n\n\nZ2\n1198\n\n\n\n\nT3\n1\nZ1\n2345\n\n\n\n\n\n\nZ2\n96\n\n\n\n\n\n2\nZ1\n3045\n\n\n\n\n\n\nZ2\n1652\n\n\n\n\n\n3\nZ1\n288\n\n\n\n\n\n\nZ2\n2448\n\n\n\n\nT4\n1\nZ1\n2796\n\n\n\n\n\n\nZ2\n2534\n\n\n\n\n\n2\nZ1\n610\n\n\n\n\n\n\nZ2\n1608\n\n\n\n\n\n\nZ2\n2033\n\n\n2023-2024\nLa Esperanza\nT1\n1\nZ1\n648\n\n\n\n\n\n\nZ2\n1680\n\n\n\n\n\n2\nZ1\n2302\n\n\n\n\n\n\nZ2\n112\n\n\n\n\n\n3\nZ1\n1463\n\n\n\n\n\n\nZ2\n192\n\n\n\n\n\n\nZ2\n1824\n\n\n\n\n\n2\nZ1\n1920\n\n\n\n\n\n\nZ2\n1920\n\n\n\n\n\n3\nZ1\n480\n\n\n\n\n\n\nZ2\n330\n\n\n\n\nT3\n1\nZ1\n2520\n\n\n\n\n\n\nZ2\n2518\n\n\n\n\n\n2\nZ1\n2109\n\n\n\n\n\n\nZ2\n2500\n\n\n\n\n\n\nZ2\n2504\n\n\n\n\nT4\n1\nZ1\n1795\n\n\n\n\n\n2\nZ1\n2136\n\n\n\n\n\n\nZ2\n600\n\n\n\n\n\n3\nZ1\n1944\n\n\n\n\n\n\nZ2\n2064\n\n\n\nRio Claro\nT1\n1\nZ1\n576\n\n\n\n\n\n\nZ2\n384\n\n\n\n\n\n3\nZ1\n1535\n\n\n\n\n\n\nZ2\n2207\n\n\n\n\nT2\n1\nZ1\n504\n\n\n\n\n\n\nZ2\n72\n\n\n\n\n\n\nZ2\n396\n\n\n\n\n\n3\nZ1\n599\n\n\n\n\n\n\nZ2\n187\n\n\n\n\nT3\n1\nZ1\n720\n\n\n\n\n\n\nZ2\n325\n\n\n\n\n\n2\nZ1\n647\n\n\n\n\n\n\nZ2\n1128\n\n\n\n\n\n3\nZ1\n840\n\n\n\n\n\n\nZ2\n1120\n\n\n\n\nT4\n1\nZ1\n120\n\n\n\n\n\n\nZ2\n672\n\n\n\n\n\n2\nZ1\n1053\n\n\n\n\n\n3\nZ1\n672\n\n\n\n\n\n\nZ2\n1800\n\n\n\n\n\n\n\n\n\n\nA nivel de unidad\n\nSerie temporal 2022-2023Serie temporal 2023-2024Ciclo diario 2022-2023Ciclo diario 2023-2024Población de datos\n\n\nLa Esperanza\n\n\n\n\n\n\n\n\n\nRio Claro\n\n\nLa Esperanza\n\n\n\n\n\n\n\n\n\nRio Claro\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT1\n9000\n\n\n\n\nT2\n6316\n\n\n\n\nT3\n9150\n\n\n\n\nT4\n9531\n\n\n\nRio Claro\nT1\n7968\n\n\n\n\nT2\n4311\n\n\n\n\nT3\n8440\n\n\n\n\nT4\n7380\n\n\n2023-2024\nLa Esperanza\nT1\n5893\n\n\n\n\nT2\n4224\n\n\n\n\nT3\n7544\n\n\n\n\nT4\n6331\n\n\n\nRio Claro\nT1\n2783\n\n\n\n\nT2\n1500\n\n\n\n\nT3\n3792\n\n\n\n\nT4\n3645",
+    "crumbs": [
+      "Capítulo 2: Preprocesamiento de datos de turgor"
+    ]
+  },
+  {
+    "objectID": "parametros_fisio.html#sec-turgor",
+    "href": "parametros_fisio.html#sec-turgor",
+    "title": "3  Parámetros fisiológicos",
+    "section": "3.4 Turgor: presión de parche",
+    "text": "3.4 Turgor: presión de parche\nLos datos de turgor han sido recopilados mediante el uso de sensores ZIM (FUENTE), los cuales miden presión de parche en una determinada hoja cada media hora de forma continua. Estos fueron dispuestos en cada unidad de los tratamientos (dos sensores por unidad), en ambos sitios durante la temporada 2022-2023 y 2023-2024.\nEn estos datos se observó presencia de ruido, atribuida a factores como la marchitez de las hojas muestreadas, fuerzas externas que provocaban el desalineamiento de los imanes del sensor y otras causas que llevaron a la recalibración de los sensores. Como resultado, se presentan a continuación tanto los datos crudos, con el ruido presente, como los datos preprocesados limpios, los cuales han sido depurados de dicho ruido.\n\nDistribuciónSerie temporal 2022-2023Serie temporal 2023-2024Ciclo diario 2022-2023Ciclo diario 2023-2024Población de datos\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nUnidad\nzim\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT1\n1\nZ1\n3684\n\n\n\n\n\n\nZ2\n3353\n\n\n\n\n\n2\nZ1\n3343\n\n\n\n\n\n\nZ2\n3344\n\n\n\n\n\n3\nZ1\n3353\n\n\n\n\n\n\nZ2\n3353\n\n\n\n\nT2\n1\nZ1\n2941\n\n\n\n\n\n\nZ2\n2941\n\n\n\n\n\n2\nZ1\n2454\n\n\n\n\n\n\nZ2\n2454\n\n\n\n\n\n3\nZ1\n3013\n\n\n\n\n\n\nZ2\n3344\n\n\n\n\nT3\n1\nZ1\n3013\n\n\n\n\n\n\nZ2\n3013\n\n\n\n\n\n2\nZ1\n3640\n\n\n\n\n\n\nZ2\n3309\n\n\n\n\n\n3\nZ1\n3309\n\n\n\n\n\n\nZ2\n3640\n\n\n\n\nT4\n1\nZ1\n3353\n\n\n\n\n\n\nZ2\n3013\n\n\n\n\n\n2\nZ1\n3344\n\n\n\n\n\n\nZ2\n3343\n\n\n\n\n\n3\nZ1\n3353\n\n\n\n\n\n\nZ2\n3683\n\n\n\nRio Claro\nT1\n1\nZ1\n3356\n\n\n\n\n\n\nZ2\n3356\n\n\n\n\n\n2\nZ1\n3331\n\n\n\n\n\n\nZ2\n3331\n\n\n\n\n\n3\nZ1\n3271\n\n\n\n\n\n\nZ2\n3271\n\n\n\n\nT2\n1\nZ1\n3481\n\n\n\n\n\n\nZ2\n3481\n\n\n\n\n\n2\nZ1\n1345\n\n\n\n\n\n\nZ2\n1668\n\n\n\n\n\n3\nZ1\n2649\n\n\n\n\n\n\nZ2\n2746\n\n\n\n\nT3\n1\nZ1\n3687\n\n\n\n\n\n\nZ2\n3356\n\n\n\n\n\n2\nZ1\n3687\n\n\n\n\n\n\nZ2\n3686\n\n\n\n\n\n3\nZ1\n3013\n\n\n\n\n\n\nZ2\n3344\n\n\n\n\nT4\n1\nZ1\n4250\n\n\n\n\n\n\nZ2\n3670\n\n\n\n\n\n2\nZ1\n2535\n\n\n\n\n\n\nZ2\n2535\n\n\n\n\n\n3\nZ1\n3590\n\n\n\n\n\n\nZ2\n2854\n\n\n2023-2024\nLa Esperanza\nT1\n1\nZ1\n3134\n\n\n\n\n\n\nZ2\n3134\n\n\n\n\n\n2\nZ1\n3134\n\n\n\n\n\n\nZ2\n3134\n\n\n\n\n\n3\nZ1\n3133\n\n\n\n\n\n\nZ2\n3133\n\n\n\n\nT2\n1\nZ1\n3135\n\n\n\n\n\n\nZ2\n3135\n\n\n\n\n\n2\nZ1\n2535\n\n\n\n\n\n\nZ2\n2535\n\n\n\n\n\n3\nZ1\n3131\n\n\n\n\n\n\nZ2\n3131\n\n\n\n\nT3\n1\nZ1\n3126\n\n\n\n\n\n\nZ2\n3126\n\n\n\n\n\n2\nZ1\n3130\n\n\n\n\n\n\nZ2\n3130\n\n\n\n\n\n3\nZ1\n3129\n\n\n\n\n\n\nZ2\n3129\n\n\n\n\nT4\n1\nZ1\n3135\n\n\n\n\n\n\nZ2\n3135\n\n\n\n\n\n2\nZ1\n3134\n\n\n\n\n\n\nZ2\n3134\n\n\n\n\n\n3\nZ1\n3134\n\n\n\n\n\n\nZ2\n3133\n\n\n\nRio Claro\nT1\n1\nZ1\n2982\n\n\n\n\n\n\nZ2\n2981\n\n\n\n\n\n2\nZ1\n818\n\n\n\n\n\n\nZ2\n818\n\n\n\n\n\n3\nZ1\n2982\n\n\n\n\n\n\nZ2\n2983\n\n\n\n\nT2\n1\nZ1\n2759\n\n\n\n\n\n\nZ2\n2759\n\n\n\n\n\n2\nZ1\n2794\n\n\n\n\n\n\nZ2\n2794\n\n\n\n\n\n3\nZ1\n2706\n\n\n\n\n\n\nZ2\n2706\n\n\n\n\nT3\n1\nZ1\n2983\n\n\n\n\n\n\nZ2\n2981\n\n\n\n\n\n2\nZ1\n2983\n\n\n\n\n\n\nZ2\n2981\n\n\n\n\n\n3\nZ1\n2983\n\n\n\n\n\n\nZ2\n2981\n\n\n\n\nT4\n1\nZ1\n2982\n\n\n\n\n\n\nZ2\n2982\n\n\n\n\n\n2\nZ1\n2673\n\n\n\n\n\n\nZ2\n2673\n\n\n\n\n\n3\nZ1\n2982\n\n\n\n\n\n\nZ2\n2982",
+    "crumbs": [
+      "Capítulo 1: Análisis explotatorio",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Parámetros fisiológicos</span>"
+    ]
+  },
+  {
+    "objectID": "clustering.html",
+    "href": "clustering.html",
+    "title": "6  Clustering",
+    "section": "",
+    "text": "6.1 Temporada 2022-2023",
+    "crumbs": [
+      "Capítulo 2: Preprocesamiento de datos de turgor",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Clustering</span>"
+    ]
+  },
+  {
+    "objectID": "clustering.html#temporada-2022-2023",
+    "href": "clustering.html#temporada-2022-2023",
+    "title": "6  Clustering",
+    "section": "",
+    "text": "6.1.1 La Esperanza\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\n\n\n\n6.1.2 Rio Claro\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3",
+    "crumbs": [
+      "Capítulo 2: Preprocesamiento de datos de turgor",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Clustering</span>"
+    ]
+  },
+  {
+    "objectID": "clustering.html#temporada-2023-2024",
+    "href": "clustering.html#temporada-2023-2024",
+    "title": "6  Clustering",
+    "section": "6.2 Temporada 2023-2024",
+    "text": "6.2 Temporada 2023-2024\n\n6.2.1 La Esperanza\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\n\n\n\n6.2.2 Rio Claro\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3",
+    "crumbs": [
+      "Capítulo 2: Preprocesamiento de datos de turgor",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Clustering</span>"
+    ]
+  },
+  {
+    "objectID": "limpieza.html",
+    "href": "limpieza.html",
+    "title": "5  Limpieza de datos: eliminación de clusters",
+    "section": "",
+    "text": "5.1 Temporada 2022-2023",
+    "crumbs": [
+      "Capítulo 2: Preprocesamiento de datos de turgor",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Limpieza de datos: eliminación de clusters</span>"
+    ]
+  },
+  {
+    "objectID": "limpieza.html#temporada-2022-2023",
+    "href": "limpieza.html#temporada-2022-2023",
+    "title": "5  Limpieza de datos: eliminación de clusters",
+    "section": "",
+    "text": "5.1.1 La Esperanza\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\n\n\n\n5.1.2 Rio Claro\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3",
+    "crumbs": [
+      "Capítulo 2: Preprocesamiento de datos de turgor",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Limpieza de datos: eliminación de clusters</span>"
+    ]
+  },
+  {
+    "objectID": "limpieza.html#temporada-2023-2024",
+    "href": "limpieza.html#temporada-2023-2024",
+    "title": "5  Limpieza de datos: eliminación de clusters",
+    "section": "5.2 Temporada 2023-2024",
+    "text": "5.2 Temporada 2023-2024\n\n5.2.1 La Esperanza\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\n\n\n\n5.2.2 Rio Claro\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\nUnidad 1 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3",
+    "crumbs": [
+      "Capítulo 2: Preprocesamiento de datos de turgor",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Limpieza de datos: eliminación de clusters</span>"
+    ]
+  },
+  {
+    "objectID": "estandarizacion.html",
+    "href": "estandarizacion.html",
+    "title": "6  Estandarización de clusters",
+    "section": "",
+    "text": "6.1 Temporada 2022-2023",
+    "crumbs": [
+      "Capítulo 2: Preprocesamiento de datos de turgor",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Estandarización de clusters</span>"
+    ]
+  },
+  {
+    "objectID": "estandarizacion.html#temporada-2022-2023",
+    "href": "estandarizacion.html#temporada-2022-2023",
+    "title": "6  Estandarización de clusters",
+    "section": "",
+    "text": "6.1.1 La Esperanza\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\n\n\n\n6.1.2 Rio Claro\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3",
+    "crumbs": [
+      "Capítulo 2: Preprocesamiento de datos de turgor",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Estandarización de clusters</span>"
+    ]
+  },
+  {
+    "objectID": "estandarizacion.html#temporada-2023-2024",
+    "href": "estandarizacion.html#temporada-2023-2024",
+    "title": "6  Estandarización de clusters",
+    "section": "6.2 Temporada 2023-2024",
+    "text": "6.2 Temporada 2023-2024\n\n6.2.1 La Esperanza\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\n\n\n\n6.2.2 Rio Claro\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\nUnidad 1 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3",
+    "crumbs": [
+      "Capítulo 2: Preprocesamiento de datos de turgor",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Estandarización de clusters</span>"
+    ]
+  },
+  {
+    "objectID": "turgor_preproc.html",
+    "href": "turgor_preproc.html",
+    "title": "7  Datos preprocesados",
+    "section": "",
+    "text": "7.1 A nivel de unidad\nPara obtener el turgor preprocesado por árbol según tratamiento, se promediaron las series de los sensores por cada unidad, obteniendo una serie única para cada árbol de los tratamientos.",
+    "crumbs": [
+      "Capítulo 2: Preprocesamiento de datos de turgor",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Datos preprocesados</span>"
+    ]
+  },
+  {
+    "objectID": "turgor_preproc.html#a-nivel-de-unidad",
+    "href": "turgor_preproc.html#a-nivel-de-unidad",
+    "title": "7  Datos preprocesados",
+    "section": "",
+    "text": "7.1.1 Temporada 2022-2023\n\n7.1.1.1 La Esperanza\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\n\n\n\n7.1.1.2 Rio Claro\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\n\n\n\n\n7.1.2 Temporada 2023-2024\n\n7.1.2.1 La Esperanza\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\n\n\n\n7.1.2.2 Rio Claro\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\nUnidad 1 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3 \n\n\nUnidad 1 \nUnidad 2 \nUnidad 3",
+    "crumbs": [
+      "Capítulo 2: Preprocesamiento de datos de turgor",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Datos preprocesados</span>"
+    ]
+  },
+  {
+    "objectID": "turgor_preproc.html#a-nivel-de-tratamiento",
+    "href": "turgor_preproc.html#a-nivel-de-tratamiento",
+    "title": "7  Datos preprocesados",
+    "section": "7.2 A nivel de tratamiento",
+    "text": "7.2 A nivel de tratamiento\nPara obtener el turgor preprocesado a nivel de tratamiento, se promediaron las series promediadas de cada unidad según tratamiento, obteniendo una serie única para cada tratamiento de en ambos sitios.\n\n7.2.1 Temporada 2022-2023\n\n7.2.1.1 La Esperanza\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n7.2.1.2 Rio Claro\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n7.2.2 Temporada 2023-2024\n\n7.2.2.1 La Esperanza\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n7.2.2.2 Rio Claro\n\nTratamiento 1Tratamiento 2Tratamiento 3Tratamiento 4",
+    "crumbs": [
+      "Capítulo 2: Preprocesamiento de datos de turgor",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Datos preprocesados</span>"
+    ]
+  },
+  {
+    "objectID": "humedad_suelo.html",
+    "href": "humedad_suelo.html",
+    "title": "4  Humedad de suelo",
+    "section": "",
+    "text": "Los datos de humedad de suelo se recopilaron mediante sensores ubicados en cada unidad de medición. Estos se conectaron al transmisor Yara igual que los sensores ZIM de turgor, y proporcionaron datos contínuos de humedad de suelo (%VWC) cada media hora para los dos sitios durante ambas temporadas.\n\nDistribuciónSerie temporal 2022-2023Serie temporal 2023-2024Población de datos\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLa siguiente tabla presenta la población de datos según temporada, sitio y tratamiento.\n\n\n\n\n\nTemporada\nSitio\nTratamiento\nUnidad\nn\n\n\n\n\n2022-2023\nLa Esperanza\nT1\n1\n3013\n\n\n\n\n\n2\n3013\n\n\n\n\n\n3\n3013\n\n\n\n\nT2\n1\n2610\n\n\n\n\n\n2\n1510\n\n\n\n\n\n3\n3013\n\n\n\n\nT3\n1\n3013\n\n\n\n\n\n2\n3013\n\n\n\n\n\n3\n3013\n\n\n\n\nT4\n1\n3013\n\n\n\n\n\n2\n3013\n\n\n\n\n\n3\n3013\n\n\n\nRio Claro\nT1\n1\n3013\n\n\n\n\n\n2\n3000\n\n\n\n\n\n3\n2940\n\n\n\n\nT2\n1\n1639\n\n\n\n\n\n2\n1141\n\n\n\n\n\n3\n2415\n\n\n\n\nT3\n1\n3013\n\n\n\n\n\n2\n3013\n\n\n\n\n\n3\n3013\n\n\n\n\nT4\n1\n3005\n\n\n\n\n\n2\n1801\n\n\n\n\n\n3\n3010\n\n\n2023-2024\nLa Esperanza\nT1\n1\n829\n\n\n\n\n\n2\n3366\n\n\n\n\n\n3\n3365\n\n\n\n\nT2\n1\n3361\n\n\n\n\n\n3\n2689\n\n\n\n\nT3\n1\n3361\n\n\n\n\n\n2\n3365\n\n\n\n\n\n3\n3364\n\n\n\n\n\n2\n831\n\n\n\n\n\n3\n3364\n\n\n\nRio Claro\nT1\n1\n807\n\n\n\n\n\n2\n1585\n\n\n\n\n\n3\n3788\n\n\n\n\nT2\n1\n3562\n\n\n\n\n\n2\n3348\n\n\n\n\n\n3\n3472\n\n\n\n\nT3\n1\n3786\n\n\n\n\n\n2\n3786\n\n\n\n\n\n3\n3788\n\n\n\n\nT4\n1\n3749\n\n\n\n\n\n2\n722\n\n\n\n\n\n3\n236",
+    "crumbs": [
+      "Capítulo 1: Análisis explotatorio",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Humedad de suelo</span>"
+    ]
+  },
+  {
+    "objectID": "clima.html",
+    "href": "clima.html",
+    "title": "5  Clima",
+    "section": "",
+    "text": "Las variables climáticas fueron obtenidas de las estaciones meteorológicas de Garces Fruits ubicadas en ambos sitios.\n\nTemperaturaDéficit de presión de vapor (VPD)Evapotranspiración de referencia (ET0)Precipitación",
+    "crumbs": [
+      "Capítulo 1: Análisis explotatorio",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Clima</span>"
     ]
   }
 ]

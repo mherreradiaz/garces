@@ -7,13 +7,21 @@ book:
   date: "4/3/2024"
   chapters:
     - index.qmd
-    - part: 'Capítulo 1: Análisis Explotatorio'
+    - part: capitulo_1.qmd
       chapters:
-        - intro_cap_1.qmd
         - produccion.qmd
         - calidad.qmd
         - parametros_fisio.qmd
-    - part: 'Capítulo 2: Análisis Comparativo'
+        - humedad_suelo.qmd
+        - clima.qmd
+        - pv.qmd
+    - part: capitulo_2.qmd
+      chapters: 
+        - clustering.qmd
+        - limpieza.qmd
+        - estandarizacion.qmd
+        - turgor_preproc.qmd
+    - part: 'Capítulo 3: Análisis Comparativo'
 
 bibliography: references.bib
 

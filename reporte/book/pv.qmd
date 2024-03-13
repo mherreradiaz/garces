@@ -1,0 +1,3 @@
+# Datos de curva Presión-volumen
+
+Los datos utilizados para las curvas Presión-volumen corresponden a mediciones de potencial hídrico xilemático y peso en hojas tomadas en laboratorio con cámara de presión Scholander y balanza analítica. \[Metodología de toma de datos\].

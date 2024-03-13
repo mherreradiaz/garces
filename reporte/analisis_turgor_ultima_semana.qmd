@@ -52,7 +52,6 @@ Unidad 1 ![](plots/00_turgor_ultima_semana/La_Esperanza_T4_Unidad_1.png){.lightb
 Unidad 2 ![](plots/00_turgor_ultima_semana/La_Esperanza_T4_Unidad_2.png){.lightbox}
 
 Unidad 3 ![](plots/00_turgor_ultima_semana/La_Esperanza_T4_Unidad_3.png){.lightbox}
-
 :::
 
 # Rio Claro
@@ -89,5 +88,4 @@ Unidad 1 ![](plots/00_turgor_ultima_semana/Rio_Claro_T4_Unidad_1.png){.lightbox}
 Unidad 2 ![](plots/00_turgor_ultima_semana/Rio_Claro_T4_Unidad_2.png){.lightbox}
 
 Unidad 3 ![](plots/00_turgor_ultima_semana/Rio_Claro_T4_Unidad_3.png){.lightbox}
-
 :::

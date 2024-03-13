@@ -1,3 +1,0 @@
-## Introducción y resumen {.unnumbered}
-
-\[Texto de introducción y resumen del análisis explotatorio\]
