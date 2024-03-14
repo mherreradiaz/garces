@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Reporte Proyecto ID23|10297 - 8&nbsp; Limpieza de datos: eliminación de clusters</title>
+<title>Reporte Proyecto ID23|10297 - 6&nbsp; Datos de curva Presión-volumen</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./estandarizacion.html" rel="next">
-<link href="./clustering.html" rel="prev">
+<link href="./capitulo_2.html" rel="next">
+<link href="./clima.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -41,9 +41,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -84,7 +81,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./capitulo_2.html">Capítulo 2: Preprocesamiento de datos de turgor</a></li><li class="breadcrumb-item"><a href="./limpieza.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Limpieza de datos: eliminación de clusters</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./capitulo_1.html">Capítulo 1: Análisis explotatorio</a></li><li class="breadcrumb-item"><a href="./pv.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Datos de curva Presión-volumen</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -156,7 +153,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./pv.html" class="sidebar-item-text sidebar-link">
+  <a href="./pv.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Datos de curva Presión-volumen</span></span></a>
   </div>
 </li>
@@ -179,7 +176,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./limpieza.html" class="sidebar-item-text sidebar-link active">
+  <a href="./limpieza.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Limpieza de datos: eliminación de clusters</span></span></a>
   </div>
 </li>
@@ -207,21 +204,14 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Tabla de contenidos</h2>
-   
-  <ul>
-  <li><a href="#la-esperanza" id="toc-la-esperanza" class="nav-link active" data-scroll-target="#la-esperanza"><span class="header-section-number">8.1</span> La Esperanza</a></li>
-  <li><a href="#rio-claro" id="toc-rio-claro" class="nav-link" data-scroll-target="#rio-claro"><span class="header-section-number">8.2</span> Rio Claro</a></li>
-  </ul>
-</nav>
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./capitulo_2.html">Capítulo 2: Preprocesamiento de datos de turgor</a></li><li class="breadcrumb-item"><a href="./limpieza.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Limpieza de datos: eliminación de clusters</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./capitulo_1.html">Capítulo 1: Análisis explotatorio</a></li><li class="breadcrumb-item"><a href="./pv.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Datos de curva Presión-volumen</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Limpieza de datos: eliminación de clusters</span></h1>
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Datos de curva Presión-volumen</span></h1>
 </div>
 
 
@@ -238,105 +228,9 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Para limpiar los datos de turgor, se emplearon series temporales de VPD y temperatura provenientes de las estaciones meteorológicas de los dos sitios de estudio. Se procedió a calcular el coeficiente de correlación entre cada cluster y los valores de VPD y temperatura respecto al tiempo (escala horaria) y el sitio. Se obtuvo un coeficiente de correlación promedio en relación con ambas variables, y se estableció un umbral de corte de r &gt; 0.5. Aquellos clusters de turgor cuyo promedio de correlación resultó menor a 0.5 fueron descartados.</p>
-<section id="la-esperanza" class="level2" data-number="8.1">
-<h2 data-number="8.1" class="anchored" data-anchor-id="la-esperanza"><span class="header-section-number">8.1</span> La Esperanza</h2>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">T1 (2022-2023)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">T2 (2022-2023)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">T3 (2022-2023)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false">T4 (2022-2023)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" role="tab" aria-controls="tabset-1-5" aria-selected="false">T1 (2023-2024)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-6" role="tab" aria-controls="tabset-1-6" aria-selected="false">T2 (2023-2024)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-7-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-7" role="tab" aria-controls="tabset-1-7" aria-selected="false">T3 (2023-2024)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-8-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-8" role="tab" aria-controls="tabset-1-8" aria-selected="false">T4 (2023-2024)</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<p>Unidad 1 <a href="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T1_Unidad_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T1_Unidad_1.png" class="img-fluid"></a></p>
-<p>Unidad 2 <a href="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T1_Unidad_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T1_Unidad_2.png" class="img-fluid"></a></p>
-<p>Unidad 3 <a href="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T1_Unidad_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T1_Unidad_3.png" class="img-fluid"></a></p>
-</div>
-<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<p>Unidad 1 <a href="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T2_Unidad_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T2_Unidad_1.png" class="img-fluid"></a></p>
-<p>Unidad 2 <a href="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T2_Unidad_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T2_Unidad_2.png" class="img-fluid"></a></p>
-<p>Unidad 3 <a href="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T2_Unidad_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T2_Unidad_3.png" class="img-fluid"></a></p>
-</div>
-<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<p>Unidad 1 <a href="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T3_Unidad_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T3_Unidad_1.png" class="img-fluid"></a></p>
-<p>Unidad 2 <a href="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T3_Unidad_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T3_Unidad_2.png" class="img-fluid"></a></p>
-<p>Unidad 3 <a href="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T3_Unidad_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T3_Unidad_3.png" class="img-fluid"></a></p>
-</div>
-<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
-<p>Unidad 1 <a href="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T4_Unidad_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T4_Unidad_1.png" class="img-fluid"></a></p>
-<p>Unidad 2 <a href="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T4_Unidad_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T4_Unidad_2.png" class="img-fluid"></a></p>
-<p>Unidad 3 <a href="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T4_Unidad_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="figuras/02_turgor_limpiado/2022_2023_La_Esperanza_T4_Unidad_3.png" class="img-fluid"></a></p>
-</div>
-<div id="tabset-1-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-5-tab">
-<p>Unidad 1 <a href="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T1_Unidad_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T1_Unidad_1.png" class="img-fluid"></a></p>
-<p>Unidad 2 <a href="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T1_Unidad_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T1_Unidad_2.png" class="img-fluid"></a></p>
-<p>Unidad 3 <a href="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T1_Unidad_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15"><img src="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T1_Unidad_3.png" class="img-fluid"></a></p>
-</div>
-<div id="tabset-1-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-6-tab">
-<p>Unidad 1 <a href="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T2_Unidad_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16"><img src="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T2_Unidad_1.png" class="img-fluid"></a></p>
-<p>Unidad 2 <a href="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T2_Unidad_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17"><img src="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T2_Unidad_2.png" class="img-fluid"></a></p>
-<p>Unidad 3 <a href="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T2_Unidad_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18"><img src="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T2_Unidad_3.png" class="img-fluid"></a></p>
-</div>
-<div id="tabset-1-7" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-7-tab">
-<p>Unidad 1 <a href="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T3_Unidad_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-19"><img src="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T3_Unidad_1.png" class="img-fluid"></a></p>
-<p>Unidad 2 <a href="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T3_Unidad_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-20"><img src="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T3_Unidad_2.png" class="img-fluid"></a></p>
-<p>Unidad 3 <a href="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T3_Unidad_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-21"><img src="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T3_Unidad_3.png" class="img-fluid"></a></p>
-</div>
-<div id="tabset-1-8" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-8-tab">
-<p>Unidad 1 <a href="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T4_Unidad_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-22"><img src="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T4_Unidad_1.png" class="img-fluid"></a></p>
-<p>Unidad 2 <a href="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T4_Unidad_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-23"><img src="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T4_Unidad_2.png" class="img-fluid"></a></p>
-<p>Unidad 3 <a href="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T4_Unidad_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-24"><img src="figuras/02_turgor_limpiado/2023_2024_La_Esperanza_T4_Unidad_3.png" class="img-fluid"></a></p>
-</div>
-</div>
-</div>
-</section>
-<section id="rio-claro" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="rio-claro"><span class="header-section-number">8.2</span> Rio Claro</h2>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">T1 (2022-2023)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">T2 (2022-2023)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false">T3 (2022-2023)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false">T4 (2022-2023)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-5" role="tab" aria-controls="tabset-2-5" aria-selected="false">T1 (2023-2024)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-6" role="tab" aria-controls="tabset-2-6" aria-selected="false">T2 (2023-2024)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-7-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-7" role="tab" aria-controls="tabset-2-7" aria-selected="false">T3 (2023-2024)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-8-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-8" role="tab" aria-controls="tabset-2-8" aria-selected="false">T4 (2023-2024)</a></li></ul>
-<div class="tab-content">
-<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<p>Unidad 1 <a href="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T1_Unidad_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-25"><img src="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T1_Unidad_1.png" class="img-fluid"></a></p>
-<p>Unidad 2 <a href="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T1_Unidad_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-26"><img src="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T1_Unidad_2.png" class="img-fluid"></a></p>
-<p>Unidad 3 <a href="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T1_Unidad_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-27"><img src="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T1_Unidad_3.png" class="img-fluid"></a></p>
-</div>
-<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<p>Unidad 1 <a href="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T2_Unidad_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-28"><img src="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T2_Unidad_1.png" class="img-fluid"></a></p>
-<p>Unidad 2 <a href="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T2_Unidad_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-29"><img src="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T2_Unidad_2.png" class="img-fluid"></a></p>
-<p>Unidad 3 <a href="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T2_Unidad_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-30"><img src="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T2_Unidad_3.png" class="img-fluid"></a></p>
-</div>
-<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-<p>Unidad 1 <a href="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T3_Unidad_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-31"><img src="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T3_Unidad_1.png" class="img-fluid"></a></p>
-<p>Unidad 2 <a href="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T3_Unidad_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-32"><img src="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T3_Unidad_2.png" class="img-fluid"></a></p>
-<p>Unidad 3 <a href="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T3_Unidad_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-33"><img src="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T3_Unidad_3.png" class="img-fluid"></a></p>
-</div>
-<div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
-<p>Unidad 1 <a href="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T4_Unidad_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-34"><img src="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T4_Unidad_1.png" class="img-fluid"></a></p>
-<p>Unidad 2 <a href="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T4_Unidad_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-35"><img src="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T4_Unidad_2.png" class="img-fluid"></a></p>
-<p>Unidad 3 <a href="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T4_Unidad_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-36"><img src="figuras/02_turgor_limpiado/2022_2023_Rio_Claro_T4_Unidad_3.png" class="img-fluid"></a></p>
-</div>
-<div id="tabset-2-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-5-tab">
-<p>Unidad 1 <a href="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T1_Unidad_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-37"><img src="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T1_Unidad_1.png" class="img-fluid"></a></p>
-<p>Unidad 2 <a href="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T1_Unidad_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-38"><img src="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T1_Unidad_2.png" class="img-fluid"></a></p>
-<p>Unidad 3 <a href="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T1_Unidad_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-39"><img src="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T1_Unidad_3.png" class="img-fluid"></a></p>
-</div>
-<div id="tabset-2-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-6-tab">
-<p>Unidad 1 <a href="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T2_Unidad_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-40"><img src="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T2_Unidad_1.png" class="img-fluid"></a></p>
-<p>Unidad 2 <a href="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T2_Unidad_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-41"><img src="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T2_Unidad_2.png" class="img-fluid"></a></p>
-<p>Unidad 3 <a href="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T2_Unidad_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-42"><img src="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T2_Unidad_3.png" class="img-fluid"></a></p>
-</div>
-<div id="tabset-2-7" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-7-tab">
-<p>Unidad 1 <a href="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T3_Unidad_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-43"><img src="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T3_Unidad_1.png" class="img-fluid"></a></p>
-<p>Unidad 2 <a href="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T3_Unidad_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-44"><img src="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T3_Unidad_2.png" class="img-fluid"></a></p>
-<p>Unidad 3 <a href="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T3_Unidad_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-45"><img src="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T3_Unidad_3.png" class="img-fluid"></a></p>
-</div>
-<div id="tabset-2-8" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-8-tab">
-<p>Unidad 1 <a href="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T4_Unidad_1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-46"><img src="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T4_Unidad_1.png" class="img-fluid"></a></p>
-<p>Unidad 2 <a href="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T4_Unidad_2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-47"><img src="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T4_Unidad_2.png" class="img-fluid"></a></p>
-<p>Unidad 3 <a href="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T4_Unidad_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-48"><img src="figuras/02_turgor_limpiado/2023_2024_Rio_Claro_T4_Unidad_3.png" class="img-fluid"></a></p>
-</div>
-</div>
-</div>
+<p>Los datos utilizados para las curvas Presión-volumen corresponden a mediciones de potencial hídrico xilemático y peso en hojas tomadas en laboratorio con cámara de presión Scholander y balanza analítica. [Metodología de toma de datos].</p>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -728,42 +622,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./clustering.html" class="pagination-link" aria-label="Clustering">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Clustering</span></span>
+      <a href="./clima.html" class="pagination-link" aria-label="Clima">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Clima</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./estandarizacion.html" class="pagination-link" aria-label="Estandarización de clusters">
-        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Estandarización de clusters</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./capitulo_2.html" class="pagination-link" aria-label="Capítulo 2: Preprocesamiento de datos de turgor">
+        <span class="nav-page-text">Capítulo 2: Preprocesamiento de datos de turgor</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"openEffect":"zoom","selector":".lightbox","loop":false,"closeEffect":"zoom","descPosition":"bottom"});
-window.onload = () => {
-  lightboxQuarto.on('slide_before_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    const href = trigger.getAttribute('href');
-    if (href !== null) {
-      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-      if (imgEl !== null) {
-        const srcAttr = imgEl.getAttribute("src");
-        if (srcAttr && srcAttr.startsWith("data:")) {
-          slideConfig.href = srcAttr;
-        }
-      }
-    } 
-  });
-
-  lightboxQuarto.on('slide_after_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    if (window.Quarto?.typesetMath) {
-      window.Quarto.typesetMath(slideNode);
-    }
-  });
-
-};
-          </script>
 
 
 
