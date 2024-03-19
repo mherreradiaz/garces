@@ -7,33 +7,28 @@ library(dunn.test)
 library(lsmeans)
 library(rcompanion)
 
-cld <- function(data, sitios, variable, zim = F) {
-  cld_c <- c()
-  for (i in 1:length(sitios)) { 
-    data_sitio <- data %>%
-      filter(sitio == sitios[i])
-    dunn_result <- dunn.test(data_sitio[[variable]], data_sitio$tratamiento, method = "bonferroni")
-    cld_c <- append(cld_c, cldList(comparison = dunn_result$comparisons, p.value = dunn_result$P.adjusted, threshold = .05/2)$Letter)
-  } 
+cld <- function(variable, grupo) {
   
-  if (zim == F) {
-  return(data.frame(sitio = rep(sitios, each = 5), 
-                    tratamiento = rep(paste0('T', 0:4), 2), 
-                    cld = cld_c))
-  } else {
-    return(data.frame(sitio = rep(sitios, each = 4), 
-                      tratamiento = rep(paste0('T', 1:4), 2), 
-                      cld = cld_c))
-    }
+  dunn_result <- dunn.test(variable, grupo, method = "bonferroni")
+  cld_c <- cldList(comparison = dunn_result$comparisons, 
+                   p.value = dunn_result$P.adjusted, 
+                   threshold = .05/2) |>
+    rename(grupo = Group,
+           cld = Letter) |>
+    select(-MonoLetter) |>
+    mutate(grupo = ifelse(grupo == 'T','T0',grupo))
+  
+  return(cld_c)
 }
 
-data_fluo <- read_rds('data/data_processed/rds/data_fluorescencia.rds')
+
+data_fluo <- read_rds('C:/Hemera/garces/data/data_processed/fluorescencia.rds')
 data_potencial <- read_rds('data/data_processed/rds/data_potencial.rds')
 data_cepto <- read_rds('data/data_processed/rds/data_ceptometro.rds')
 data_sm <- read_rds('data/data_processed/rds/data_zim_sm.rds')
 data_turgor <- read_rds('data/data_processed/rds/data_zim_turgor.rds')
 
-codigos <- read.csv('data/metadata/codigos_arboles.csv', sep = ';')
+codigos <- read.csv('C:/Hemera/garces/data/metadata/codigos_arboles.csv', sep = ';')
 
 data_info <- codigos |>
   select(codigo,unidad)
@@ -43,11 +38,25 @@ sitio_name <- c('la_esperanza', 'rio_claro')
 # FLUORESCENCIA ####
 
 data_cld <- data_fluo |> 
-  separate(codigo,2,into =c('tratamiento','codigo')) |> 
+  #separate(codigo,2,into =c('tratamiento','codigo')) |> 
   cld(sitio_name,'Fv/Fm')
 
+data_fluo |>
+  rename(Fluo = `Fv/Fm`) |>
+  group_by(temporada,sitio,tratam) |>
+  summarise(cld = cld(Fluo,tratamiento))
+
+a <- data_produccion |>
+  group_by(temporada,sitio) |>
+  summarise(cld = cld(peso_total,tratamiento))
+
+df |>
+  group_by(Continente,Pais) |>
+  summarise(cld = cld(Habitantes,Region))
+
+
 (data_fluo |>
-  separate(codigo,2,into =c('tratamiento','codigo')) |> 
+  #separate(codigo,2,into =c('tratamiento','codigo')) |> 
   ggplot(aes(tratamiento,Fv/Fm)) +
   geom_boxplot() +
   facet_grid(~sitio) +

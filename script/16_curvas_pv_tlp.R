@@ -10,11 +10,12 @@ data_tlp <- read_csv2('data/metadata/codigos_arboles.csv') |>
   mutate(tratamiento = substr(codigo,1,2),
          codigo = substr(codigo,3,nchar(codigo)),
          unidad = factor(unidad, levels = 1:3),
-         .before = codigo)
+         .before = codigo) |>
+  mutate(tlp = NA)
 
 codigos <- data_pv |>
   left_join(data_tlp, by= NULL) |>
-  select(sitio,tratamiento,codigo, unidad) |>
+  select(sitio,tratamiento,codigo, unidad,-tlp) |>
   distinct()
 
 for (n in 1:nrow(codigos)) {
@@ -82,17 +83,19 @@ for (n in 1:nrow(codigos)) {
   respuesta <- readline(prompt = "¿Continuar? (s/n): ")
   if (respuesta != 's') {break} 
   
-  df[[s]][n,3] <- data$Yo[nrow(data)-x+1]
-  
-  png(paste0('repote/plots/06_tlp/tlp_',
-             codigos$sitio[n],'_',
-             codigos$tratamiento[n],'_',
-             codigos$unidad[n]),'.png')
+  png(paste0('reporte/plots/06_tlp/tlp_',codigos$sitio[n],'_',
+             codigos$tratamiento[n],'_',codigos$unidad[n],'.png'),
+      width = 6 * 300, height = 4 * 300, units = "px", res = 300)
   print(plot2)
   dev.off()
   
+  data_tlp[which(data_tlp$sitio == codigos$sitio[n] &
+                   data_tlp$codigo == codigos$codigo[n]),5] <- data$Yo[nrow(data)-x+1]
+  
 }
 
+data_tlp <- data_tlp |>
+  mutate(temporada = '2023-2024', .before = tratamiento)
 
-write_rds(df,'data/data_processed/tlp.rds')
+write_rds(data_tlp,'data/data_processed/tlp.rds')
 
