@@ -1,0 +1,247 @@
+# Calidad
+
+```{r}
+source('C:/Hemera/garces/reporte/book/paquetes.R')
+
+data_apariencia <- read_rds('C:/Hemera/garces/data/data_processed/cosecha/apariencia.rds')
+
+apariencia_info <- data_apariencia |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+```
+
+## Apariencia
+
+### Peso
+
+```{r, results='hide'}
+data_cld <- data_apariencia |>
+  group_by(temporada,sitio) |>
+  reframe(cld(peso,tratamiento)) |>
+  rename(tratamiento = grupo)
+
+add <- diff(range(data_apariencia$peso))*0.2
+
+data_cld <- data_apariencia |>
+  group_by(temporada,sitio,tratamiento) |>
+  reframe(min = min(ifelse(length(boxplot.stats(peso)$out) != 0,
+                           min(boxplot.stats(peso)$out),9999999),
+                        boxplot.stats(peso)$stats[1])-add,
+          max = max(ifelse(length(boxplot.stats(peso)$out) != 0,
+                           max(boxplot.stats(peso)$out),-9999999),
+                        boxplot.stats(peso)$stats[5])+add) |>
+  left_join(data_cld,by=c('temporada','sitio','tratamiento'))
+
+```
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+#| fig-align: center
+#| lightbox: true
+
+data_apariencia |>
+  ggplot(aes(tratamiento,peso,fill = sitio)) +
+  geom_boxplot() +
+  geom_text(data = data_cld, aes(tratamiento, max,label = cld),size=4) +
+  facet_grid(sitio~temporada,labeller = as_labeller(names)) +
+  labs(y = 'Peso (gr)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(legend.position = "none",
+        text = element_text(size = 14),
+        axis.title.y = element_text(margin = margin(r = 17)),
+        axis.title.x = element_text(margin = margin(t = 17)))
+
+```
+
+### Diametro
+
+```{r, results='hide'}
+data_cld <- data_apariencia |>
+  group_by(temporada,sitio) |>
+  reframe(cld(diametro,tratamiento)) |>
+  rename(tratamiento = grupo)
+
+add <- diff(range(data_apariencia$diametro))*0.2
+
+data_cld <- data_apariencia |>
+  group_by(temporada,sitio,tratamiento) |>
+  reframe(min = min(ifelse(length(boxplot.stats(diametro)$out) != 0,
+                           min(boxplot.stats(diametro)$out),9999999),
+                        boxplot.stats(diametro)$stats[1])-add,
+          max = max(ifelse(length(boxplot.stats(diametro)$out) != 0,
+                           max(boxplot.stats(diametro)$out),-9999999),
+                        boxplot.stats(diametro)$stats[5])+add) |>
+  left_join(data_cld,by=c('temporada','sitio','tratamiento'))
+
+```
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+#| fig-align: center
+#| lightbox: true
+
+data_apariencia |>
+  ggplot(aes(tratamiento,diametro,fill = sitio)) +
+  geom_boxplot() +
+  geom_text(data = data_cld, aes(tratamiento, max,label = cld),size=4) +
+  facet_grid(sitio~temporada,labeller = as_labeller(names)) +
+  labs(y = 'Diametro (mm)',
+       x = 'Unidad') +
+  theme_light() +
+  theme(legend.position = "none",
+        text = element_text(size = 14),
+        axis.title.y = element_text(margin = margin(r = 17)),
+        axis.title.x = element_text(margin = margin(t = 17)))
+
+```
+
+### Color
+
+```{r, results='hide'}
+data_cld <- data_apariencia |>
+  group_by(temporada,sitio) |>
+  reframe(cld(color,tratamiento)) |>
+  rename(tratamiento = grupo)
+
+add <- diff(range(data_apariencia$color))*0.2
+
+data_cld <- data_apariencia |>
+  group_by(temporada,sitio,tratamiento) |>
+  reframe(min = min(ifelse(length(boxplot.stats(color)$out) != 0,
+                           min(boxplot.stats(color)$out),9999999),
+                        boxplot.stats(color)$stats[1])-add,
+          max = max(ifelse(length(boxplot.stats(color)$out) != 0,
+                           max(boxplot.stats(color)$out),-9999999),
+                        boxplot.stats(color)$stats[5])+add) |>
+  left_join(data_cld,by=c('temporada','sitio','tratamiento'))
+
+```
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+#| fig-align: center
+#| lightbox: true
+
+data_apariencia |>
+  ggplot(aes(tratamiento,color,fill = sitio)) +
+  geom_boxplot() +
+  geom_text(data = data_cld, aes(tratamiento, max,label = cld),size=4) +
+  facet_grid(sitio~temporada,labeller = as_labeller(names)) +
+  labs(y = 'Grado de color',
+       x = 'Unidad') +
+  theme_light() +
+  theme(legend.position = "none",
+        text = element_text(size = 14),
+        axis.title.y = element_text(margin = margin(r = 17)),
+        axis.title.x = element_text(margin = margin(t = 17)))
+
+```
+
+## Contenido de azucar
+
+```{r, results='hide'}
+
+data_brix <- read_rds('C:/Hemera/garces/data/data_processed/cosecha/brix.rds')
+
+apariencia_info <- data_brix |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+data_cld <- data_brix |>
+  group_by(temporada,sitio) |>
+  reframe(cld(brix,tratamiento)) |>
+  rename(tratamiento = grupo)
+
+add <- diff(range(data_brix$brix))*0.2
+
+data_cld <- data_brix |>
+  group_by(temporada,sitio,tratamiento) |>
+  reframe(min = min(ifelse(length(boxplot.stats(brix)$out) != 0,
+                           min(boxplot.stats(brix)$out),9999999),
+                        boxplot.stats(brix)$stats[1])-add,
+          max = max(ifelse(length(boxplot.stats(brix)$out) != 0,
+                           max(boxplot.stats(brix)$out),-9999999),
+                        boxplot.stats(brix)$stats[5])+add) |>
+  left_join(data_cld,by=c('temporada','sitio','tratamiento'))
+
+```
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+#| fig-align: center
+#| lightbox: true
+
+data_brix |>
+  ggplot(aes(tratamiento,brix,fill = sitio)) +
+  geom_boxplot() +
+  geom_text(data = data_cld, aes(tratamiento, max,label = cld),size=4) +
+  facet_grid(sitio~temporada,labeller = as_labeller(names)) +
+  labs(y = 'Grado de brix',
+       x = 'Unidad') +
+  theme_light() +
+  theme(legend.position = "none",
+        text = element_text(size = 14),
+        axis.title.y = element_text(margin = margin(r = 17)),
+        axis.title.x = element_text(margin = margin(t = 17)))
+
+```
+
+## Daño
+
+```{r, results='hide'}
+
+data_daño <- read_rds('C:/Hemera/garces/data/data_processed/cosecha/daño.rds') |>
+  mutate(daño = 100-(d_nulo/n)*100)
+
+apariencia_info <- data_daño |>
+  select(sitio,temporada,tratamiento,unidad,codigo) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+data_cld <- data_daño |>
+  group_by(temporada,sitio) |>
+  reframe(cld(daño,tratamiento)) |>
+  rename(tratamiento = grupo)
+
+add <- diff(range(data_daño$daño))*0.2
+
+data_cld <- data_daño |>
+  group_by(temporada,sitio,tratamiento) |>
+  reframe(min = min(ifelse(length(boxplot.stats(daño)$out) != 0,
+                           min(boxplot.stats(daño)$out),9999999),
+                        boxplot.stats(daño)$stats[1])-add,
+          max = max(ifelse(length(boxplot.stats(daño)$out) != 0,
+                           max(boxplot.stats(daño)$out),-9999999),
+                        boxplot.stats(daño)$stats[5])+add) |>
+  left_join(data_cld,by=c('temporada','sitio','tratamiento'))
+
+```
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+#| fig-align: center
+#| lightbox: true
+
+data_daño |>
+  ggplot(aes(tratamiento,daño,fill = sitio)) +
+  geom_boxplot() +
+  geom_text(data = data_cld, aes(tratamiento, max,label = cld),size=4) +
+  facet_grid(sitio~temporada,labeller = as_labeller(names)) +
+  labs(y = 'Grado de daño',
+       x = 'Unidad') +
+  theme_light() +
+  theme(legend.position = "none",
+        text = element_text(size = 14),
+        axis.title.y = element_text(margin = margin(r = 17)),
+        axis.title.x = element_text(margin = margin(t = 17)))
+
+```
