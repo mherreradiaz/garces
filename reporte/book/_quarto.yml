@@ -29,6 +29,7 @@ book:
         - 0401_produccion.qmd
         - 0402_calidad.qmd
         - 0403_parametros.qmd
+        - 0404_humedad.qmd
 
 bibliography: references.bib
 

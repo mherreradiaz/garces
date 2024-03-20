@@ -910,7 +910,7 @@
     "href": "0402_calidad.html#apariencia",
     "title": "13  Calidad",
     "section": "",
-    "text": "13.1.1 Peso\n\n\n\n\n\n\n\n\n\n\n\n13.1.2 Diametro\n\n\n\n\n\n\n\n\n\n\n\n13.1.3 Color",
+    "text": "13.1.1 Peso\n\nPor tratamientoPor temporada\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n13.1.2 Diametro\n\nPor tratamientoPor temporada",
     "crumbs": [
       "Capítulo 4: Análisis comparativo",
       "<span class='chapter-number'>13</span>  <span class='chapter-title'>Calidad</span>"
@@ -920,8 +920,8 @@
     "objectID": "0402_calidad.html#contenido-de-azucar",
     "href": "0402_calidad.html#contenido-de-azucar",
     "title": "13  Calidad",
-    "section": "13.2 Contenido de azucar",
-    "text": "13.2 Contenido de azucar",
+    "section": "14.1 Contenido de azucar",
+    "text": "14.1 Contenido de azucar\n\nPor tratamientoPor temporada",
     "crumbs": [
       "Capítulo 4: Análisis comparativo",
       "<span class='chapter-number'>13</span>  <span class='chapter-title'>Calidad</span>"
@@ -931,8 +931,8 @@
     "objectID": "0402_calidad.html#daño",
     "href": "0402_calidad.html#daño",
     "title": "13  Calidad",
-    "section": "13.3 Daño",
-    "text": "13.3 Daño",
+    "section": "14.2 Daño",
+    "text": "14.2 Daño\n\nPor tratamientoPor temporada",
     "crumbs": [
       "Capítulo 4: Análisis comparativo",
       "<span class='chapter-number'>13</span>  <span class='chapter-title'>Calidad</span>"
@@ -1001,6 +1001,28 @@
     "crumbs": [
       "Capítulo 4: Análisis comparativo",
       "<span class='chapter-number'>12</span>  <span class='chapter-title'>Producción</span>"
+    ]
+  },
+  {
+    "objectID": "0403_parametros.html#turgor-presión-de-parche",
+    "href": "0403_parametros.html#turgor-presión-de-parche",
+    "title": "14  Parámetros fisiológicos",
+    "section": "14.4 Turgor: presión de parche",
+    "text": "14.4 Turgor: presión de parche",
+    "crumbs": [
+      "Capítulo 4: Análisis comparativo",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Parámetros fisiológicos</span>"
+    ]
+  },
+  {
+    "objectID": "0404_humedad.html",
+    "href": "0404_humedad.html",
+    "title": "15  Humedad de suelo",
+    "section": "",
+    "text": "Por tratamientoPor temporada",
+    "crumbs": [
+      "Capítulo 4: Análisis comparativo",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Humedad de suelo</span>"
     ]
   }
 ]

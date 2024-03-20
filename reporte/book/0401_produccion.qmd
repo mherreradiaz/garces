@@ -2,26 +2,20 @@
 
 ```{r}
 source('C:/Hemera/garces/reporte/book/paquetes.R')
-
-data_produccion <- read_rds('C:/Hemera/garces/data/data_processed/cosecha/produccion.rds')
-
-produccion_info <- data_produccion |>
-  select(sitio,temporada,tratamiento,unidad,codigo) |>
-  distinct() |>
-  arrange(temporada,sitio,tratamiento,unidad)
-
 ```
 
 ## Peso total
 
 ::: panel-tabset
-
 # Por tratamiento
+
 ```{r, results='hide'}
 #| fig-width: 10
 #| fig-height: 7
 #| fig-align: center
 #| lightbox: true
+
+data_produccion <- read_rds('C:/Hemera/garces/data/data_processed/cosecha/produccion.rds')
 
 data_cld <- data_produccion |>
   group_by(temporada,sitio) |>
@@ -46,7 +40,7 @@ data_produccion |>
   geom_text(data = data_cld, aes(tratamiento, max,label = cld),size=4) +
   facet_grid(sitio~temporada,labeller = as_labeller(names)) +
   labs(y = 'Peso total (kg)',
-       x = 'Unidad') +
+       x = 'Tratamiento') +
   theme_light() +
   theme(legend.position = "none",
         text = element_text(size = 14),
@@ -56,6 +50,7 @@ data_produccion |>
 ```
 
 # Por temporada
+
 ```{r, results = 'hide'}
 #| fig-width: 10
 #| fig-height: 5
@@ -93,15 +88,14 @@ data_produccion_2 |>
         text = element_text(size = 14),
         axis.title.y = element_text(margin = margin(r = 17)),
         axis.title.x = element_text(margin = margin(t = 17)))
-
 ```
 :::
 
 ## Rendimiento
 
 ::: panel-tabset
-
 # Por tratamiento
+
 ```{r, results='hide'}
 #| fig-width: 10
 #| fig-height: 7
@@ -131,7 +125,7 @@ data_produccion |>
   geom_text(data = data_cld, aes(tratamiento, max,label = cld),size=4) +
   facet_grid(sitio~temporada,labeller = as_labeller(names)) +
   labs(y = 'Rendimiento (ton/ha)',
-       x = 'Unidad') +
+       x = 'Tratamiento') +
   theme_light() +
   theme(legend.position = "none",
         text = element_text(size = 14),
@@ -141,6 +135,7 @@ data_produccion |>
 ```
 
 # Por temporada
+
 ```{r, results = 'hide'}
 #| fig-width: 10
 #| fig-height: 5
@@ -185,8 +180,8 @@ data_produccion_2 |>
 ## Densidad
 
 ::: panel-tabset
-
 # Por tratamiento
+
 ```{r, results='hide'}
 #| fig-width: 10
 #| fig-height: 7
@@ -216,7 +211,7 @@ data_produccion |>
   geom_text(data = data_cld, aes(tratamiento, max,label = cld),size=4) +
   facet_grid(sitio~temporada,labeller = as_labeller(names)) +
   labs(y = 'Densidad (frutos/kg)',
-       x = 'Unidad') +
+       x = 'Tratamiento') +
   theme_light() +
   theme(legend.position = "none",
         text = element_text(size = 14),
@@ -226,6 +221,7 @@ data_produccion |>
 ```
 
 # Por temporada
+
 ```{r, results = 'hide'}
 #| fig-width: 10
 #| fig-height: 5

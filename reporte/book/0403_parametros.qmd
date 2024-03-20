@@ -6,16 +6,6 @@ source('C:/Hemera/garces/reporte/book/paquetes.R')
 
 ## Fluorescencia
 
-```{r, results='hide'}
-data_fluo <- read_rds('C:/Hemera/garces/data/data_processed/fluorescencia.rds')
-
-fluo_info <- data_fluo |>
-  select(sitio,temporada,tratamiento,unidad,codigo) |>
-  distinct() |>
-  arrange(temporada,sitio,tratamiento,unidad)
-
-```
-
 ::: panel-tabset
 
 # Por tratamiento
@@ -24,6 +14,8 @@ fluo_info <- data_fluo |>
 #| fig-height: 7
 #| fig-align: center
 #| lightbox: true
+
+data_fluo <- read_rds('C:/Hemera/garces/data/data_processed/fluorescencia.rds')
 
 data_cld <- data_fluo |>
   group_by(temporada,sitio) |>
@@ -48,7 +40,7 @@ data_fluo |>
   geom_text(data = data_cld, aes(tratamiento, max,label = cld),size=4) +
   facet_grid(sitio~temporada,labeller = as_labeller(names)) +
   labs(y = expression(Phi[P0]),
-       x = 'Unidad') +
+       x = 'Tratamiento') +
   theme_light() +
   theme(legend.position = "none",
         text = element_text(size = 14),
@@ -98,16 +90,6 @@ data_fluo |>
 
 ## Potencial
 
-```{r, results='hide'}
-data_potencial <- read_rds('C:/Hemera/garces/data/data_processed/potencial.rds') |>
-  mutate(MPa = -potencial_bar/10) |>
-  na.omit()
-
-potencial_info <- data_potencial |>
-  select(sitio,temporada,tratamiento,unidad,codigo) |>
-  distinct() |>
-  arrange(temporada,sitio,tratamiento,unidad)
-```
 ::: panel-tabset
 
 # Por tratamiento
@@ -116,6 +98,10 @@ potencial_info <- data_potencial |>
 #| fig-height: 7
 #| fig-align: center
 #| lightbox: true
+
+data_potencial <- read_rds('C:/Hemera/garces/data/data_processed/potencial.rds') |>
+  mutate(MPa = -potencial_bar/10) |>
+  na.omit()
 
 data_cld <- data_potencial |>
   group_by(temporada,sitio) |>
@@ -140,7 +126,7 @@ data_potencial |>
   geom_text(data = data_cld, aes(tratamiento, max,label = cld),size=4) +
   facet_grid(sitio~temporada,labeller = as_labeller(names)) +
   labs(y = 'Potencial (MPa)',
-       x = 'Unidad') +
+       x = 'Tratamiento') +
   theme_light() +
   theme(legend.position = "none",
         text = element_text(size = 14),
@@ -190,16 +176,6 @@ data_potencial |>
 
 ## LAI
 
-```{r, results='hide'}
-data_lai <- read_rds('C:/Hemera/garces/data/data_processed/ceptometro.rds')
-
-lai_info <- data_lai |>
-  select(sitio,temporada,tratamiento) |>
-  distinct() |>
-  arrange(temporada,sitio,tratamiento)
-
-```
-
 ::: panel-tabset
 
 # Por tratamiento
@@ -208,6 +184,8 @@ lai_info <- data_lai |>
 #| fig-height: 7
 #| fig-align: center
 #| lightbox: true
+
+data_lai <- read_rds('C:/Hemera/garces/data/data_processed/ceptometro.rds')
 
 data_cld <- data_lai |>
   group_by(temporada,sitio) |>
@@ -232,7 +210,7 @@ data_lai |>
   geom_text(data = data_cld, aes(tratamiento, max,label = cld),size=4) +
   facet_grid(sitio~temporada,labeller = as_labeller(names)) +
   labs(y = 'LAI',
-       x = 'Unidad') +
+       x = 'Tratamiento') +
   theme_light() +
   theme(legend.position = "none",
         text = element_text(size = 14),
