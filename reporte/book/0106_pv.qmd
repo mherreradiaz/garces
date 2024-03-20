@@ -28,7 +28,7 @@ Unidad 2 ![](figuras/06_tlp/tlp_la_esperanza_T4_2.png)
 Unidad 3 ![](figuras/06_tlp/tlp_la_esperanza_T4_3.png)
 :::
 
-## Rio Claroa
+## Rio Claro
 
 ::: panel-tabset
 # Tratamiento 0 (control)

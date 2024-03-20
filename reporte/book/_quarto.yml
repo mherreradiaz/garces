@@ -30,6 +30,9 @@ book:
         - 0402_calidad.qmd
         - 0403_parametros.qmd
         - 0404_humedad.qmd
+    - part: 'Capítulo 5: Modelo de potencial'
+      chapters: 
+        - 0501_turgor.qmd
 
 bibliography: references.bib
 
