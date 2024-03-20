@@ -167,6 +167,38 @@ data_potencial |>
 ```
 :::
 
+### Ciclio diario
+
+Además del valor de potencial único diario que se recopilaba en cierto rango horario para cada unidad de muestreo, también se realizaron jornadas de recopilación de valores horarios de potencial a lo largo del día, con el fin de caracterizar el ciclo diario o perfil horario de este en las distintas unidades. Estos valores se recopilaron cada una hora desde las 8 am hasta las 8 pm, mediante la misma metodología que la extracción del valor único diario pero con menor tiempo de oscuridad y sellado en las hojas (30 a 45 min). 
+
+A continuación se muestran los resultados de la caracterización del ciclo diario del potencial.
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+#| fig-align: center
+#| lightbox: true
+
+data_potencial <- read_rds('C:/Hemera/garces/data/data_processed/potencial_horario.rds')
+
+data_potencial |>
+  mutate(MPa = -bar/10) |>
+  ggplot(aes(hora,MPa,color=unidad)) +
+  geom_point() +
+  geom_line() +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names)) +
+  theme_light() +
+  scale_x_continuous(limits = c(7, 21), breaks = c(8, 12, 16, 20)) +
+  labs(y = 'Potencial (MPa)',
+       x = 'Hora',
+       color = 'Unidad') +
+  theme_light() +
+  theme(text = element_text(size = 15),
+        axis.title.y = element_text(margin = margin(r = 17)),
+        axis.title.x = element_text(margin = margin(t = 17)))
+
+```
+
 ## LAI
 
 Los datos de LAI han sido recopilados mediante el uso de ceptometro LP80 (FUENTE), entre 12:30 y 13:30 de forma semanal, en ambos sitios para la temporada 2022-2023 y 2023-2024.
