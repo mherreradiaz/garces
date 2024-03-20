@@ -11,13 +11,12 @@ library(grid)
 library(cowplot)
 library(ggpubr)
 library(scales)
-library(tidyverse)
 library(highcharter)
 library(gt)
-library(readr)
 library(dunn.test)
 library(lsmeans)
 library(rcompanion)
+library(readxl)
 names <- c(la_esperanza = 'La Esperanza',rio_claro = 'Rio Claro',
            T1 = 'T1',T2 = 'T2',T3 = 'T3',T4 = 'T4',T0 = 'T0',
            '1' = '1','2' = '2','3' = '3', 

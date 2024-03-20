@@ -1,0 +1,12 @@
+# Unidimensional: turgor
+
+```{r}
+source('C:/Hemera/garces/reporte/book/paquetes.R')
+
+data_potencial <- read_xlsx('C:/Hemera/garces/data/data_raw/potencial/ciclo_diario/potencial_horario.xlsx') |>
+  mutate(unidad = factor(unidad,levels = 1:3))
+
+
+
+```
+

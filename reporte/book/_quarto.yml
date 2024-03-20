@@ -32,7 +32,7 @@ book:
         - 0404_humedad.qmd
     - part: 'Capítulo 5: Modelo de potencial'
       chapters: 
-        - 0501_turgor.qmd
+        - 0501_potencial.qmd
 
 bibliography: references.bib
 
