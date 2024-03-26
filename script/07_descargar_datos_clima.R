@@ -10,7 +10,7 @@ library(agvAPI)
 
 periodo <- c('2023-09-30',substr(now(),1,10))
 
-#periodo <- c('2022-09-30','2023-04-30')
+#periodo <- c('2023-02-08','2023-02-10')
 
 le_temp <- getDataAGV_clima(station_id ='00205018', var = 'Temperature',
                           time_span = periodo) |>
@@ -91,4 +91,3 @@ write_rds(data_clima, 'data/data_processed/clima.rds')
 #   geom_line() +
 #   facet_wrap(~sitio, scale = 'free_y',ncol = 1) +
 #   theme_bw()
-

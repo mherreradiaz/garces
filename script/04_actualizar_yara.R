@@ -1,4 +1,3 @@
-
 library(fs)
 library(readr)
 library(dplyr)
@@ -6,11 +5,11 @@ library(lubridate)
 library(tidyr)
 library(stringr)
 library(tidyverse)
+library(agvAPI)
 options(timeout = max(3600, getOption("timeout")))
+source('script/funciones/read_yara.R')
 
 # download yara data
-
-source('script/funciones/read_yara.R')
 
 metadata <- read_csv2('data/metadata/metadata_yara.csv')
 codigo_sm <- read_csv2('data/metadata/codigos_zim_sm.csv')
