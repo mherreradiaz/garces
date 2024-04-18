@@ -1,5 +1,6 @@
 source('script/funciones/read_yara.R')
 source('script/funciones/paquetes.R')
+options(timeout = max(3600, getOption("timeout")))
 
 # descargar datos yara y clima del último mes
 
@@ -21,9 +22,6 @@ device_id_tur_2023 <- data_codigo_tur_2023 |>
 año <- year(now())
 mes <- month(now())
 
-año <- 2024
-mes <- 4
-
 fechas <- dia(año,mes) 
 
 dest <- paste0('data/data_raw/turgor/turgor_',
@@ -38,6 +36,9 @@ read_yara(si(fechas[1] < '2023-06-01',device_id_tur_2022,device_id_tur_2023),
 
 año <- year(now())
 mes <- month(now())
+
+año <- 2024
+mes <- 4
   
 fechas <- dia(año,mes) 
 
