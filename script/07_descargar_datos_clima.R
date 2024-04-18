@@ -12,6 +12,33 @@ periodo <- c('2023-09-30',substr(now(),1,10))
 
 #periodo <- c('2023-02-08','2023-02-10')
 
+clima <- function(id_estacion, var, periodo) {
+  
+  for (x in 1:length(var)) {
+    var_x <- getDataAGV_clima(station_id =id_estacion, var = var[x],
+                               time_span = periodo) |> 
+      mutate(datetime = as_datetime(datetime,tz = 'America/Santiago'))
+    if (x == 1) {var_df <- var_x}
+    else {var_df <- var_df |> 
+      left_join(var_x, by = 'datetime')}
+  }
+  
+  var_df <- var_df |> 
+    group_by(datetime = floor_date(datetime,'30 min')) |> 
+    summarise(t_media = mean(`avg (°C)`,na.rm=T),
+              t_max = max(`max (°C)`,na.rm=T),
+              t_min = min(`min (°C)`,na.rm=T),
+              vpd_medio = mean(`avg (mbar)`,na.rm=T),
+              vpd_min = min(`min (mbar)`,na.rm=T),
+              eto = sum(`ETo[mm] (mm)`,na.rm=T),
+              pp = sum(`sum (mm)`,na.rm=T)) |> 
+    mutate(fecha = format(datetime, "%Y-%m-%d"),
+           hora = format(datetime, "%H:%M"),
+           .before = datetime) |>
+    select(-datetime)
+  
+}
+
 le_temp <- getDataAGV_clima(station_id ='00205018', var = 'Temperature',
                           time_span = periodo) |>
   mutate(sitio = 'la_esperanza', .before = datetime)

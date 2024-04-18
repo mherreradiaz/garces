@@ -26,6 +26,14 @@ data_turgor <- read_rds('data/data_processed/zim_turgor.rds') |>
   filter(fecha >= substr(now()-days(7),1,10)) |>
   mutate(cluster = NA)
 
+# data_turgor <- data_turgor |> 
+#   group_by(sitio,temporada,fecha,hora = as.numeric(substr(hora,1,2)), tratamiento,unidad,codigo,zim,sensor) |> 
+#   summarise(turgor = mean(turgor,na.rm=T)) |> 
+#   ungroup() |> 
+#   filter(temporada == '2023-2024') |>
+#   filter(fecha >= substr(now()-days(7),1,10)) |>
+#   mutate(cluster = NA)
+
 for (x in 1:length(unique(data_turgor$sensor))) {
   
   data_sensor <- data_turgor |>

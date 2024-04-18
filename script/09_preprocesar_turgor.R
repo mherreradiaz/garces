@@ -1,219 +1,239 @@
-library(fs)
-library(readr)
-library(dplyr)
-library(lubridate)
-library(tidyr)
-library(stringr)
-library(tidyverse)
-library(agvAPI)
-library(ggplot2)
-library(ggpubr)
-library(cowplot)
-options(timeout = max(5000, getOption("timeout")))
 source('script/funciones/read_yara.R')
-dia <- function(año, mes) {
-  primer_dia_ajustado <- as.Date(paste(año, mes, "01", sep = "-")) - days(1)
-  ultimo_dia_ajustado <- as.Date(paste(año, mes, "01", sep = "-")) + months(1) 
-  return(c(primer_dia_ajustado, ultimo_dia_ajustado))
-}
-cor_clima <- function(turgor,temperatura,vpd) {
-  
-  if (nrow(na.omit(data.frame(turgor,temperatura,vpd)))==0) {return(NA)} else {
-    
-    cor_temperatura <- cor(turgor,temperatura, use = 'complete.obs')^2
-    cor_vpd <- cor(turgor,vpd, use = 'complete.obs')^2
-    
-    cor_index <- (cor_temperatura+cor_vpd)/2
-    
-    return(cor_index)
-    
-  }
-}
-dif_mean <- function(turgor,temperatura,vpd) {
-  
-  if (nrow(na.omit(data.frame(turgor,temperatura,vpd)))==0) {return(NA)} else {
-    
-    dif_t <- mean(abs(turgor-temperatura))
-    dif_vpd <- mean(abs(turgor-vpd))
-    
-    dif_index <- (dif_t+dif_vpd)/2
-    
-    return(dif_index)
-    
-  }
-  
-}
-modal <- function(x) {
-  # Calcular la tabla de frecuencias
-  tabla_frecuencia <- table(x)
-  
-  # Encontrar el valor con la frecuencia máxima (la moda)
-  moda <- as.numeric(names(tabla_frecuencia)[which.max(tabla_frecuencia)])
-  
-  return(moda)
-}
+source('script/funciones/paquetes.R')
 
-# Turgor
+# descargar datos yara y clima del último mes
 
 metadata <- read_csv2('data/metadata/metadata_yara.csv')
-codigo_tur <- read_csv2('data/metadata/codigos_zim_turgor.csv')
+codigo_tur_2022 <- read_csv('data/metadata/codigos_zim_turgor_2022.csv')
+codigo_tur_2023 <- read_csv2('data/metadata/codigos_zim_turgor.csv')
 
-data_codigo_tur <- left_join(codigo_tur,metadata,by=c('sensor' = 'identificador'))
+data_codigo_tur_2022 <- left_join(codigo_tur_2022,metadata,by=c('sensor' = 'identificador'))
+data_codigo_tur_2023 <- left_join(codigo_tur_2023,metadata,by=c('sensor' = 'identificador'))
 
-device_id_tur <- data_codigo_tur |> 
+device_id_tur_2022 <- data_codigo_tur_2022 |> 
   filter(grepl('Yara Water-Sensor',tipo)) |> 
   pull(device_id)
 
-data_old <- read_rds('data/data_processed/zim_turgor_mediahora.rds')
-from_date <- data_old$fecha |> max() |> substr(1,16)
+device_id_tur_2023 <- data_codigo_tur_2023 |> 
+  filter(grepl('Yara Water-Sensor',tipo)) |> 
+  pull(device_id)
 
-dest <- paste0('data/data_raw/zim_turgor_mediahora',
-               substr(gsub("[^0-9]", "",as.character(lubridate::now())),1,8),'.csv')
+año <- year(now())
+mes <- month(now())
 
-read_yara(device_id_tur,from_date = from_date,
-          until_date = as.character(lubridate::now()+days(1)),
+año <- 2024
+mes <- 4
+
+fechas <- dia(año,mes) 
+
+dest <- paste0('data/data_raw/turgor/turgor_',
+               año,'_',sprintf('%02d',mes),'.csv')
+
+read_yara(si(fechas[1] < '2023-06-01',device_id_tur_2022,device_id_tur_2023),
+          from_date = fechas[1],
+          until_date = fechas[2],
           dest_file = dest)
+
+# descargar datos clima
+
+año <- year(now())
+mes <- month(now())
   
-data_new <- read_delim(dest,delim = '\t') |> 
-  select(1,contains('Yara')) |> 
-  mutate(across(where(is.character),as.numeric)) |> 
-  pivot_longer(-1,names_to = 'sensor') |> 
-  rename_with(.fn = \(x) 'datetime',.cols = starts_with('Times')) |>
-  mutate(datetime = as_datetime(datetime,tz = 'America/Santiago')) |> 
-  mutate(sensor =str_extract(str_extract(sensor,'[0-9]{4}\\['),'[0-9]{4}')) |> 
-  group_by(sensor,fecha = floor_date(datetime,'30 minutes')) |> 
-  summarize(value = mean(value,na.rm = T)) |> 
-  mutate(sensor = as.numeric(sensor)) |> 
-  left_join(codigo_tur,by = 'sensor') |> 
-  separate(codigo,2,into =c('tratamiento','codigo')) |> 
-  rename(turgor = value) |>
-  mutate(temporada = '2023-2024',
-         unidad = factor(unidad, levels = 1:3),
-         hora = format(as.POSIXct(fecha), format = "%H:%M"),
-         zim = substr(codigo,nchar(codigo)-1,nchar(codigo)),
-         codigo = substr(codigo,1,nchar(codigo)-2),
-         fecha = format(as.POSIXct(fecha), format = "%Y-%m-%d")) |>
-  select(sitio,temporada,fecha,hora,tratamiento,unidad,codigo,zim,sensor,turgor) |>
-  arrange(fecha,sitio,hora,tratamiento,unidad,zim) |>
-  ungroup()
+fechas <- dia(año,mes) 
 
-data_turgor <- data_old |>
-  bind_rows(data_new) |>
-  distinct() |>
-  arrange(fecha,sitio,hora,tratamiento,unidad,zim)
+data_clima_le <- clima('00205018',c('Temperature','VPD','Eto','Precipitation','Humidity'),fechas) |> 
+  mutate(sitio = 'la_esperanza',
+         .before = datetime)
+data_clima_rc <- clima('00203E6E',c('Temperature','VPD','Eto','Precipitation','Humidity'),fechas) |> 
+  mutate(sitio = 'rio_claro',
+         .before = datetime)
 
-write_rds(data_turgor,'data/data_processed/zim_turgor_mediahora.rds')
+data_clima <- bind_rows(data_clima_le,data_clima_rc)
 
-# Clima
+write_rds(data_clima,paste0('data/data_raw/clima/clima_',año,'_',sprintf('%02d',mes),'.rds'))
 
-data_old <- read_rds('data/data_processed/clima_mediahora.rds')
+# procesar y combinar datos brutos de turgor y clima
 
-periodo <- c(as.Date(max(data_old$fecha))-1,substr(now(),1,10))
+files_turgor <- list.files('data/data_raw/turgor/',full.names = T)
 
-data_t <- getDataAGV_clima(station_id ='00205018', var = 'Temperature',
-                           time_span = periodo) |>
-  mutate(sitio = 'la_esperanza', .before = datetime) |> 
-  rbind(getDataAGV_clima(station_id ='00203E6E', var = 'Temperature',
-                         time_span = periodo) |>
-          mutate(sitio = 'rio_claro', .before = datetime)) |> 
-  mutate(datetime = as_datetime(datetime,tz = 'America/Santiago')) |> 
-  group_by(sitio,datetime = floor_date(datetime,'30 minutes')) |> 
-  summarize(t_media = mean(`avg (°C)`,na.rm = T))
+data_turgor_new <- list()
 
-data_vpd <- getDataAGV_clima(station_id ='00205018', var = 'VPD',
-                             time_span = periodo) |>
-  mutate(sitio = 'la_esperanza', .before = datetime) |> 
-  rbind(getDataAGV_clima(station_id ='00203E6E', var = 'VPD',
-                         time_span = periodo) |>
-          mutate(sitio = 'rio_claro', .before = datetime)) |> 
-  mutate(datetime = as_datetime(datetime,tz = 'America/Santiago')) |> 
-  group_by(sitio,datetime = floor_date(datetime,'30 minutes')) |> 
-  summarize(vpd_media = mean(`avg (mbar)`,na.rm = T))
+for (a in 1:length(files_turgor)) {
+  
+  año <- gsub(".*turgor_(\\d{4}).*","\\1", files_turgor[a])
+  mes <- gsub(".*_([0-9]{2}).*","\\1", files_turgor[a])
+  
+  fecha_actual <- as.Date(paste(año,mes,'01',sep = '-'))
+  
+  data_turgor_new_x <- read_delim(files_turgor[a],delim = '\t') |> 
+    select(1,contains('Yara')) |> 
+    mutate(across(where(is.character),as.numeric)) |> 
+    pivot_longer(-1,names_to = 'sensor') |> 
+    rename_with(.fn = \(x) 'datetime',.cols = starts_with('Times')) |>
+    mutate(datetime = as_datetime(datetime,tz = 'America/Santiago')) |> 
+    mutate(sensor =str_extract(str_extract(sensor,'[0-9]{4}\\['),'[0-9]{4}')) |> 
+    mutate(sensor = as.numeric(sensor)) 
+  
+  dif_max <- data_turgor_new_x |> 
+    group_by(sensor,fecha = floor_date(datetime,'5 minutes')) |>
+    summarise(value = mean(value,na.rm = T)) |> 
+    ungroup() |> 
+    arrange(sensor,fecha) |> 
+    group_by(sensor,fecha = fecha_f(fecha)) |> 
+    summarise(dif = max(abs(diff(value)),na.rm=T)) |> 
+    ungroup() |> 
+    mutate(dif = ifelse(is.infinite(dif),NA,dif))
+    
+  data_turgor_new[[a]] <- data_turgor_new_x |> 
+    group_by(sensor,fecha = floor_date(datetime,'30 minutes')) |> 
+    summarise(value = mean(value,na.rm = T)) |> 
+    ungroup() |> 
+    left_join(si(fecha_actual < '2023-06-01',codigo_tur_2022,codigo_tur_2023),by='sensor') |> 
+    separate(codigo,2,into =c('tratamiento','codigo')) |> 
+    rename(turgor = value) |>
+    mutate(temporada = si(fecha_actual < '2023-06-01','2022-2023','2023-2024'),
+           unidad = factor(unidad, levels = 1:3),
+           hora = format(as.POSIXct(fecha), format = "%H:%M"),
+           zim = substr(codigo,nchar(codigo)-1,nchar(codigo)),
+           codigo = substr(codigo,1,nchar(codigo)-2),
+           fecha = format(as.POSIXct(fecha), format = "%Y-%m-%d")) |>
+    select(sitio,temporada,fecha,hora,tratamiento,unidad,codigo,zim,sensor,turgor) |>
+    arrange(fecha,sitio,hora,tratamiento,unidad,zim) |>
+    ungroup() 
+    # left_join(dif_max,by = c('fecha','sensor')) |> 
+    # filter(dif < 8) |> 
+    # select(-dif) |> 
+    # ggplot(aes(fecha_hora_f(fecha,hora),turgor, color = zim)) +
+    # geom_point(size = .7) +
+    # facet_grid(tratamiento+unidad~sitio, scales = 'fixed')
+}
 
-data_new <- data_t |> 
-  left_join(data_vpd, by = c('sitio','datetime')) |> 
-  mutate(fecha = format(as.POSIXct(datetime), format = "%Y-%m-%d"),
-         hora = format(as.POSIXct(datetime), format = "%H:%M"),
+data_turgor <- bind_rows(data_turgor_new) |>
+  distinct(sitio,fecha,hora,sensor,.keep_all = T) |>
+  arrange(fecha,hora,sitio,tratamiento,unidad,zim) 
+
+files_clima <- list.files('data/data_raw/clima/',full.names = T)
+
+data_clima <- bind_rows(lapply(files_clima,read_rds)) |> 
+  distinct(sitio,datetime, .keep_all=T) |> 
+  mutate(temporada = ifelse(datetime<'2023-06-01','2022-2023','2023-2024'),
+         .before = datetime) |> 
+  arrange(datetime,sitio)
+
+data_clima |> 
+  group_by(sitio,temporada,datetime = floor_date(datetime,'1 hour')) |> 
+  summarise(t_media = mean(t_media,na.rm=T),
+            t_max = max(t_max,na.rm=T),
+            t_min = min(t_min,na.rm=T),
+            vpd_medio = mean(vpd_medio,na.rm=T),
+            vpd_min = min(vpd_min,na.rm=T),
+            eto = sum(eto,na.rm=T),
+            pp = sum(pp,na.rm=T),
+            rh_media = mean(rh_media,na.rm=T),
+            rh_max = max(rh_max,na.rmn=T),
+            rh_min = min(rh_min,na.rm=T)) |> 
+  ungroup() |> 
+  mutate(fecha = fecha_f(datetime),
+         hora = hora_f(datetime),
+         .before = datetime) |> 
+  select(-datetime) |> 
+  write_rds('data/data_processed/clima.rds')
+
+data_clima <- data_clima |> 
+  mutate(fecha = fecha_f(datetime),
+         hora = hora_f(datetime),
          .before = datetime) |> 
   select(-datetime)
 
-data_clima <- data_old |>
-  bind_rows(data_new) |>
-  distinct() |>
-  arrange(temporada,sitio,fecha,hora)
-
-write_rds(data_clima, 'data/data_processed/clima_mediahora.rds')
+data_turgor_30 <- data_turgor
+data_clima_30 <- data_clima
 
 # Preprocesado
 
-data_turgor <- read_rds('data/data_processed/zim_turgor_mediahora.rds') |> 
-  group_by(sitio,temporada,fecha,tratamiento,unidad,codigo,zim,sensor) |> 
-  mutate(turgor_sc = scale(turgor)) |> 
-  ungroup()
-
-data_clima <- read_rds('data/data_processed/clima_mediahora.rds') |> 
-  mutate(temporada = ifelse(fecha < '2023-06-01','2022-2023','2023-2024'),
-         .before = fecha) |> 
-  group_by(sitio,temporada,fecha) |> 
-  mutate(t_sc = scale(t_media),
-         vpd_sc = scale(log(vpd_media+1))) |> 
-  ungroup()
-
 data_ccf <- data_turgor |> 
-  left_join(data_clima, by = c('sitio','temporada','fecha','hora')) |>  
+  left_join(data_clima,by=c('sitio','temporada','fecha','hora')) |> 
+  group_by(sitio,fecha,sensor) |> 
+  mutate(turgor_sc = as.numeric(scale(turgor)),
+         t_sc = as.numeric(scale(t_media)),
+         rh_sc = as.numeric(scale(100-rh_media)),
+         vpd_sc = as.numeric(scale(log(vpd_medio+1)))) |> 
+  ungroup() |>  
   na.omit() |> 
   group_by(sitio,temporada,sensor) |> 
   summarise(t_lag = ccf(as.numeric(t_sc), as.numeric(turgor_sc), plot = F)$lag[
     which.max(as.numeric(ccf(as.numeric(t_sc), as.numeric(turgor_sc), plot = F)$acf))],
-            vpd_lag = ccf(as.numeric(vpd_sc), as.numeric(turgor_sc), plot = F)$lag[
+    rh_lag = ccf(as.numeric(rh_sc), as.numeric(turgor_sc), plot = F)$lag[
+      which.max(as.numeric(ccf(as.numeric(rh_sc), as.numeric(turgor_sc), plot = F)$acf))],
+    vpd_lag = ccf(as.numeric(vpd_sc), as.numeric(turgor_sc), plot = F)$lag[
     which.max(as.numeric(ccf(as.numeric(vpd_sc), as.numeric(turgor_sc), plot = F)$acf))]) |> 
   ungroup() |> 
   group_by(sitio,temporada) |> 
   summarise(t_lag = modal(t_lag),
+            rh_lag = modal(rh_lag),
             vpd_lag = modal(vpd_lag)) |> 
   ungroup()
 
-data_t <- data_clima |> 
-  left_join(data_ccf,by=c('sitio','temporada')) |> 
-  select(sitio,temporada,fecha,hora,t_sc,t_lag) |>
-  mutate(datetime = as.POSIXct(paste(fecha,hora),format = '%Y-%m-%d %H:%M')-(30*60)*t_lag,
-         fecha = format(datetime,format = '%Y-%m-%d'),
-         hora = format(datetime,format = '%H:%M')) |> 
-  select(-datetime) |> 
-  distinct(sitio,temporada,fecha,hora,.keep_all = T)
+data_lag_disordered <- data_clima |> 
+  left_join(data_ccf,by=c('sitio','temporada')) |>
+  mutate(datetime_t = fecha_hora_f(fecha,hora)-(30*60)*t_lag,
+         datetime_rh = fecha_hora_f(fecha,hora)-(30*60)*rh_lag,
+         datetime_vpd = fecha_hora_f(fecha,hora)-(30*60)*vpd_lag)
 
-data_vpd <- data_clima |> 
-  left_join(data_ccf,by=c('sitio','temporada')) |> 
-  select(sitio,temporada,fecha,hora,vpd_sc,vpd_lag) |>
-  mutate(datetime = as.POSIXct(paste(fecha,hora),format = '%Y-%m-%d %H:%M')-(30*60)*vpd_lag,
-         fecha = format(datetime,format = '%Y-%m-%d'),
-         hora = format(datetime,format = '%H:%M')) |> 
-  select(-datetime) |> 
-  distinct(sitio,temporada,fecha,hora,.keep_all = T)
+data_lag_t <- data_lag_disordered |> select(sitio,datetime_t,t_media) |> 
+  mutate(fecha = fecha_f(datetime_t),hora = hora_f(datetime_t)) |> select(-datetime_t) 
+data_lag_rh <- data_lag_disordered |> select(sitio,datetime_rh,rh_media) |> 
+  mutate(fecha = fecha_f(datetime_rh),hora = hora_f(datetime_rh)) |> select(-datetime_rh) 
+data_lag_vpd <- data_lag_disordered |> select(sitio,datetime_vpd,vpd_medio) |> 
+  mutate(fecha = fecha_f(datetime_vpd),hora = hora_f(datetime_vpd)) |> select(-datetime_vpd) 
 
-data_clima_lag <- data_t |> 
-  left_join(data_vpd,by=c('sitio','temporada','fecha','hora')) |> 
-  select(sitio,temporada,fecha,hora,t_sc,vpd_sc) |> 
-  rename(t_sc_lag = t_sc, vpd_sc_lag = vpd_sc)
-
-data_clima_lag |> 
-  left_join(data_clima, by = c('sitio','temporada','fecha','hora')) |> 
-  write_rds('data/data_processed/clima_mediahora.rds')
-
-data_cor_lag <- data_turgor |> 
-  left_join(data_clima_lag,by=c('sitio','temporada','fecha','hora')) |> 
-  group_by(sitio,temporada,fecha,sensor) |> 
-  summarise(cor_index = as.numeric(cor_clima(turgor_sc,t_sc_lag,vpd_sc_lag)),
-            dif_index = dif_mean(turgor_sc,t_sc_lag,vpd_sc_lag)) |>
+data_lag_ordered <- data_lag_vpd |>
+  left_join(data_lag_rh,by=c('sitio','fecha','hora'),relationship = "many-to-many") |> 
+  left_join(data_lag_t,by=c('sitio','fecha','hora'),relationship = "many-to-many") |> 
+  select(sitio,fecha,hora,t_media,rh_media,vpd_medio) |> 
+  distinct(sitio,fecha,hora, .keep_all=T) |> 
+  group_by(sitio,fecha) |> 
+  mutate(t_sc = as.numeric(scale(t_media)),
+         rh_sc = as.numeric(scale(100-rh_media)),
+         vpd_sc = as.numeric(scale(log(vpd_medio+1)))) |> 
   ungroup()
+  
+data_filter <- data_turgor |> 
+  group_by(sitio,fecha,sensor) |> 
+  mutate(turgor_sc = as.numeric(scale(turgor))) |> 
+  ungroup() |> 
+  left_join(data_lag_ordered,by=c('sitio','fecha','hora')) |> 
+  group_by(sitio,fecha,sensor) |> 
+  summarise(cor_index = as.numeric(cor_clima(turgor_sc,t_sc,rh_sc,vpd_sc)),
+            dif = max(abs(diff(turgor_sc)),na.rm=T)) |>
+  ungroup() |> 
+  mutate(dif = ifelse(is.infinite(dif),NA,dif)) |> 
+  mutate(filter = ifelse(cor_index > sqrt(.7) & dif < 1,1,0)) |> 
+  select(sitio,fecha,sensor,filter)
 
-filtro <- data_cor_lag |> 
-  filter(cor_index > .5,
-         dif_index < 1) |> 
-  mutate(filtro = paste(sitio,fecha,sensor)) |> 
-  pull(filtro)
+data_limpia_30 <- data_turgor |> 
+  left_join(data_filter,by=c('sitio','fecha','sensor')) |> 
+  mutate(turgor_filtrado = ifelse(filter==1,turgor,NA)) |> 
+  select(-filter)
 
-data_limpia <- data_turgor |> 
-  filter(paste(sitio,fecha,sensor) %in% filtro)
+data_limpia <- data_limpia_30 |> 
+  mutate(datetime = fecha_hora_f(fecha,hora)) |> 
+  group_by(sitio,temporada,datetime = floor_date(datetime,'1 hour'),tratamiento,unidad,codigo,zim,sensor) |> 
+  summarise(turgor = mean(turgor,na.rm=T),
+            turgor_filtrado = mean(turgor_filtrado,na.rm=T)) |> 
+  ungroup() |> 
+  mutate(fecha = fecha_f(datetime),
+         hora = hora_f(datetime),
+         .before = datetime) |> 
+  select(-datetime)
 
-write_rds(data_limpia,'data/data_processed/zim_turgor_mediahora_preprocesado.rds')
+data_limpia |> 
+  mutate(fecha_hora = fecha_hora_f(fecha,hora)) |> 
+  filter(temporada == '2023-2024',
+         month(fecha) == 3) |> 
+  pivot_longer(cols = c('turgor','turgor_filtrado'),names_to = 'tipo',values_to = 'turgor') |> 
+  ggplot(aes(fecha_hora,turgor,color=tipo)) +
+  geom_point(size = .7) +
+  facet_grid(tratamiento+unidad~sitio)
+
+write_rds(data_limpia,'data/data_processed/turgor.rds')
+
