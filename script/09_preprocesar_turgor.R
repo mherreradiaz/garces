@@ -204,10 +204,13 @@ data_lag_ordered |>
             t_sc = mean(t_sc,na.rm=T),
             rh_sc = mean(rh_sc,na.rm=T),
             vpd_sc = mean(vpd_sc,na.rm=T)) |> 
-  mutate(fecha = fecha_f(fecha_hora),
+  ungroup() |> 
+  mutate(temporada = ifelse(fecha_hora < '2023-06-01','2022-2023','2023-2024'),
+         fecha = fecha_f(fecha_hora),
          hora = hora_f(fecha_hora),
          .before = fecha_hora) |> 
-  select(-fecha_hora) |> 
+  select(-fecha_hora,-t_sc,-rh_sc,-vpd_sc) |> 
+  distinct(sitio,temporada,fecha,hora,.keep_all = T) |> 
   write_rds('data/data_processed/clima_lag.rds')
   
 data_filter <- data_turgor |> 
@@ -223,12 +226,10 @@ data_filter <- data_turgor |>
   mutate(filter = ifelse(cor_index > sqrt(.7) & dif < 1,1,0)) |> 
   select(sitio,fecha,sensor,filter)
 
-data_limpia_30 <- data_turgor |> 
+data_turgor |> 
   left_join(data_filter,by=c('sitio','fecha','sensor')) |> 
   mutate(turgor_filtrado = ifelse(filter==1,turgor,NA)) |> 
-  select(-filter)
-
-data_limpia <- data_limpia_30 |> 
+  select(-filter) |> 
   mutate(datetime = fecha_hora_f(fecha,hora)) |> 
   group_by(sitio,temporada,datetime = floor_date(datetime,'1 hour'),tratamiento,unidad,codigo,zim,sensor) |> 
   summarise(turgor = mean(turgor,na.rm=T),
@@ -237,6 +238,6 @@ data_limpia <- data_limpia_30 |>
   mutate(fecha = fecha_f(datetime),
          hora = hora_f(datetime),
          .before = datetime) |> 
-  select(-datetime)
-
-write_rds(data_limpia,'data/data_processed/turgor.rds')
+  select(-datetime) |> 
+  distinct(sitio,temporada,fecha,hora,sensor,.keep_all=T) |> 
+  write_rds('data/data_processed/turgor.rds')
