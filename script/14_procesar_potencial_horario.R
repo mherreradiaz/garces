@@ -8,7 +8,8 @@ data_potencial <- list.files('data/data_raw/potencial/ciclo_diario/', full.names
   lapply(FUN =read_delim) |> 
   bind_rows() |>
   mutate(unidad = factor(unidad,levels = 1:3),
-         fecha = as.Date(fecha))
+         fecha = as.character(fecha),
+         hora = substr(as.character(hora),1,5))
    
 write_rds(data_potencial, 'data/data_processed/potencial_horario.rds')
 

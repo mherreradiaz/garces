@@ -5,40 +5,151 @@ normalizar<- function(vector, min_range = 0, max_range = 1) {
   vector_normalizado <- vector_normalizado * (max_range - min_range) + min_range
   return(vector_normalizado)
 }
+lm_turgor <- function(y,x) {
 
-data_turgor <- read_rds('data/data_processed/zim_turgor_preprocesado.rds') |> 
-  select(-turgor,-turgor_sc) |> 
-  group_by(sitio,temporada,fecha,hora,tratamiento,unidad,codigo) |> 
-  summarise(turgor = mean(turgor_cl,na.rm=T),
-            turgor_sc = mean(turgor_sc_cl,na.rm=T)) |> 
-  ungroup()
+  modelo <- lm(y ~ x)
+
+  predicciones <- predict(modelo, newdata = data.frame(x = x))
+
+  return(as.numeric(predicciones))
+}
+
+# leer datos y unificar
+
+data_turgor <- read_rds('data/data_processed/turgor.rds')
 
 data_clima <- read_rds('data/data_processed/clima_lag.rds')
 
 data <- data_turgor |> 
-  left_join(data_clima, by = c('sitio','temporada','fecha','hora'))
+  left_join(data_clima, by = c('sitio','temporada','fecha','hora')) |> 
+  group_by(sitio,temporada,tratamiento,unidad) |> 
+  mutate(turgor_relleno = lm_turgor(turgor_filtrado,t_media)) |>
+  ungroup()
 
 data_potencial_dia <- read_rds('data/data_processed/potencial.rds') |> 
   mutate(fecha = as.character(fecha),
          .before = tratamiento) |> 
-  rename(potencial = potencial_bar) |> 
-  group_by(sitio,temporada) |> 
-  mutate(potencial_sc = as.numeric(scale(potencial))) |> 
+  rename(potencial = potencial_bar)
+
+data_cor_dia <- data |> 
+  filter(hora %in% c('13:00','14:00')) |> 
+  group_by(across(sitio:fecha),across(tratamiento:sensor)) |> 
+  summarise(turgor = mean(turgor,na.rm=T),
+         turgor_filtrado = mean(turgor_filtrado,na.rm=T),
+         turgor_relleno = mean(turgor_relleno,na.rm=T),
+         t_media = mean(t_media,na.rm=T),
+         rh_media = mean(rh_media,na.rm=T),
+         vpd_medio = mean(vpd_medio,na.rm=T)) |> 
   ungroup() |> 
-  mutate(hora = '13:30',
-         .before = tratamiento)
+  left_join(data_potencial_dia,by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) |> 
+  select(sitio:turgor_filtrado,turgor_relleno,potencial,everything())
 
 data_potencial_hora <- read_rds('data/data_processed/potencial_horario.rds') |> 
-  rename(potencial = bar) |> 
-  group_by(sitio,temporada,tratamiento,unidad) |> 
-  mutate(potencial_sc = as.numeric(scale(potencial))) |> 
+  rename(potencial = bar)
+
+data_cor_hora <- data |> 
+  filter(paste(sitio,fecha) %in% unique(paste(data_potencial_hora$sitio,data_potencial_hora$fecha))) |> 
+  left_join(data_potencial_hora,by=c('sitio','temporada','fecha','hora','tratamiento','unidad','codigo')) |> 
+  select(sitio:turgor_filtrado,potencial,everything())
+
+# visualización relleno
+
+temporada_i <- '2022-2023'
+sitio_i <- 'la_esperanza'
+mes_i <- 3
+
+data |>
+  filter(temporada == temporada_i,
+         sitio == sitio_i,
+         month(fecha) == mes_i) |>
+  pivot_longer(cols=c('turgor_filtrado','turgor_relleno','t_media'),values_to='value',names_to='var') |>
+  mutate(fecha_hora = fecha_hora_f(fecha,hora)) |>
+  ggplot(aes(fecha_hora,value,color=var)) +
+  geom_point(size=.5)+
+  facet_grid(tratamiento+unidad~zim)
+
+# visualizacion series
+
+temporada_i <- '2023-2024'
+sitio_i <- 'la_esperanza'
+mes_i <- 3
+
+data_cor_dia |> 
+  filter(temporada == temporada_i,
+         sitio == sitio_i,
+         month(fecha) == mes_i) |> 
+  mutate(rh_media_inversa = 100-rh_media) |> 
+  pivot_longer(cols=c('turgor_filtrado','turgor_relleno','rh_media_inversa'),
+               values_to='value',names_to='var') |> 
+  group_by(sitio,temporada,sensor,var) |>
+  mutate(value = as.numeric(scale(value)),
+         potencial_sc = as.numeric(scale(potencial))) |> 
+  ungroup() |> 
+  select(-turgor) |> 
+  mutate(dia = day(fecha)) |> 
+  ggplot(aes(dia,value,color=var,group=var)) +
+  geom_point(size=.7) +
+  geom_line() +
+  geom_point(aes(dia,potencial_sc), color = 'grey3',size = 1) +
+  facet_grid(tratamiento+unidad~zim) +
+  theme_light()
+
+# correlación
+
+data_cor_dia_t <- data_cor_dia |>  
+  group_by(across(sitio:tratamiento)) |> 
+  summarise(turgor_filtrado = mean(turgor_filtrado,na.rm=T),
+            turgor_relleno = mean(turgor_relleno,na.rm=T),
+            potencial = mean(potencial,na.rm=T),
+            t_media = mean(t_media,na.rm=T),
+            rh_media = mean(rh_media,na.rm=T),
+            vpd_medio = mean(vpd_medio,na.rm=T)) |> 
   ungroup()
 
-data_potencial <- bind_rows(data_potencial_hora,data_potencial_dia) |> 
-  distinct(sitio,temporada,fecha,hora,tratamiento,unidad,codigo, .keep_all = T)
+data_cor_dia_t |> 
+  filter(temporada=='2022-2023') |> 
+  ggplot(aes(fecha,turgor_relleno)) +
+  geom_point()+
+  facet_grid(tratamiento~sitio)
 
-data_cor <- data |> 
-  left_join(data_potencial,by=c('sitio','temporada','fecha','hora','tratamiento','unidad','codigo'))
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(fecha,turgor_relleno,color=zim,group=zim)) +
+  geom_point() +
+  #geom_point(aes(fecha,potencial_sc), color = 'red',size = 1) +
+  facet_grid(tratamiento+unidad~sitio)
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023',
+         sitio == 'la_esperanza',
+         tratamiento == 'T1',
+         unidad == 1) |> 
+  group_by(sitio,temporada,sensor) |> 
+  mutate(turgor_sc = as.numeric(scale(turgor_relleno))) |> 
+  ggplot(aes(fecha,turgor_sc,color=zim)) +
+  geom_point() +
+  facet_grid(tratamiento~unidad)
+
+
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023',
+         sitio == 'la_esperanza') |> 
+  group_by(sitio,temporada,sensor) |> 
+  mutate(turgor_sc = as.numeric(scale(turgor_filtrado)),
+         potencial_sc = as.numeric(scale(potencial))) |> 
+  ungroup() |> 
+  ggplot(aes(turgor_sc,potencial_sc)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  facet_grid(zim~tratamiento+unidad)
+
+
+
+
 
 # data diaria
 
