@@ -36,9 +36,6 @@ read_yara(si(fechas[1] < '2023-06-01',device_id_tur_2022,device_id_tur_2023),
 
 año <- year(now())
 mes <- month(now())
-
-año <- 2024
-mes <- 4
   
 fechas <- dia(año,mes) 
 
@@ -197,6 +194,21 @@ data_lag_ordered <- data_lag_vpd |>
          rh_sc = as.numeric(scale(100-rh_media)),
          vpd_sc = as.numeric(scale(log(vpd_medio+1)))) |> 
   ungroup()
+
+data_lag_ordered |> 
+  mutate(fecha_hora = fecha_hora_f(fecha,hora)) |> 
+  group_by(sitio,fecha_hora = floor_date(fecha_hora,'1 hour')) |> 
+  summarise(t_media = mean(t_media,na.rm=T),
+            rh_media = mean(rh_media,na.rm=T),
+            vpd_medio = mean(vpd_medio,na.rm=T),
+            t_sc = mean(t_sc,na.rm=T),
+            rh_sc = mean(rh_sc,na.rm=T),
+            vpd_sc = mean(vpd_sc,na.rm=T)) |> 
+  mutate(fecha = fecha_f(fecha_hora),
+         hora = hora_f(fecha_hora),
+         .before = fecha_hora) |> 
+  select(-fecha_hora) |> 
+  write_rds('data/data_processed/clima_lag.rds')
   
 data_filter <- data_turgor |> 
   group_by(sitio,fecha,sensor) |> 
@@ -227,14 +239,4 @@ data_limpia <- data_limpia_30 |>
          .before = datetime) |> 
   select(-datetime)
 
-data_limpia |> 
-  mutate(fecha_hora = fecha_hora_f(fecha,hora)) |> 
-  filter(temporada == '2023-2024',
-         month(fecha) == 3) |> 
-  pivot_longer(cols = c('turgor','turgor_filtrado'),names_to = 'tipo',values_to = 'turgor') |> 
-  ggplot(aes(fecha_hora,turgor,color=tipo)) +
-  geom_point(size = .7) +
-  facet_grid(tratamiento+unidad~sitio)
-
 write_rds(data_limpia,'data/data_processed/turgor.rds')
-
