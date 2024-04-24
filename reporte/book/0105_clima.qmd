@@ -31,7 +31,7 @@ data_clima |>
   summarise(t_dia = mean(t_media,na.rm=F)) |>
   ggplot(aes(fecha,t_dia,color = sitio)) +
   geom_line() +
-  facet_wrap(~temporada, scales = 'fixed', ncol = 2, labeller = as_labeller(names)) +
+  facet_wrap(~temporada, ncol = 1, labeller = as_labeller(names)) +
   labs(x = 'Meses',
        y = 'Temperatura media (°C/dia)',
        color = 'Sitio') +
@@ -55,10 +55,10 @@ data_clima |>
          fecha = ifelse(temporada == '2023-2024',gsub("^2024", "2023", fecha),fecha),
          fecha = as.Date(fecha)) |>
   group_by(temporada,sitio,fecha) |>
-  summarise(vpd_dia = mean(vpd_media,na.rm=F)) |>
+  summarise(vpd_dia = mean(vpd_medio,na.rm=F)) |>
   ggplot(aes(fecha,vpd_dia,color = sitio)) +
   geom_line() +
-  facet_wrap(~temporada, scales = 'fixed', ncol = 2, labeller = as_labeller(names)) +
+  facet_wrap(~temporada, ncol = 1, labeller = as_labeller(names)) +
   labs(x = 'Meses',
        y = 'VPD medio (mbar/dia)',
        color = 'Sitio') +
@@ -83,13 +83,13 @@ data_clima |>
          fecha = as.Date(fecha)) |>
   group_by(temporada,sitio,fecha) |>
   summarise(eto_dia = mean(eto,na.rm=F)) |>
-  ggplot(aes(fecha,eto_dia,color = sitio)) +
-  geom_line() +
-  facet_wrap(~temporada, scales = 'fixed', ncol = 2, labeller = as_labeller(names)) +
+  ggplot(aes(fecha,eto_dia,fill = sitio)) +
+  geom_bar(stat='identity') +
+  facet_wrap(~temporada, ncol = 1, labeller = as_labeller(names)) +
   labs(x = 'Meses',
-       y = 'ET0 (mm)',
-       color = 'Sitio') +
-  scale_color_hue(labels=c('La Esperanza','Rio Claro')) +
+       y = 'ET0 (mm/dia)',
+       fill = 'Sitio') +
+  scale_fill_hue(labels=c('La Esperanza','Rio Claro')) +
   theme_light() +
   theme(text = element_text(size = 18),
         axis.title.y = element_text(margin = margin(r = 17)),
@@ -108,15 +108,19 @@ data_clima |>
   mutate(fecha = ifelse(temporada == '2023-2024',gsub("^2023", "2022", fecha),fecha),
          fecha = ifelse(temporada == '2023-2024',gsub("^2024", "2023", fecha),fecha),
          fecha = as.Date(fecha)) |>
-  group_by(temporada,sitio,fecha) |>
-  summarise(pp_dia = sum(pp,na.rm=T)) |>
-  ggplot(aes(fecha,pp_dia,color = sitio)) +
-  geom_line() +
-  facet_wrap(~temporada, scales = 'fixed', ncol = 2, labeller = as_labeller(names)) +
+  group_by(temporada,sitio,mes = month(fecha)) |>
+  summarise(pp_mes = sum(pp,na.rm=T)) |>
+  ungroup() |> 
+  mutate(mes = factor(mes,levels = c(8:12,1:5))) |> 
+  filter(mes %in% c(8:12,1:5)) |> 
+  ggplot(aes(mes,pp_mes,fill = sitio)) +
+  geom_bar(stat='identity') +
+  facet_wrap(~temporada, ncol = 1, labeller = as_labeller(names)) +
   labs(x = 'Fecha',
-       y = 'PP diaria (mm/dia)',
+       y = 'PP (mm/mes)',
        color = 'Sitio') +
-  scale_color_hue(labels=c('La Esperanza','Rio Claro')) +
+  scale_fill_hue(labels=c('La Esperanza','Rio Claro')) +
+  scale_x_discrete(labels = c(8:12,1:5)) +
   theme_light() +
   theme(text = element_text(size = 18),
         axis.title.y = element_text(margin = margin(r = 17)),
