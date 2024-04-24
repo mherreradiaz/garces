@@ -6,12 +6,14 @@ normalizar<- function(vector, min_range = 0, max_range = 1) {
   return(vector_normalizado)
 }
 lm_turgor <- function(y,x) {
-
-  modelo <- lm(y ~ x)
-
-  predicciones <- predict(modelo, newdata = data.frame(x = x))
-
-  return(as.numeric(predicciones))
+  if(nrow(na.omit(data.frame(y,x)))<5) {return(NA)} 
+  else {
+    modelo <- lm(y ~ x)
+    
+    predicciones <- predict(modelo, newdata = data.frame(x = x))
+    
+    return(as.numeric(predicciones))
+  }
 }
 
 # leer datos y unificar
@@ -22,7 +24,7 @@ data_clima <- read_rds('data/data_processed/clima_lag.rds')
 
 data <- data_turgor |> 
   left_join(data_clima, by = c('sitio','temporada','fecha','hora')) |> 
-  group_by(sitio,temporada,tratamiento,unidad) |> 
+  group_by(sitio,temporada,month(fecha),tratamiento,unidad) |> 
   mutate(turgor_relleno = lm_turgor(turgor_filtrado,t_media)) |>
   ungroup()
 
