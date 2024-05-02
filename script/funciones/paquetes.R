@@ -73,38 +73,6 @@ dia <- function(año, mes) {
   
   return(c(primer_dia, ultimo_dia))
 }
-cor_clima <- function(turgor,temperatura,rh) {
-  
-  if (nrow(na.omit(data.frame(turgor,temperatura,rh)))==0) {return(0)} else {
-    
-    cor_temperatura <- cor(turgor,temperatura,use = 'na.or.complete')
-    cor_rh <- cor(turgor,rh,use = 'na.or.complete')
-    
-    cor_min <- min(c(cor_temperatura,cor_rh),na.rm=T)
-    
-    if (cor_min < 0) {return(0)} else {return(cor_min^2)}
-    
-    return(cor_index)
-    
-  }
-}
-dif_mean <- function(turgor,temperatura,vpd) {
-  
-  df <- data.frame(turgor,temperatura,vpd) |> 
-    na.omit()
-  
-  if (nrow(df)==0) {return(NA)} else {
-    
-    dif_t <- mean(abs(df$turgor-df$temperatura),na.rm=T)
-    dif_vpd <- mean(abs(df$turgor-df$vpd))
-    
-    dif_index <- (dif_t+dif_vpd)/2
-    
-    return(dif_index)
-    
-  }
-  
-}
 modal <- function(x) {
   # Calcular la tabla de frecuencias
   tabla_frecuencia <- table(x)
@@ -156,4 +124,9 @@ coeficientes <- function(x1, x2, y) {
   coef_cor <- as.numeric(summary(modelo)$r.squared^.5)
 
   return(list(m1 = pendientes[1], m2 = pendientes[2], int = intercepto, r = coef_cor))
+}
+pca <- function(x1,x2,x3) {
+  df <- data.frame(x1,x2,x3)
+  pca_result <- predict(prcomp(df,scale. = T))
+  return(data.frame(pca_result))
 }
