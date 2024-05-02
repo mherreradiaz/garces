@@ -73,18 +73,16 @@ dia <- function(año, mes) {
   
   return(c(primer_dia, ultimo_dia))
 }
-cor_clima <- function(turgor,temperatura,rh,vpd) {
+cor_clima <- function(turgor,temperatura,rh) {
   
-  df <- data.frame(turgor,temperatura,rh,vpd) |> 
-    na.omit()
-  
-  if (nrow(df)==0) {return(NA)} else {
+  if (nrow(na.omit(data.frame(turgor,temperatura,rh)))==0) {return(0)} else {
     
-    cor_temperatura <- cor(df$turgor,df$temperatura)
-    cor_rh <- cor(df$turgor,df$rh)
-    cor_vpd <- cor(df$turgor,df$vpd)
+    cor_temperatura <- cor(turgor,temperatura,use = 'na.or.complete')
+    cor_rh <- cor(turgor,rh,use = 'na.or.complete')
     
-    cor_index <- mean(c(cor_temperatura,cor_rh,cor_vpd))
+    cor_min <- min(c(cor_temperatura,cor_rh),na.rm=T)
+    
+    if (cor_min < 0) {return(0)} else {return(cor_min^2)}
     
     return(cor_index)
     
@@ -140,4 +138,22 @@ clima <- function(id_estacion, var, periodo) {
               rh_max = max(`max (%)`,na.rmn=T),
               rh_min = min(`min (%)`,na.rm=T))
   
+}
+coeficientes <- function(x1, x2, y) {
+
+  df <- data.frame(x1 = x1, x2 = x2, y = y) |> 
+    na.omit()
+
+  if (nrow(df) < 720) {
+    return(list(m1 = NA, m2 = NA, int = NA, r = NA))
+  }
+
+  modelo <- lm(y ~ x1 + x2, data = df)
+
+  coeficientes <- coef(modelo)
+  pendientes <- as.numeric(coeficientes[2:3])
+  intercepto <- as.numeric(coeficientes[1])
+  coef_cor <- as.numeric(summary(modelo)$r.squared^.5)
+
+  return(list(m1 = pendientes[1], m2 = pendientes[2], int = intercepto, r = coef_cor))
 }
