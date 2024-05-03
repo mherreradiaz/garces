@@ -107,6 +107,12 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#temporada-2023-2024-11" id="toc-temporada-2023-2024-11" class="nav-link" data-scroll-target="#temporada-2023-2024-11">Temporada 2023-2024</a></li>
   </ul></li>
   </ul></li>
+  <li><a href="#modelo-de-potencial-con-variables-climáticas" id="toc-modelo-de-potencial-con-variables-climáticas" class="nav-link" data-scroll-target="#modelo-de-potencial-con-variables-climáticas">Modelo de potencial con variables climáticas</a>
+  <ul>
+  <li><a href="#validación-general" id="toc-validación-general" class="nav-link" data-scroll-target="#validación-general">Validación general</a></li>
+  <li><a href="#validación-solo-con-datos-diarios" id="toc-validación-solo-con-datos-diarios" class="nav-link" data-scroll-target="#validación-solo-con-datos-diarios">Validación solo con datos diarios</a></li>
+  <li><a href="#validación-solo-con-datos-horarios" id="toc-validación-solo-con-datos-horarios" class="nav-link" data-scroll-target="#validación-solo-con-datos-horarios">Validación solo con datos horarios</a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -1281,6 +1287,134 @@ ul.task-list li input[type="checkbox"] {
 </section>
 </section>
 </section>
+<section id="modelo-de-potencial-con-variables-climáticas" class="level2">
+<h2 class="anchored" data-anchor-id="modelo-de-potencial-con-variables-climáticas">Modelo de potencial con variables climáticas</h2>
+<p>Los siguientes gráficos corresponden a las comparaciones entre los valores de potencial observados y el potencial modelado a través de una regresión lineal mpultiple, utilizando los dos componentes principales de las variables climáticas (i.e.&nbsp;temperatura media, humedad relativa media y vpd medio).</p>
+<p>Para construir y validar el modelo se aplicó una crosvalidación, utilizando el 80% de los datos diarios (valores horarios únicos a las 13:00 del día) y horarios (valores horarios tomados desde las 7:00 a las 20:00) para construir el modelo, y el 20% restante para validar. La validación, por su parte, se distinguió entre este 20% construido con ambos tipos de datos (validación general), pero también para el 20% de los diarios y el 20% de los horarios de forma excluyente.</p>
+<section id="validación-general" class="level3">
+<h3 class="anchored" data-anchor-id="validación-general">Validación general</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-23-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-23-1" role="tab" aria-controls="tabset-23-1" aria-selected="true" href="">Tratamiento</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-23-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-23-2" role="tab" aria-controls="tabset-23-2" aria-selected="false" href="">Sitio</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-23-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-23-3" role="tab" aria-controls="tabset-23-3" aria-selected="false" href="">Temporada</a></li></ul>
+<div class="tab-content">
+<div id="tabset-23-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-23-1-tab">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="correlacion_potencial_files/figure-html/unnamed-chunk-87-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-85"><img src="correlacion_potencial_files/figure-html/unnamed-chunk-87-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1152"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-23-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-23-2-tab">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="correlacion_potencial_files/figure-html/unnamed-chunk-88-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-86"><img src="correlacion_potencial_files/figure-html/unnamed-chunk-88-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1152"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-23-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-23-3-tab">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="correlacion_potencial_files/figure-html/unnamed-chunk-89-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-87"><img src="correlacion_potencial_files/figure-html/unnamed-chunk-89-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1152"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="validación-solo-con-datos-diarios" class="level3">
+<h3 class="anchored" data-anchor-id="validación-solo-con-datos-diarios">Validación solo con datos diarios</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-24-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-24-1" role="tab" aria-controls="tabset-24-1" aria-selected="true" href="">Tratamiento</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-24-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-24-2" role="tab" aria-controls="tabset-24-2" aria-selected="false" href="">Sitio</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-24-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-24-3" role="tab" aria-controls="tabset-24-3" aria-selected="false" href="">Temporada</a></li></ul>
+<div class="tab-content">
+<div id="tabset-24-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-24-1-tab">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="correlacion_potencial_files/figure-html/unnamed-chunk-90-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-88"><img src="correlacion_potencial_files/figure-html/unnamed-chunk-90-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1152"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-24-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-24-2-tab">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="correlacion_potencial_files/figure-html/unnamed-chunk-91-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-89"><img src="correlacion_potencial_files/figure-html/unnamed-chunk-91-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1152"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-24-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-24-3-tab">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="correlacion_potencial_files/figure-html/unnamed-chunk-92-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-90"><img src="correlacion_potencial_files/figure-html/unnamed-chunk-92-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1152"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="validación-solo-con-datos-horarios" class="level3">
+<h3 class="anchored" data-anchor-id="validación-solo-con-datos-horarios">Validación solo con datos horarios</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-25-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-25-1" role="tab" aria-controls="tabset-25-1" aria-selected="true" href="">Tratamiento</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-25-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-25-2" role="tab" aria-controls="tabset-25-2" aria-selected="false" href="">Sitio</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-25-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-25-3" role="tab" aria-controls="tabset-25-3" aria-selected="false" href="">Temporada</a></li></ul>
+<div class="tab-content">
+<div id="tabset-25-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-25-1-tab">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="correlacion_potencial_files/figure-html/unnamed-chunk-93-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-91"><img src="correlacion_potencial_files/figure-html/unnamed-chunk-93-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1152"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-25-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-25-2-tab">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="correlacion_potencial_files/figure-html/unnamed-chunk-94-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-92"><img src="correlacion_potencial_files/figure-html/unnamed-chunk-94-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1152"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-25-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-25-3-tab">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="correlacion_potencial_files/figure-html/unnamed-chunk-95-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-93"><img src="correlacion_potencial_files/figure-html/unnamed-chunk-95-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="1152"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
 
 </main>
 <!-- /main column -->
@@ -1672,7 +1806,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"selector":".lightbox","descPosition":"bottom","openEffect":"zoom","loop":false,"closeEffect":"zoom"});
+<script>var lightboxQuarto = GLightbox({"openEffect":"zoom","loop":false,"descPosition":"bottom","closeEffect":"zoom","selector":".lightbox"});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;

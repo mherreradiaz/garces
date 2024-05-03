@@ -18,6 +18,7 @@ library(lsmeans)
 library(rcompanion)
 library(readxl)
 library(agvAPI)
+library(Metrics)
 options(timeout = max(3600, getOption("timeout")))
 names <- c(la_esperanza = 'La Esperanza',rio_claro = 'Rio Claro',
            T1 = 'T1',T2 = 'T2',T3 = 'T3',T4 = 'T4',T0 = 'T0',
@@ -107,12 +108,12 @@ clima <- function(id_estacion, var, periodo) {
               rh_min = min(`min (%)`,na.rm=T))
   
 }
-coeficientes <- function(x1, x2, y) {
+coeficientes <- function(x1, x2, y, minRow = 3) {
 
   df <- data.frame(x1 = x1, x2 = x2, y = y) |> 
     na.omit()
 
-  if (nrow(df) < 720) {
+  if (nrow(df) < minRow) {
     return(list(m1 = NA, m2 = NA, int = NA, r = NA))
   }
 
