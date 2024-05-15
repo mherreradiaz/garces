@@ -1,4 +1,4 @@
-source('script/00_paquetes.R')
+source('script/funciones/paquetes.R')
 
 # descargar imagenes (hacerlo dos veces, una para cada temporada)
 
@@ -6,8 +6,8 @@ edl_netrc(username = 'frzambra@gmail.com',password = 'Traplozx398#')
 with_gdalcubes()
 
 sitio <- 'rio_claro'
-layers <- st_layers(glue('data/processed/spatial/{sitio}.gpkg'))
-pol <- read_sf(glue('data/processed/spatial/{sitio}.gpkg'),layer = 'borde_cuartel')
+layers <- st_layers(glue('data/processed/espacial/{sitio}.gpkg'))
+pol <- read_sf(glue('data/processed/espacial/{sitio}.gpkg'),layer = 'borde_cuartel')
 
 bb <- st_bbox(pol) |> 
   as.numeric()
@@ -46,7 +46,7 @@ dir_out <- 'data/raw/raster'
 raster_cube(col, v, mask=cloud_mask) |>
   write_tif(glue('{dir_out}/sentinel_{sitio}'))
 
-# renombrar
+ # renombrar
 
 r.file <- list.files('data/raw/raster/sentinel_rio_claro/')
 

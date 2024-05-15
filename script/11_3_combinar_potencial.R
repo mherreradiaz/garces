@@ -1,11 +1,15 @@
-source('script/00_paquetes.R')
+source('script/funciones/paquetes.R')
 
 data_sentinel <- read_rds('data/processed/sentinel.rds')
 
 data_potencial <- read_rds('data/processed/potencial.rds')
 
-codigos <- data_potencial |> 
-  distinct(sitio,temporada,tratamiento,unidad,codigo)
+codigos_pote <- data_potencial |> 
+  distinct(sitio,temporada,tratamiento,unidad,codigo) |> 
+  arrange(sitio,temporada,tratamiento,unidad)
+codigos_sent <- data_sentinel |> 
+  distinct(sitio,temporada,tratamiento,unidad,codigo) |> 
+  arrange(sitio,temporada,tratamiento,unidad)
 
 data <- data_sentinel |>
   mutate(fecha = as.Date(fecha)) |> 
