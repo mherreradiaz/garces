@@ -49,6 +49,6 @@ po/*~
 rsconnect/
 
 # Ignorar archivos grandes
-data/data_processed/turgor_mediahora.rds
-data/data_processed/clima_mediahora.rds
-data/data_processed/turgor_procesado_mediahora.rds
+data/processed/turgor_mediahora.rds
+data/processed/clima_mediahora.rds
+data/processed/turgor_procesado_mediahora.rds
