@@ -5,14 +5,14 @@ library(lubridate)
 library(tidyr)
 library(dplyr)
 
-data_potencial <- read_rds('data/data_processed/potencial.rds')
+data_potencial <- read_rds('data/processed/potencial.rds')
 
 dates_potencial <- data_potencial |> 
   group_by(sitio) |> 
   distinct(fecha) |> 
   ungroup()
 
-files <- dir_ls('data/data_raw/potencial',regexp = 'potencial_')
+files <- dir_ls('data/raw/potencial',regexp = 'potencial_')
 dates_new <- str_extract(files,'[0-9]{8}')
 
 ind <- which(!(ymd(dates_new) %in% ymd(dates_potencial$fecha)))
@@ -41,4 +41,4 @@ for (x in 1:length(ind)) {
 data_potencial <- data_potencial |>
   arrange(fecha, tratamiento, unidad)
 
-write_rds(data_potencial,'data/data_processed/potencial.rds')
+write_rds(data_potencial,'data/processed/potencial.rds')

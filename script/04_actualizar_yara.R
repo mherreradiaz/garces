@@ -23,10 +23,10 @@ device_id_sm <- data_codigo_sm |>
   filter(grepl('Soil Moisture',tipo)) |> 
   pull(device_id)
 
-data_old <- read_rds('data/data_processed/zim_sm.rds')
+data_old <- read_rds('data/processed/zim_sm.rds')
 from_date <- data_old$fecha |> max() |> substr(1,16)
 
-dest <- paste0('data/data_raw/zim/zim_sm_update',
+dest <- paste0('data/raw/zim/zim_sm_update',
                substr(gsub("[^0-9]", "",as.character(lubridate::now())),1,8),'.csv')
 
 read_yara(device_id_sm,from_date = from_date,
@@ -58,7 +58,7 @@ data_sm <- data_old |>
   distinct(sitio,temporada,fecha,hora,tratamiento,unidad,codigo,sensor,.keep_all = T) |>
   arrange(fecha, sitio, hora, tratamiento, unidad) 
 
-write_rds(data_sm, 'data/data_processed/zim_sm.rds')
+write_rds(data_sm, 'data/processed/zim_sm.rds')
 
 # data_sm |> 
 #   filter(temporada == '2023-2024') |>
@@ -76,10 +76,10 @@ device_id_tur <- data_codigo_tur |>
   filter(grepl('Yara Water-Sensor',tipo)) |> 
   pull(device_id)
 
-data_old <- read_rds('data/data_processed/zim_turgor.rds')
+data_old <- read_rds('data/processed/zim_turgor.rds')
 from_date <- data_old$fecha |> max() |> substr(1,16)
 
-dest <- paste0('data/data_raw/zim/zim_turgor_update',
+dest <- paste0('data/raw/zim/zim_turgor_update',
                substr(gsub("[^0-9]", "",as.character(lubridate::now())),1,8),'.csv')
 
 read_yara(device_id_tur,from_date = from_date,
@@ -114,7 +114,7 @@ data_turgor <- data_old |>
   distinct(sitio,temporada,fecha,hora,tratamiento,unidad,codigo,zim,sensor,.keep_all = T) |>
   arrange(fecha,sitio,hora,tratamiento,unidad,zim)
 
-write_rds(data_turgor,'data/data_processed/zim_turgor.rds')
+write_rds(data_turgor,'data/processed/zim_turgor.rds')
 
 # data_turgor |>
 #   filter(temporada == '2023-2024',

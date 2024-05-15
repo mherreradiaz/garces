@@ -6,14 +6,14 @@ library(lubridate)
 library(tidyr)
 library(dplyr)
 
-data_fluo <- read_rds('data/data_processed/fluorescencia.rds')
+data_fluo <- read_rds('data/processed/fluorescencia.rds')
 codigos <- read_csv2('data/metadata/codigos_arboles.csv')
 
 dates_fluo <- data_fluo |> 
   group_by(sitio) |> 
   distinct(fecha) 
 
-files <- dir_ls('data/data_raw/fluorescencia',regexp = 'fluor_')
+files <- dir_ls('data/raw/fluorescencia',regexp = 'fluor_')
 dates_new <- str_extract(files,'[0-9]{8}')
 
 ind <- which(!(ymd(dates_new) %in% ymd(dates_fluo$fecha)))
@@ -60,5 +60,5 @@ for (x in 1:length(ind)) {
 data_fluo <- data_fluo |>
   arrange(sitio,fecha, tratamiento, unidad)
 
-write_rds(data_fluo,'data/data_processed/fluorescencia.rds')
+write_rds(data_fluo,'data/processed/fluorescencia.rds')
 

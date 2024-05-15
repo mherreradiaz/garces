@@ -7,13 +7,13 @@ library(tidyr)
 library(dplyr)
 library(xlsx)
 
-data_cepto <- read_rds('data/data_processed/ceptometro.rds')
+data_cepto <- read_rds('data/processed/ceptometro.rds')
 
 dates_cepto <- data_cepto |> 
   group_by(sitio) |> 
   distinct(fecha) 
 
-files <- dir_ls('data/data_raw/ceptometro',regexp = 'cepto_')
+files <- dir_ls('data/raw/ceptometro',regexp = 'cepto_')
 dates_new <- str_extract(files,'[0-9]{8}')
 
 ind <- which(!(ymd(dates_new) %in% ymd(dates_cepto$fecha)))
@@ -51,4 +51,4 @@ for (x in 1:length(ind)) {
 data_cepto <- data_cepto |>
   arrange(fecha, tratamiento)
 
-write_rds(data_cepto,'data/data_processed/ceptometro.rds')
+write_rds(data_cepto,'data/processed/ceptometro.rds')

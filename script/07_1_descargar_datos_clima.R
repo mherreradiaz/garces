@@ -1,0 +1,120 @@
+
+library(fs)
+library(readr)
+library(dplyr)
+library(lubridate)
+library(tidyr)
+library(stringr)
+library(tidyverse)
+library(agvAPI)
+
+periodo <- c('2023-09-30',substr(now(),1,10))
+
+#periodo <- c('2023-02-08','2023-02-10')
+
+clima <- function(id_estacion, var, periodo) {
+  
+  for (x in 1:length(var)) {
+    var_x <- getDataAGV_clima(station_id =id_estacion, var = var[x],
+                               time_span = periodo) |> 
+      mutate(datetime = as_datetime(datetime,tz = 'America/Santiago'))
+    if (x == 1) {var_df <- var_x}
+    else {var_df <- var_df |> 
+      left_join(var_x, by = 'datetime')}
+  }
+  
+  var_df <- var_df |> 
+    group_by(datetime = floor_date(datetime,'30 min')) |> 
+    summarise(t_media = mean(`avg (°C)`,na.rm=T),
+              t_max = max(`max (°C)`,na.rm=T),
+              t_min = min(`min (°C)`,na.rm=T),
+              vpd_medio = mean(`avg (mbar)`,na.rm=T),
+              vpd_min = min(`min (mbar)`,na.rm=T),
+              eto = sum(`ETo[mm] (mm)`,na.rm=T),
+              pp = sum(`sum (mm)`,na.rm=T)) |> 
+    mutate(fecha = format(datetime, "%Y-%m-%d"),
+           hora = format(datetime, "%H:%M"),
+           .before = datetime) |>
+    select(-datetime)
+  
+}
+
+le_temp <- getDataAGV_clima(station_id ='00205018', var = 'Temperature',
+                          time_span = periodo) |>
+  mutate(sitio = 'la_esperanza', .before = datetime)
+le_vpd <- getDataAGV_clima(station_id ='00205018', var = 'VPD',
+                            time_span = periodo) |>
+  mutate(sitio = 'la_esperanza', .before = datetime)
+le_eto <- getDataAGV_clima(station_id ='00205018', var = 'ETo',
+                            time_span = periodo) |>
+  mutate(sitio = 'la_esperanza', .before = datetime)
+le_pp <- getDataAGV_clima(station_id ='00205018', var = 'Precipitation',
+                           time_span = periodo) |>
+  mutate(sitio = 'la_esperanza', .before = datetime)
+
+rc_temp <- getDataAGV_clima(station_id ='00203E6E', var = 'Temperature',
+                            time_span = periodo) |>
+  mutate(sitio = 'rio_claro', .before = datetime)
+rc_vpd <- getDataAGV_clima(station_id ='00203E6E', var = 'VPD',
+                           time_span = periodo) |>
+  mutate(sitio = 'rio_claro', .before = datetime)
+rc_eto <- getDataAGV_clima(station_id ='00203E6E', var = 'ETo',
+                           time_span = periodo) |>
+  mutate(sitio = 'rio_claro', .before = datetime)
+rc_pp <- getDataAGV_clima(station_id ='00203E6E', var = 'Precipitation',
+                           time_span = periodo) |>
+  mutate(sitio = 'rio_claro', .before = datetime)
+
+temp <- rbind(le_temp,rc_temp) |>
+  rename(t_media = `avg (°C)`,
+         t_max = `max (°C)`,
+         t_min = `min (°C)`)
+vpd <- rbind(le_vpd,rc_vpd) |>
+  rename(vpd_media = `avg (mbar)`,
+         vpd_min = `min (mbar)`)
+eto <- rbind(le_eto,rc_eto) |>
+  rename(eto = `ETo[mm] (mm)`) |>
+  mutate(datetime = as_datetime(datetime,tz = 'America/Santiago')) |>
+  mutate(fecha = format(datetime, "%Y-%m-%d")) |>
+  select(sitio,fecha,eto)
+pp <- rbind(le_pp,rc_pp) |>
+  rename(pp = `sum (mm)`)
+
+data_clima <- temp |>
+  left_join(vpd, by = c('sitio', 'datetime')) |>
+  left_join(pp, by = c('sitio', 'datetime')) |>
+  mutate(datetime = as_datetime(datetime,tz = 'America/Santiago')) |>
+  mutate(fecha = format(datetime, "%Y-%m-%d"),
+         hora = hour(floor_date(datetime,'1 hour')),
+         .before = datetime) |>
+  select(-datetime) |>
+  left_join(eto, by =c('sitio','fecha')) |>
+  group_by(sitio,fecha,hora) |>
+    summarise(t_media = mean(t_media,na.rm=T),
+              t_max = max(t_max,na.rm=T),
+              t_min = min(t_min,na.rm=T),
+              vpd_media = mean(vpd_media,na.rm=T),
+              vpd_min = min(vpd_min,na.rm=T),
+              pp = sum(pp,na.rm=T),
+              eto = mean(eto,ma.rm=T)) |>
+  ungroup() |>
+  mutate(temporada = ifelse(fecha > '2023-06-01','2023-2024','2022-2023'), .before = fecha)
+
+write_rds(data_clima, 'data/processed/clima.rds')
+
+# data_clima |>
+#   mutate(fecha_hora = as.POSIXct(paste0(fecha,' ',hora,':00'), format = "%Y-%m-%d %H:%M")) |>
+#   select(sitio,fecha_hora,t_media) |>
+#   ggplot(aes(fecha_hora,t_media)) +
+#   geom_line() +
+#   facet_wrap(~sitio, scale = 'free_y',ncol = 1) +
+#   theme_bw()
+# 
+# data_clima |>
+#   group_by(sitio,fecha) |>
+#   summarise(eto = mean(eto,na.rm=T)) |>
+#   mutate(fecha = as.Date(fecha)) |>
+#   ggplot(aes(fecha,eto)) +
+#   geom_line() +
+#   facet_wrap(~sitio, scale = 'free_y',ncol = 1) +
+#   theme_bw()
