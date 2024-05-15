@@ -19,6 +19,12 @@ library(rcompanion)
 library(readxl)
 library(agvAPI)
 library(Metrics)
+library(rstac)
+library(gdalcubes)
+library(sf)
+library(earthdatalogin)
+library(glue)
+library(terra)
 options(timeout = max(3600, getOption("timeout")))
 names <- c(la_esperanza = 'La Esperanza',rio_claro = 'Rio Claro',
            T1 = 'T1',T2 = 'T2',T3 = 'T3',T4 = 'T4',T0 = 'T0',
