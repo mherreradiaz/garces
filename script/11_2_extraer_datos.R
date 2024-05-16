@@ -1,6 +1,7 @@
 source('script/funciones/paquetes.R')
 
-files <- sort(list.files('data/raw/sentinel',full.names=T))
+files_le <- sort(list.files('data/raw/sentinel/la_esperanza',full.names=T))
+files_rc <- sort(list.files('data/raw/sentinel/rio_claro',full.names=T))
 
 sitio <- c('la_esperanza','rio_claro')
 temporada <- c('2022-2023','2023-2024')
@@ -18,9 +19,9 @@ pol_2023[[1]]$codigo[10] <- 'T3H98A8'
 
 pol <- list(pol_2022,pol_2023)
 
-data_list <- lapply(files,function(x) {
+data_list_le <- lapply(files_le,function(x) {
   r <- rast(x)
-  r_fecha <- as.Date(substr(x,nchar(x)-11,nchar(x)-4),format = '%Y%m%d')
+  r_fecha <- substr(x,nchar(x)-13,nchar(x)-4)
   
   ndwi <- (r[['B03']]-r[['B08']])/(r[['B03']]+r[['B08']]) # Normalized Difference Water Index
   ndmi <- (r[['B08']]-r[['B11']])/(r[['B08']]+r[['B11']]) # Normalized Difference Moisture Index
@@ -32,22 +33,50 @@ data_list <- lapply(files,function(x) {
   
   r <- r[[-c(1,14:18)]]
   
-  id_sitio <- ifelse(length(grep('la_esperanza', x))==1,1,2)
   id_tiempo <- ifelse(r_fecha < '2023-06-01',1,2)
   
-  df <- data.frame(sitio = sitio[id_sitio],
-                   fecha = as.character(r_fecha),
+  df <- data.frame(sitio = 'la_esperanza',
+                   fecha = r_fecha,
                    temporada = temporada[id_tiempo],
                    unidad = 1:3,
-                   codigo = pol[[id_tiempo]][[id_sitio]]$codigo,
-                   terra::extract(r,pol[[id_tiempo]][[id_sitio]], ID =F),
-                   terra::extract(r_index,pol[[id_tiempo]][[id_sitio]], ID =F))
+                   codigo = pol[[id_tiempo]][[1]]$codigo,
+                   terra::extract(r,pol[[id_tiempo]][[1]], ID =F),
+                   terra::extract(r_index,pol[[id_tiempo]][[1]], ID =F))
   
   return(df)
 })
 
+data_list_rc <- lapply(files_rc,function(x) {
+  r <- rast(x)
+  r_fecha <- substr(x,nchar(x)-13,nchar(x)-4)
+  
+  ndwi <- (r[['B03']]-r[['B08']])/(r[['B03']]+r[['B08']]) # Normalized Difference Water Index
+  ndmi <- (r[['B08']]-r[['B11']])/(r[['B08']]+r[['B11']]) # Normalized Difference Moisture Index
+  msi <- r[['B11']]/r[['B08']] # Moisture Stress Index
+  gci <- (r[['B09']]/r[['B03']])-1 # Green Coverage Index
+  
+  r_index <- c(ndwi,ndmi,msi,gci)
+  names(r_index) <- c('ndwi','ndmi','msi','gci')
+  
+  r <- r[[-c(1,14:18)]]
+  
+  id_tiempo <- ifelse(r_fecha < '2023-06-01',1,2)
+  
+  df <- data.frame(sitio = 'rio_claro',
+                   fecha = r_fecha,
+                   temporada = temporada[id_tiempo],
+                   unidad = 1:3,
+                   codigo = pol[[id_tiempo]][[2]]$codigo,
+                   terra::extract(r,pol[[id_tiempo]][[2]], ID =F),
+                   terra::extract(r_index,pol[[id_tiempo]][[2]], ID =F))
+  
+  return(df)
+})
 
-data <- bind_rows(data_list) |> 
+data_le <- bind_rows(data_list_le)
+data_rc <- bind_rows(data_list_rc)
+
+data <- bind_rows(data_le,data_rc) |> 
   as_tibble() |> 
   na.omit() |>
   separate(codigo, into = c('tratamiento','codigo'), sep = 2) |> 

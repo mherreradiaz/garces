@@ -1,4 +1,5 @@
 source('script/funciones/paquetes.R')
+library(beepr)
 
 # descargar imagenes (hacerlo dos veces, una para cada temporada)
 
@@ -12,7 +13,7 @@ pol <- read_sf(glue('data/processed/espacial/{sitio}.gpkg'),layer = 'borde_cuart
 bb <- st_bbox(pol) |> 
   as.numeric()
 
-inicio <- "2023-09-01"
+inicio <- "2023-12-20"
 fin <- "2024-05-01"
 
 url <- "https://planetarycomputer.microsoft.com/api/stac/v1"
@@ -46,7 +47,9 @@ dir_out <- 'data/raw/sentinel'
 raster_cube(col, v, mask=cloud_mask) |>
   write_tif(glue('{dir_out}/sentinel_{sitio}'))
 
- # renombrar
+beep(10)
+
+  # renombrar
 
 r.file <- list.files('data/raw/sentinel/sentinel_rio_claro/')
 

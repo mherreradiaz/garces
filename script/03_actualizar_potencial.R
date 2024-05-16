@@ -1,9 +1,4 @@
-library(fs)
-library(readr)
-library(stringr)
-library(lubridate)
-library(tidyr)
-library(dplyr)
+source('script/funciones/paquetes.R')
 
 data_potencial <- read_rds('data/processed/potencial.rds')
 

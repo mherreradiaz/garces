@@ -1,10 +1,4 @@
-
-library(fs)
-library(readr)
-library(stringr)
-library(lubridate)
-library(tidyr)
-library(dplyr)
+source('script/funciones/paquetes.R')
 
 data_fluo <- read_rds('data/processed/fluorescencia.rds')
 codigos <- read_csv2('data/metadata/codigos_arboles.csv')
