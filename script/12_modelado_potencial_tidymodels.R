@@ -77,3 +77,31 @@ test_results |>
   geom_point(alpha = .4) + 
   #facet_wrap(~model) + 
   coord_fixed()
+
+## XGBoost
+
+xgbst_mod <- boost_tree(
+  mode = "regression",
+  trees = 1000) |> 
+  set_engine("xgboost") %>%
+  set_mode("regression") %>%
+  translate() |> 
+  fit(potencial_bar~.,data = pot_train)
+
+
+test_results <- 
+  pot_test |> 
+  select(potencial_bar) %>%
+  bind_cols(
+    predict(xgbst_mod, new_data = pot_test)
+  )
+
+test_results  |>  
+  metrics(truth = potencial_bar, estimate = .pred) 
+
+test_results |> 
+  ggplot(aes(x = .pred, y = potencial_bar)) + 
+  geom_abline(col = "green", lty = 2) + 
+  geom_point(alpha = .4) + 
+  #facet_wrap(~model) + 
+  coord_fixed()
