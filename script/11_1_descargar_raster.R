@@ -41,18 +41,21 @@ col <- stac_image_collection(items$features)
 
 cloud_mask <- image_mask("SCL", values=c(3,8,9))
 
-dir_out <- 'data/raw/raster'
+dir_out <- 'data/raw/sentinel'
 
 raster_cube(col, v, mask=cloud_mask) |>
   write_tif(glue('{dir_out}/sentinel_{sitio}'))
 
  # renombrar
 
-r.file <- list.files('data/raw/raster/sentinel_rio_claro/')
+r.file <- list.files('data/raw/sentinel/sentinel_rio_claro/')
 
-names <- paste0('rio_claro',gsub('-','',substr(r.file,18,27)),'.tif')
+names <- paste0('rio_claro',gsub('-','',substr(r.file,
+                                                  nchar(r.file[1])-13,
+                                                  nchar(r.file[1])-4)),
+                '.tif')
 
 for (i in seq_along(r.file)) {
-  file.rename(from = file.path('data/raw/raster/sentinel_rio_claro', r.file[i]),
-              to = file.path('data/raw/raster', names[i]))
+  file.rename(from = file.path('data/raw/sentinel/sentinel_rio_claro', r.file[i]),
+              to = file.path('data/raw/sentinel', names[i]))
 }
