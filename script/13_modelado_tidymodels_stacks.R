@@ -22,7 +22,7 @@ metric <- metric_set(rmse)
 ctrl_grid <- control_stack_grid()
 ctrl_res <- control_stack_resamples()
 
-# Random Forest
+# Random Forest con tunning
 # 
 rf_mod <- rand_forest(
   mode = "regression",
@@ -49,9 +49,10 @@ set.seed(345)
 tune_res <- tune_grid(
   rf_wflow,
   resamples = folds,
-  grid = 20
+  control = ctrl_res
 )
 
+# Revisar como afectan los parametros a la metrica RMSE
 tune_res |> 
   collect_metrics() |> 
   filter(.metric == "rmse") |> 
@@ -65,6 +66,8 @@ tune_res |>
   facet_wrap(~parameter, scales = "free_x") +
   labs(x = NULL, y = "AUC")
 
+# se ajusta el tunning de acuerod al análisis del gráfico anterior
+# 
 rf_grid <- grid_regular(
   mtry(range = c(15, 20)),
   min_n(range = c(1, 10)),
@@ -84,3 +87,71 @@ regular_res
 
 regular_res |> 
   collect_metrics()
+
+#SVM con tunning
+# create a model definition
+svm_spec <- 
+  svm_rbf(
+    cost = tune("cost"), 
+    rbf_sigma = tune("sigma")
+  ) %>%
+  set_engine("kernlab") %>%
+  set_mode("regression")
+
+svm_wflow <- 
+  workflow() %>% 
+  add_model(svm_spec) %>%
+  add_recipe(pot_rec)
+
+set.seed(2020)
+svm_res <- 
+  tune_grid(
+    svm_wflow, 
+    resamples = folds, 
+    grid = 6,
+    metrics = metric,
+    control = ctrl_grid
+  )
+
+svm_res |> collect_metrics()
+
+# Ensmablando modelos con stacks
+# 
+stacks()
+
+pot_data_st <- 
+  stacks() |> 
+  add_candidates(tune_res) |> 
+  add_candidates(svm_res)
+
+as_tibble(pot_data_st)
+
+pot_model_st <-
+  pot_data_st |> 
+  blend_predictions()
+
+autoplot(pot_model_st)
+autoplot(pot_model_st,type = 'members')
+autoplot(pot_model_st,type = 'weights')
+
+pot_model_st <-
+  pot_model_st %>%
+  fit_members()
+
+pot_test <- 
+  pot_test %>%
+  bind_cols(predict(pot_model_st, .))
+
+ggplot(pot_test) +
+  aes(x = potencial_bar, 
+      y = .pred) +
+  geom_point() + 
+  coord_obs_pred()
+
+member_preds <- 
+  pot_test |> 
+  select(potencial_bar) %>%
+  bind_cols(predict(pot_model_st, pot_test, members = TRUE))
+
+map(member_preds, rsq_vec, truth = member_preds$potencial_bar)  |> 
+  as_tibble()
