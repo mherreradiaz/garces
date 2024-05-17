@@ -2,18 +2,21 @@ library(tidyverse)
 library(tidymodels)
 
 data <- read_rds('data/processed/modelo_potencial.rds') |> 
-  select(-(temporada:codigo))
+  select(-(sitio:codigo))
 
 set.seed(123)
-splits      <- initial_split(data, strata = sitio)
+splits      <- initial_split(data)
 
 pot_train <- training(splits)
 pot_test  <- testing(splits)
 
 # Random Forest
 # 
-rf_mod <- rand_forest(mode = "regression",trees = 1000) |> 
-  set_engine('ranger') |> 
+
+rf_spec <- rand_forest(mode = "regression",trees = 1000) |> 
+  set_engine('ranger') 
+
+rf_mode <- rf_spec |> 
   fit(potencial_bar~.,data = pot_train)
   
 test_results <- 
@@ -40,7 +43,7 @@ folds <- vfold_cv(pot_train, v = 10)
 
 rf_wf <- 
   workflow() %>%
-  add_model(rf_mod) %>%
+  add_model(rf_spec) %>%
   add_formula(potencial_bar ~ .)
 
 set.seed(456)
