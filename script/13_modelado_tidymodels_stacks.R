@@ -143,10 +143,12 @@ pot_test <-
   bind_cols(predict(pot_model_st, .))
 
 ggplot(pot_test) +
-  aes(x = potencial_bar, 
-      y = .pred) +
-  geom_point() + 
-  coord_obs_pred()
+  aes(x = .pred, 
+      y = potencial_bar) +
+  geom_abline(col='red') +
+  geom_point(alpha = .4) + 
+  coord_obs_pred() +
+  theme_bw()
 
 member_preds <- 
   pot_test |> 
