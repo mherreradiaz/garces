@@ -16,7 +16,7 @@ pot_test  <- testing(splits)
 rf_spec <- rand_forest(mode = "regression",trees = 1000) |> 
   set_engine('ranger') 
 
-rf_mode <- rf_spec |> 
+rf_mod <- rf_spec |> 
   fit(potencial_bar~.,data = pot_train)
   
 test_results <- 
