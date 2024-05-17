@@ -33,9 +33,12 @@ test_results |>
   ggplot(aes(x = .pred, y = potencial_bar)) + 
   geom_abline(col = "green", lty = 2) + 
   geom_point(alpha = .4) + 
+  labs(x = 'Potencial estimado', y= 'Potencial observado') +
+  annotate("text",label = 'rmse = 2.71\n r2 = 0.73\n mae = 1.81',
+           x=20,y = 2,size=2) +
   #facet_wrap(~model) + 
   coord_fixed()
-
+ggsave('output/figs/scatterplots_estimado_observado_modelo_potencial.png',scale=2)
 # Resampling
 
 set.seed(345)
