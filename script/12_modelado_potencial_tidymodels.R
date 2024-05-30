@@ -11,14 +11,48 @@ pot_train <- training(splits)
 pot_test  <- testing(splits)
 
 # Random Forest
-# 
+library(vip)
 
 rf_spec <- rand_forest(mode = "regression",trees = 1000) |> 
-  set_engine('ranger') 
+  set_engine('ranger',importance = "impurity") 
 
-rf_mod <- rf_spec |> 
-  fit(potencial_bar~.,data = pot_train)
-  
+data_folds <- vfold_cv(pot_train, v = 5)
+
+rf_wf <- 
+  workflow() |> 
+  add_model(rf_spec) |> 
+  add_formula(potencial_bar~.) 
+
+ctrl_imp <- control_grid(extract = get_rf_imp)
+
+rf_fit_resample <-
+  rf_wf |> 
+  fit_resamples(data_folds,control = ctrl_imp)
+
+df_met <- collect_metrics(rf_fit_resample) |> 
+  select(-.estimator,-.config)
+
+df_var_imp <- rf_fit_resample |> 
+  select(id, .extracts) %>%
+  unnest(.extracts) %>%
+  unnest(.extracts) %>%
+  group_by(Variable) %>%
+  summarise(Mean = mean(Importance),
+            Variance = sd(Importance))
+df_var_imp |>   
+  slice_max(Mean, n = 15) %>%
+  ggplot(aes(Mean, reorder(Variable, Mean))) +
+  geom_errorbar(aes(xmin = Mean - Variance, xmax = Mean + Variance)) +
+  geom_point(aes(Mean)) +
+  labs(x = "Variable importance", y = NULL) +
+  annotate("text",x=max(df_var_imp$Mean),y=1,label =paste0('rsq=',round(df_met$mean[2],2))) +
+  theme_bw()
+ggsave(paste0('output/figs/fig_errorbar_resample_random_forest_trends_',vars[i],'_',macro,'.png'),scale =1.5)
+df_var_imp <- df_var_imp |> 
+  slice_max(Mean, n = 5) |> 
+  mutate(type = vars[i],macrozona = {{macro}}) 
+list(df_met,df_var_imp)
+
 test_results <- 
   pot_test |> 
   select(potencial_bar) %>%
@@ -55,7 +89,7 @@ rf_fit_rs <-
   fit_resamples(folds)
 
 collect_metrics(rf_fit_rs)
-  
+
 ## LightGBM
 library(bonsai)
 lgbm_mod <- boost_tree(

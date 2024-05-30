@@ -64,7 +64,7 @@ tune_res |>
   ggplot(aes(value, mean, color = parameter)) +
   geom_point(show.legend = FALSE) +
   facet_wrap(~parameter, scales = "free_x") +
-  labs(x = NULL, y = "AUC")
+  labs(x = NULL, y = "RMSE")
 
 # se ajusta el tunning de acuerod al análisis del gráfico anterior
 # 

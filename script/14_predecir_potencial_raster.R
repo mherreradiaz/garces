@@ -42,7 +42,7 @@ out <- map(files,\(file){
     
     predictores <- c(s2,ndwi,ndmi,msi,gci,rast_temp,rast_rh,rast_vpd)
     names(predictores) <- c( "B01","B02","B03","B04","B05","B06","B07","B08","B09","B11","B12","B8A","ndwi","ndmi","msi","gci","t_media","rh_media","vpd_medio")    
-     
+    
     #funcion para aplicar el modelo en los rasters 
     fun<-function(...){
       p<-predict(...)
