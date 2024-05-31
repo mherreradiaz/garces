@@ -60,15 +60,16 @@ test_results <-
     predict(rf_mod, new_data = pot_test)
   )
 
-test_results  |>  
-  metrics(truth = potencial_bar, estimate = .pred) 
+met <- test_results  |>  
+  metrics(truth = potencial_bar, estimate = .pred) |> 
+  mutate(.estimate = round(.estimate,2))
 
 test_results |> 
   ggplot(aes(x = .pred, y = potencial_bar)) + 
   geom_abline(col = "green", lty = 2) + 
   geom_point(alpha = .4) + 
   labs(x = 'Potencial estimado', y= 'Potencial observado') +
-  annotate("text",label = 'rmse = 2.71\n r2 = 0.73\n mae = 1.81',
+  annotate("text",label = paste0('rmse = ',met[1,3],'\n r2 = ',met[2,3],'\n mae = ',met[3,3]),
            x=20,y = 2,size=2) +
   #facet_wrap(~model) + 
   coord_fixed()
