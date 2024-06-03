@@ -1,14 +1,7 @@
 source('script/funciones/paquetes.R')
 
 data_sentinel_1 <- read_rds('data/processed/sentinel_1.rds') |> 
-  distinct() |> 
-  mutate(fecha = as.Date(fecha)) |> 
-  group_by(sitio,temporada,tratamiento,unidad,codigo) |> 
-  complete(fecha = seq.Date(min(fecha), max(fecha), by = "day")) |>
-  mutate(across(vh:vv, ~ zoo::na.approx(., na.rm = FALSE))) |> 
-  ungroup() |> 
-  mutate(fecha = as.character(fecha)) |> 
-  select(sitio,temporada,fecha,everything())
+  distinct(sitio,temporada,fecha,tratamiento,unidad,codigo,.keep_all=T)
 
 # data_sentinel_2 |> 
 #   filter(sitio == 'la_esperanza',
@@ -28,13 +21,11 @@ data_sentinel_2 <- read_rds('data/processed/sentinel2_bands.rds') |>
   mutate(fecha = as.character(fecha)) |> 
   select(sitio,temporada,fecha,everything())
 
-data_sentinel_index <- read_rds('data/processed/sentinel2_index_smooth.rds') |> 
-  distinct()
+data_sentinel_index <- read_rds('data/processed/sentinel2_index_smooth.rds')
 
 data_sentinel <- data_sentinel_index |> 
   left_join(data_sentinel_2,
-            by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) |> 
-  distinct(sitio,fecha,tratamiento,unidad,codigo,.keep_all=T)
+            by=c('sitio','temporada','fecha','tratamiento','unidad','codigo'))
 
 data_potencial <- read_rds('data/processed/potencial.rds')
 data_clima <- read_rds('data/processed/clima.rds') |> 
@@ -48,6 +39,7 @@ data_clima <- read_rds('data/processed/clima.rds') |>
 data <- data_sentinel |> 
   left_join(data_potencial,by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) |> 
   left_join(data_clima,by=c('sitio','temporada','fecha')) |> 
+  #left_join(data_sentinel_1,by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) |> 
   na.omit() |> 
   select(sitio:codigo,potencial_bar,everything()) |> 
   arrange(temporada,fecha,sitio,tratamiento,unidad)

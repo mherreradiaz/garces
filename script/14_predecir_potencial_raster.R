@@ -2,7 +2,7 @@ library(tidyverse)
 library(fs)
 library(terra)
 
-files <- dir_ls('data/raw/sentinel/rio_claro')
+files <- dir_ls('data/raw/sentinel/la_esperanza')
 
 s2 <- rast(files[1])[[-c(1,14,15,16:18)]]
 names(s2)
@@ -16,6 +16,9 @@ out <- map(files,\(file){
     ndmi <- app(s2,\(x) (x['B08']-x['B11'])/(x['B08']+x['B11'])) # Normalized Difference Moisture Index
     msi <- app(s2,\(x) x['B11']/x['B08']) # Moisture Stress Index
     gci <- app(s2,\(x) (x['B09']/x['B03'])-1) # Green Coverage Index
+    ndvi <- app(s2,\(x) (x['B08']-x['B04'])/(x['B08']+x['B04'])) #NDVI
+    nbr <- app(s2,\(x) (x['B08']-x['B12'])/(x['B08']+x['B12'])) # Normalized Burn Ratio
+    b_i <- app(s2,\(x) x['B11']/x['B12']) # Índice B11 Y B12
     
     fecha_filt <- str_extract(file,'[0-9]{4}-[0-9]{2}-[0-9]{2}')
     data_clima <- read_rds('data/processed/clima.rds') |> 
@@ -40,8 +43,8 @@ out <- map(files,\(file){
     # [13] "B8A"           "ndwi"          "ndmi"          "msi"    
     # [17] "gci"           "t_media"       "rh_media"      "vpd_medio"    
     
-    predictores <- c(s2,ndwi,ndmi,msi,gci,rast_temp,rast_rh,rast_vpd)
-    names(predictores) <- c( "B01","B02","B03","B04","B05","B06","B07","B08","B09","B11","B12","B8A","ndwi","ndmi","msi","gci","t_media","rh_media","vpd_medio")    
+    predictores <- c(s2,ndwi,ndmi,msi,gci,ndvi,nbr,b_i,rast_temp,rast_rh,rast_vpd)
+    names(predictores) <- c( "B01","B02","B03","B04","B05","B06","B07","B08","B09","B11","B12","B8A","ndwi","ndmi","msi","gci","ndvi","nbr","b_i","t_media","rh_media","vpd_medio")    
     
     #funcion para aplicar el modelo en los rasters 
     fun<-function(...){
@@ -51,7 +54,7 @@ out <- map(files,\(file){
     
     potencial_raster <- 
       terra::predict(predictores,
-                     model =rf_mod,
+                     model =rf_fit,
                      fun=fun)
   } else {
     potencial_raster <- s2[[1]]
@@ -70,12 +73,11 @@ yrmth <- ym(format(ymd(names(out)),'%Y-%m'))
 
 out_mes <- tapp(out,index = yrmth,'mean',na.rm = TRUE)
 
-
 library(tmap)
 library(sf)
 
-st_layers('data/processed/espacial/rio_claro.gpkg')
-pol <- st_read('data/processed/espacial/rio_claro.gpkg', layer = 'borde_cuartel')
+st_layers('data/processed/espacial/sitios/la_esperanza.gpkg')
+pol <- st_read('data/processed/espacial/sitios/la_esperanza.gpkg', layer = 'borde_cuartel')
 
 namlay <- ymd(str_remove(names(out_mes),'X'))
 
@@ -88,4 +90,4 @@ mapa <- tm_shape(out_mes) +
   tm_facets(nrow = 2,as.layers = TRUE) +
   tm_layout(panel.labels = namlay )
 
-tmap_save(mapa,'output/figs/potencial_raster_estimado_rio_claro.png')
+tmap_save(mapa,'output/figs/potencial_raster_estimado_la_esperanza.png')

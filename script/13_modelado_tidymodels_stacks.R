@@ -66,7 +66,7 @@ tune_res |>
   facet_wrap(~parameter, scales = "free_x") +
   labs(x = NULL, y = "RMSE")
 
-# se ajusta el tunning de acuerod al análisis del gráfico anterior
+# se ajusta el tunning de acuerdo al análisis del gráfico anterior
 # 
 rf_grid <- grid_regular(
   mtry(range = c(15, 20)),
@@ -85,8 +85,10 @@ regular_res <- tune_grid(
 
 regular_res
 
-regular_res |> 
+metricas <- regular_res |> 
   collect_metrics()
+
+metricas |> filter(.metric == 'rsq') |> pull(mean) |> max()
 
 #SVM con tunning
 # create a model definition
