@@ -1,8 +1,6 @@
-
 library(fs)
 library(tidyverse)
 files <- dir_ls('data/processed/espacial/raster/index_raw/',regexp = 'tif$')
-
 
 files_le_2020 <- str_subset(files[fechas < "2023-06-01"],'la_esperanza.*(2022|2023)')
 fechas <- ymd(str_extract(basename(files_le_2020),'[0-9]{4}_[0-9]{2}_[0-9]{2}'))
