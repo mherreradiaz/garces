@@ -2,40 +2,57 @@ library(tidyverse)
 library(fs)
 library(terra)
 
-files <- dir_ls('data/raw/sentinel/la_esperanza')
+files <- dir_ls('data/processed/espacial/raster/index_smooth')
 
-s2 <- rast(files[1])[[-c(1,14,15,16:18)]]
-names(s2)
+data_clima <- read_rds('data/processed/clima.rds') |> 
+  filter(hora %in% c('13:00','14:00')) |> 
+  group_by(sitio,temporada,fecha) |> 
+  summarise(t_media = mean(t_media,na.rm=T),
+            rh_media = mean(rh_media,na.rm=T),
+            vpd_medio = mean(vpd_medio,na.rm=T)) |> 
+  ungroup() |> 
+  mutate(fecha = as.Date(fecha)) |> 
+  group_by(sitio,temporada) |> 
+  complete(fecha = seq.Date(min(fecha), max(fecha), by = "day")) |>
+  mutate(across(t_media:vpd_medio, ~ zoo::na.approx(., na.rm = FALSE))) |> 
+  ungroup() |> 
+  mutate(fecha = as.character(fecha)) |> 
+  select(sitio,temporada,fecha,everything())
+
+# data_clima |> 
+#   pivot_longer(cols=c('t_media','vpd_medio','rh_media'),values_to='valor',names_to='var') |> 
+#   mutate(fecha=as.Date(fecha)) |> 
+#   ggplot(aes(fecha,valor,color=var)) +
+#   geom_point() +
+#   facet_grid(sitio~temporada,scales='free')
 
 out <- map(files,\(file){
   print(file)
-  s2 <- rast(file)[[-c(1,14,15,16:18)]]
+  s2 <- rast(file)
   
   if(!(is.na(values(s2)) |> any())){
-    ndwi <- app(s2,\(x) (x['B03']-x['B08'])/(x['B03']+x['B08'])) # Normalized Difference Water Index
-    ndmi <- app(s2,\(x) (x['B08']-x['B11'])/(x['B08']+x['B11'])) # Normalized Difference Moisture Index
-    msi <- app(s2,\(x) x['B11']/x['B08']) # Moisture Stress Index
-    gci <- app(s2,\(x) (x['B09']/x['B03'])-1) # Green Coverage Index
-    ndvi <- app(s2,\(x) (x['B08']-x['B04'])/(x['B08']+x['B04'])) #NDVI
-    nbr <- app(s2,\(x) (x['B08']-x['B12'])/(x['B08']+x['B12'])) # Normalized Burn Ratio
-    b_i <- app(s2,\(x) x['B11']/x['B12']) # Índice B11 Y B12
+    ndwi <- s2['ndwi'] # Normalized Difference Water Index
+    ndmi <- s2['ndmi'] # Normalized Difference Moisture Index
+    msi <- s2['msi']# Moisture Stress Index
+    gci <- s2['gci'] # Green Coverage Index
+    ndvi <- s2['ndvi'] #NDVI
+    nbr <- s2['nbr']# Normalized Burn Ratio
+    b_i <- s2['b_i'] # Índice B11 Y B12
     
-    fecha_filt <- str_extract(file,'[0-9]{4}-[0-9]{2}-[0-9]{2}')
-    data_clima <- read_rds('data/processed/clima.rds') |> 
-      group_by(fecha) |> 
-      summarize(t_media = mean(t_media,na.rm = TRUE),
-                rh_media = mean(rh_media,na.rm = TRUE),
-                vpd_medio = mean(vpd_medio,na.rm = TRUE)) |> 
-      filter(fecha  == fecha_filt)
+    sitio_filt <- str_extract(file,'(?<=smooth_)[a-zA-Z_]+(?=_\\d{4}_\\d{2}_\\d{2})')
+    fecha_filt <- gsub('_','-',str_extract(file,'\\d{4}_\\d{2}_\\d{2}'))
+    data_clima_x <- data_clima |> 
+      filter(sitio == sitio_filt,
+             fecha  == fecha_filt)
     
     #crear raster para prediccion
     
     rast_temp <- s2[[1]]
-    values(rast_temp) <- data_clima$t_media
+    values(rast_temp) <- data_clima_x$t_media
     rast_rh <- s2[[1]]
-    values(rast_rh) <- data_clima$rh_media
+    values(rast_rh) <- data_clima_x$rh_media
     rast_vpd <- s2[[1]]
-    values(rast_vpd) <- data_clima$vpd_medio
+    values(rast_vpd) <- data_clima_x$vpd_medio
     
     # "B01"           "B02"           "B03"          
     # [5] "B04"           "B05"           "B06"           "B07"     
@@ -43,8 +60,8 @@ out <- map(files,\(file){
     # [13] "B8A"           "ndwi"          "ndmi"          "msi"    
     # [17] "gci"           "t_media"       "rh_media"      "vpd_medio"    
     
-    predictores <- c(s2,ndwi,ndmi,msi,gci,ndvi,nbr,b_i,rast_temp,rast_rh,rast_vpd)
-    names(predictores) <- c( "B01","B02","B03","B04","B05","B06","B07","B08","B09","B11","B12","B8A","ndwi","ndmi","msi","gci","ndvi","nbr","b_i","t_media","rh_media","vpd_medio")    
+    predictores <- c(ndwi,ndmi,msi,gci,ndvi,nbr,b_i,rast_temp,rast_rh,rast_vpd)
+    names(predictores) <- c('ndwi','ndmi','msi','gci','ndvi','nbr','b_i','t_media','rh_media','vpd_medio')    
     
     #funcion para aplicar el modelo en los rasters 
     fun<-function(...){
@@ -60,11 +77,18 @@ out <- map(files,\(file){
     potencial_raster <- s2[[1]]
     values(potencial_raster) <- NA
   }
+  
+  names(potencial_raster) <- 'potencial'
   potencial_raster
 })
 
-out <- rast(out)
-names(out) <- str_extract(names(out),'[0-9]{4}-[0-9]{2}-[0-9]{2}')
+names(out) <- str_extract(names(out),'(?<=smooth_)[^\\.]+(?=\\.tif)')
+
+lapply(names(out), function(name) {
+  dir <- paste0('data/processed/espacial/raster/potencial_mod/potencial_mod_', name, '.tif')
+  writeRaster(out[[name]], dir, overwrite=TRUE)
+})
+
 
 out <- subset(out,order(names(out)))
 plot(out)

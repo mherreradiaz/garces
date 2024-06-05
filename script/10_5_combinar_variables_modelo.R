@@ -1,17 +1,9 @@
 source('script/funciones/paquetes.R')
 
-data_sentinel_1 <- read_rds('data/processed/sentinel_1.rds') |> 
+data_sen1 <- read_rds('data/processed/sentinel_1.rds') |> 
   distinct(sitio,temporada,fecha,tratamiento,unidad,codigo,.keep_all=T)
 
-# data_sentinel_2 |> 
-#   filter(sitio == 'la_esperanza',
-#          temporada == '2022-2023',
-#          tratamiento == 'T1',
-#          unidad == 1) |> 
-#   ggplot(aes(fecha,B01)) +
-#   geom_point()
-
-data_sentinel_2 <- read_rds('data/processed/sentinel2_bands.rds') |> 
+data_sen2_bands <- read_rds('data/processed/sentinel2_bands.rds') |> 
   distinct() |> 
   mutate(fecha = as.Date(fecha)) |> 
   group_by(sitio,temporada,tratamiento,unidad,codigo) |> 
@@ -21,10 +13,10 @@ data_sentinel_2 <- read_rds('data/processed/sentinel2_bands.rds') |>
   mutate(fecha = as.character(fecha)) |> 
   select(sitio,temporada,fecha,everything())
 
-data_sentinel_index <- read_rds('data/processed/sentinel2_index_smooth.rds')
+data_sen2_index <- read_rds('data/processed/sentinel2_index_smooth.rds')
 
-data_sentinel <- data_sentinel_index |> 
-  left_join(data_sentinel_2,
+data_sen2 <- data_sen2_index |> 
+  left_join(data_sen2_bands,
             by=c('sitio','temporada','fecha','tratamiento','unidad','codigo'))
 
 data_potencial <- read_rds('data/processed/potencial.rds')
@@ -36,11 +28,10 @@ data_clima <- read_rds('data/processed/clima.rds') |>
             vpd_medio = mean(vpd_medio,na.rm=T)) |> 
   ungroup()
   
-data <- data_sentinel |> 
+data <- data_sen2 |> 
   left_join(data_potencial,by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) |> 
   left_join(data_clima,by=c('sitio','temporada','fecha')) |> 
-  #left_join(data_sentinel_1,by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) |> 
-  na.omit() |> 
+  left_join(data_sen1,by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) |> 
   select(sitio:codigo,potencial_bar,everything()) |> 
   arrange(temporada,fecha,sitio,tratamiento,unidad)
 

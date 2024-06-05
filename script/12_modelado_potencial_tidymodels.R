@@ -10,6 +10,18 @@ get_rf_imp <- function(x) {
 data <- read_rds('data/processed/modelo_potencial.rds') |>
   select(-(sitio:codigo))
 
+data <- data |>
+  select(-vv,-vh)
+
+data <- data |> 
+  select()
+
+data <- data |> 
+  select(-(B01:B8A))
+
+data <- data |> 
+  na.omit()
+
 set.seed(123)
 splits <- initial_split(data)
 
@@ -53,7 +65,7 @@ df_var_imp |>
   geom_errorbar(aes(xmin = Mean - Variance, xmax = Mean + Variance)) +
   geom_point(aes(Mean)) +
   labs(x = "Variable importance", y = NULL) +
-  annotate("text",x=max(df_var_imp$Mean),y=1,label =paste0('rsq=',round(df_met$mean[2],2))) +
+  annotate("text",x=max(df_var_imp$Mean),y=1,label =paste0('r2=',round(df_met$mean[2],2))) +
   theme_bw()
 ggsave(paste0('output/figs/fig_errorbar_resample_random_forest_trends.png'),scale =1.5)
 
