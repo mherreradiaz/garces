@@ -145,11 +145,19 @@ test_results |>
 
 xgbst_mod <- boost_tree(
   mode = "regression",
-  trees = 1000) |> 
+  trees = 1000,
+  tree_depth = tune(), 
+  min_n = tune(),
+  loss_reduction = tune(),                    ## first three: model complexity
+  sample_size = tune(), 
+  mtry = tune(),        ## randomness
+  learn_rate = tune()  ) |> 
   set_engine("xgboost") %>%
   set_mode("regression") %>%
   translate() |> 
   fit(potencial_bar~.,data = pot_train)
+
+#tunning
 
 
 test_results <- 
