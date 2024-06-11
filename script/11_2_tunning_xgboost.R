@@ -1,5 +1,6 @@
 library(xgboost)
 library(tidymodels)
+library(tidyverse)
 
 ## Cargar los datos
 
