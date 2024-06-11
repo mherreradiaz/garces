@@ -7,17 +7,17 @@ get_rf_imp <- function(x) {
     vip::vi()
 }
 
-data <- read_rds('data/processed/modelo_potencial.rds') |>
+data <- read_rds('data/processed/modelo_potencial_old.rds') |>
   select(-(sitio:codigo))
 
 data <- data |>
   select(-vv,-vh)
 
-data <- data |> 
-  select()
+data <- data |>
+  select(-(B01:B8A))
 
 data <- data |> 
-  select(-(B01:B8A))
+  select(-pp,-eto)
 
 data <- data |> 
   na.omit()

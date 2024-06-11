@@ -228,13 +228,30 @@ data <- bind_rows(data_le,data_rc) |>
 
 write_rds(data,'data/processed/sentinel_1.rds')
 
-data |> 
+data <- read_rds('data/processed/sentinel_1.rds') |> 
   group_by(sitio,temporada,fecha) |> 
   summarise(vv = mean(vv,na.rm=T),
             vh = mean(vh,na.rm=T)) |> 
-  ggplot(aes(as.Date(fecha),vv)) +
+  ungroup() |> 
+  pivot_longer(cols=c('vv','vh'),names_to='onda',values_to='valor')
+
+data_potencial <- read_rds('data/processed/potencial.rds') |> 
+  mutate(fecha=as.Date(fecha))
+
+which(paste(data$fecha,data$sitio) %in% paste(data_potencial$fecha,data_potencial$sitio))
+
+data |> 
+  ggplot(aes(as.Date(fecha),valor,color=onda)) +
   geom_point() +
+  geom_line() +
   facet_grid(sitio~temporada,scales='free')
+
+ggplot() +
+  geom_point(data = data, aes(as.Date(fecha), valor, color = onda)) +
+  geom_line(data = data, aes(as.Date(fecha), valor, color = onda)) +
+  geom_point(data = data_potencial, aes(fecha, potencial_bar)) +
+  facet_grid(sitio ~ temporada, scales = 'free') +
+  labs(x = 'Fecha', y = 'Valor', color = 'Onda')
 
 data |> 
   select(-vh) |> 

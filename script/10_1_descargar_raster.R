@@ -64,15 +64,15 @@ source('script/funciones/paquetes.R')
 edl_netrc(username = 'frzambra@gmail.com',password = 'Traplozx398#')
 with_gdalcubes()
 
-sitio <- 'rio_claro'
-layers <- st_layers(glue('data/processed/espacial/{sitio}.gpkg'))
-pol <- read_sf(glue('data/processed/espacial/{sitio}.gpkg'),layer = 'cuartel')
+sitio <- 'la_esperanza'
+layers <- st_layers(glue('data/processed/espacial/sitios/{sitio}.gpkg'))
+pol <- read_sf(glue('data/processed/espacial/sitios/{sitio}.gpkg'),layer = 'cuartel')
 
 bb <- st_bbox(pol) |> 
   as.numeric()
 
-# inicio <- "2022-08-20"
-# fin <- "2023-01-01"
+inicio <- "2022-08-20"
+fin <- "2023-01-01"
 
 # inicio <- "2022-12-20"
 # fin <- "2023-05-01"
@@ -80,13 +80,13 @@ bb <- st_bbox(pol) |>
 # inicio <- "2023-08-20"
 # fin <- "2024-01-01"
 
-inicio <- "2023-12-20"
-fin <- "2024-05-01"
+# inicio <- "2023-12-20"
+# fin <- "2024-05-01"
 
 url <- "https://planetarycomputer.microsoft.com/api/stac/v1"
 
 items <- stac(url) |> 
-  stac_search(collections = 'sentinel-1-rtc',
+  stac_search(collections = 'sentinel-1-grd',
               bbox = bb,
               datetime = paste(inicio,fin, sep = "/")) |>
   post_request() |>

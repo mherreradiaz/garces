@@ -20,13 +20,21 @@ data_sen2 <- data_sen2_index |>
             by=c('sitio','temporada','fecha','tratamiento','unidad','codigo'))
 
 data_potencial <- read_rds('data/processed/potencial.rds')
+
+data_clima_1 <- read_rds('data/processed/clima.rds') |> 
+  group_by(sitio,temporada,fecha) |> 
+  summarise(eto = max(eto,na.rm=T),
+            pp = sum(pp,na.rm=T)) |> 
+  ungroup()
+
 data_clima <- read_rds('data/processed/clima.rds') |> 
   filter(hora %in% c('13:00','14:00')) |> 
   group_by(sitio,temporada,fecha) |> 
   summarise(t_media = mean(t_media,na.rm=T),
             rh_media = mean(rh_media,na.rm=T),
             vpd_medio = mean(vpd_medio,na.rm=T)) |> 
-  ungroup()
+  ungroup() |> 
+  left_join(data_clima_1,by=c('sitio','temporada','fecha'))
   
 data <- data_sen2 |> 
   left_join(data_potencial,by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) |> 
