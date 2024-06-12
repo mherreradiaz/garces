@@ -1,6 +1,8 @@
 source('script/funciones/paquetes.R')
+
 library(tidyverse)
 library(tidymodels)
+
 get_rf_imp <- function(x) {
   x %>% 
     extract_fit_parsnip() %>% 
@@ -13,7 +15,7 @@ data <- read_rds('data/processed/modelo_potencial_old.rds') |>
 data <- data |>
   select(-vv,-vh)
 
-data <- data |>
+data <- data |> 
   select(-(B01:B8A))
 
 # data <- data |> 
@@ -96,6 +98,7 @@ test_results |>
   #facet_wrap(~model) + 
   coord_fixed()
 ggsave('output/figs/scatterplots_estimado_observado_modelo_potencial.png',scale=2)
+
 # Resampling
 
 set.seed(345)

@@ -168,8 +168,8 @@ write_rds(data,'data/processed/sentinel2_index_smooth.rds')
 
 # Sentinel 1
 
-files_le <- sort(list.files('data/raw/sentinel/s1_la_esperanza',full.names=T))
-files_rc <- sort(list.files('data/raw/sentinel/s1_rio_claro',full.names=T))
+files_le <- sort(list.files('data/raw/sentinel/sen_1_la_esperanza',full.names=T))
+files_rc <- sort(list.files('data/raw/sentinel/sen_1_rio_claro',full.names=T))
 
 sitio <- c('la_esperanza','rio_claro')
 temporada <- c('2022-2023','2023-2024')

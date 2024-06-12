@@ -2,7 +2,9 @@ source('script/funciones/paquetes.R')
 library(beepr)
 
 # descargar imagenes (hacerlo dos veces, una para cada temporada)
-
+library(earthdatalogin)
+library(sf)
+library(glue)
 edl_netrc(username = 'frzambra@gmail.com',password = 'Traplozx398#')
 with_gdalcubes()
 
