@@ -16,8 +16,8 @@ data <- data |>
 data <- data |>
   select(-(B01:B8A))
 
-data <- data |> 
-  select(-pp,-eto)
+# data <- data |> 
+#   select(-pp,-eto)
 
 data <- data |> 
   na.omit()
