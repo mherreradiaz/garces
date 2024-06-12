@@ -4,6 +4,12 @@ library(terra)
 
 files <- dir_ls('data/processed/espacial/raster/index_smooth')
 
+data_clima_1 <- read_rds('data/processed/clima.rds') |> 
+  group_by(sitio,temporada,fecha) |> 
+  summarise(eto = max(eto,na.rm=T),
+            pp = sum(pp,na.rm=T)) |> 
+  ungroup()
+
 data_clima <- read_rds('data/processed/clima.rds') |> 
   filter(hora %in% c('13:00','14:00')) |> 
   group_by(sitio,temporada,fecha) |> 
@@ -11,13 +17,16 @@ data_clima <- read_rds('data/processed/clima.rds') |>
             rh_media = mean(rh_media,na.rm=T),
             vpd_medio = mean(vpd_medio,na.rm=T)) |> 
   ungroup() |> 
+  left_join(data_clima_1,by=c('sitio','temporada','fecha')) |> 
   mutate(fecha = as.Date(fecha)) |> 
   group_by(sitio,temporada) |> 
   complete(fecha = seq.Date(min(fecha), max(fecha), by = "day")) |>
-  mutate(across(t_media:vpd_medio, ~ zoo::na.approx(., na.rm = FALSE))) |> 
+  mutate(across(t_media:pp, ~ zoo::na.approx(., na.rm = FALSE))) |> 
   ungroup() |> 
   mutate(fecha = as.character(fecha)) |> 
   select(sitio,temporada,fecha,everything())
+
+modelo <- read_rds('data/processed/modelos/xgboost.rds')
 
 # data_clima |> 
 #   pivot_longer(cols=c('t_media','vpd_medio','rh_media'),values_to='valor',names_to='var') |> 
@@ -53,6 +62,10 @@ out <- map(files,\(file){
     values(rast_rh) <- data_clima_x$rh_media
     rast_vpd <- s2[[1]]
     values(rast_vpd) <- data_clima_x$vpd_medio
+    rast_eto <- s2[[1]]
+    values(rast_eto) <- data_clima_x$eto
+    rast_pp <- s2[[1]]
+    values(rast_pp) <- data_clima_x$pp
     
     # "B01"           "B02"           "B03"          
     # [5] "B04"           "B05"           "B06"           "B07"     
@@ -60,8 +73,10 @@ out <- map(files,\(file){
     # [13] "B8A"           "ndwi"          "ndmi"          "msi"    
     # [17] "gci"           "t_media"       "rh_media"      "vpd_medio"    
     
-    predictores <- c(ndwi,ndmi,msi,gci,ndvi,nbr,b_i,rast_temp,rast_rh,rast_vpd)
-    names(predictores) <- c('ndwi','ndmi','msi','gci','ndvi','nbr','b_i','t_media','rh_media','vpd_medio')    
+    predictores <- c(ndwi,ndmi,msi,gci,ndvi,nbr,b_i,
+                     rast_temp,rast_rh,rast_vpd,rast_eto,rast_pp)
+    names(predictores) <- c('ndwi','ndmi','msi','gci','ndvi','nbr','b_i',
+                            't_media','rh_media','vpd_medio','eto','pp')    
     
     #funcion para aplicar el modelo en los rasters 
     fun<-function(...){
@@ -71,24 +86,23 @@ out <- map(files,\(file){
     
     potencial_raster <- 
       terra::predict(predictores,
-                     model =rf_fit,
+                     model =modelo,
                      fun=fun)
   } else {
     potencial_raster <- s2[[1]]
     values(potencial_raster) <- NA
   }
   
-  names(potencial_raster) <- 'potencial'
+  names(potencial_raster) <- fecha_filt
   potencial_raster
 })
 
 names(out) <- str_extract(names(out),'(?<=smooth_)[^\\.]+(?=\\.tif)')
 
 lapply(names(out), function(name) {
-  dir <- paste0('data/processed/espacial/raster/potencial_mod/potencial_mod_', name, '.tif')
+  dir <- paste0('data/processed/espacial/raster/potencial_predict/potencial_xgb_', name, '.tif')
   writeRaster(out[[name]], dir, overwrite=TRUE)
 })
-
 
 out <- subset(out,order(names(out)))
 plot(out)
