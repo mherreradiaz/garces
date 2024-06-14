@@ -1,11 +1,16 @@
 source('script/funciones/paquetes.R')
 
+names <- c(la_esperanza = 'La Esperanza',rio_claro = 'Rio Claro',
+           T1 = 'T1',T2 = 'T2',T3 = 'T3',T4 = 'T4',T0 = 'T0',
+           '1' = '1','2' = '2','3' = '3', 
+           '2022-2023' = '2022-2023', '2023-2024' = '2023-2024')
+
 eto <- read_rds('data/processed/clima_dia.rds') |> 
   mutate(fecha = as.Date(fecha)) |> 
   select(sitio,temporada,fecha,eto) |> 
   group_by(sitio,temporada) |> 
   mutate(lamina_acum = cumsum(eto),
-         tratamiento = 'eto') |> 
+         tratamiento = 'et0') |> 
   ungroup() |> 
   filter(!(temporada =='2022-2023' & (fecha < '2022-10-11' | fecha > '2023-04-13')),
          !(temporada =='2023-2024' & (fecha < '2023-10-11' | fecha > '2024-04-12')),)
@@ -38,15 +43,23 @@ riego <- bind_rows(riego_2022,riego_garces,riego_tratamiento) |>
   mutate(temporada = ifelse(fecha < '2023-06-01','2022-2023','2023-2024')) |> 
   bind_rows(eto)
 
+write_rds(riego,'data/processed/riego.rds')
+
+# visualizar
+
 riego |> 
+  mutate(tratamiento = toupper(tratamiento)) |> 
   ggplot(aes(fecha,lamina_acum,fill=tratamiento)) +
   geom_area(alpha = .6,position = "identity") +
   scale_fill_brewer(palette = "Set2") +
   facet_grid(sitio~temporada, scale = 'free_x',labeller = as_labeller(names)) +
-  labs(y = 'lamina acumulada diaria (mm)',
-       x = 'mes') +
+  labs(y = 'mm (cum)',
+       x = 'month',
+       fill = 'treatment') +
   theme_light()
 ggsave(paste0('output/figs/riego_lamina.png'),scale =3:5.5)
+
+# déficit por tratamiento
 
 fecha_t0_2022 <- riego |> 
   filter(temporada == '2022-2023',
