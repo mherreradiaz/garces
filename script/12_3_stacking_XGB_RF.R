@@ -124,13 +124,11 @@ rf_spec <-rand_forest(
   trees = 1000,
   mtry = tune(),
   min_n = tune()) |> 
-  set_engine("ranger") |> 
+  set_engine("ranger",importance = 'impurity') |> 
   set_mode("regression")
-
 
 rf_ctrl_grid <- control_stack_grid()
 rf_ctrl_res <- control_stack_resamples()
-
 
 rf_wf <- workflow() |> 
   add_model(rf_spec) |> 
@@ -167,9 +165,9 @@ rf_res %>%
   geom_point(show.legend = FALSE)+
   facet_wrap(~parameter, scales = "free_x")
 
-show_best(rf_res, "rsq")
+show_best(rf_res, metric = "rsq")
 
-best_rsq <- select_best(rf_res, "rsq")
+best_rsq <- select_best(rf_res, metric = "rsq")
 
 final_rf <- finalize_workflow(
   rf_wf,
