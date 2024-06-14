@@ -17,17 +17,17 @@ editor: visual
 
 **Data**
 
-For two orchards and two seasons (2022-2023 and 2023-2024) we collect:  
-- Weekly and biweekly measurements of Stem Water Potential (SWP) (13:00-14:00)  
-- Weather data of temperature (T), vapour-pressure deficit (VPD), reference evapotranspiration (ET0), relative humidity (RH).  
-- Vegetation indices derived from Sentinel-1 and Sentinel-2.  
+For two orchards and two seasons (2022-2023 and 2023-2024) we collect:\
+- Weekly and biweekly measurements of Stem Water Potential (SWP) (13:00-14:00)\
+- Weather data of temperature (T), vapour-pressure deficit (VPD), reference evapotranspiration (ET0), relative humidity (RH).\
+- Vegetation indices derived from Sentinel-1 and Sentinel-2.
 
 **Modelling**
 
-We test three machine learning models:  
-  - Extreme Boosting Gradient (XGBoost)  
-  - Random Forest (RF)  
-  - Support Vector Machine (SVM)  
+We test three machine learning models:\
+- Extreme Boosting Gradient (XGBoost)\
+- Random Forest (RF)\
+- Support Vector Machine (SVM)
 
 We tune the models to adjust the parameters.
 
@@ -53,7 +53,6 @@ Rio Claro
 
 ![](figs/mapa_potencial_max_cov_rio_claro.png)
 
-
 ## Daily smooth variation of SWP
 
 ![](figs/tendencias_potencial_estimado_trat_sitios.png)
@@ -64,11 +63,10 @@ Rio Claro
 
 ## Conclusions
 
-- We develop a robust model to estimate daily SWP spatially.
+-   We develop a robust model to estimate daily SWP spatially.
 
-- Our results improve over other methodologies that use infrared thermal imagery (`Carrasco-Benavides et al., 2020;` $R^2=0.64$).
+-   Our results improve over other methodologies that use infrared thermal imagery (`Carrasco-Benavides et al., 2020;` $R^2=0.64$).
 
-- Other approaches are costly in comparison to ours (e.g., depend on UAV).
+-   Other approaches are costly in comparison to ours (e.g., depend on UAV).
 
-- This model allows for precise monitoring of cherry water status, assists in optimizing the WUE, and can adapt to various climatic conditions.
-
+-   This model allows for precise monitoring of cherry water status, assists in optimizing the WUE, and can adapt to various climatic conditions.
