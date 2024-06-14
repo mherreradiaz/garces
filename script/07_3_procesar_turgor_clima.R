@@ -34,6 +34,8 @@ read_yara(si(fechas[1] < '2023-06-01',device_id_tur_2022,device_id_tur_2023),
 
 # descargar datos clima
 
+fecha_list <- list(c(2022))
+
 año <- year(now())
 mes <- month(now())
 
@@ -41,10 +43,10 @@ fechas <- dia(año,mes)
 
 data_clima_le <- clima('00205018',c('Temperature','VPD','Eto','Precipitation','Humidity'),fechas) |> 
   mutate(sitio = 'la_esperanza',
-         .before = datetime)
+         .before = fecha)
 data_clima_rc <- clima('00203E6E',c('Temperature','VPD','Eto','Precipitation','Humidity'),fechas) |> 
   mutate(sitio = 'rio_claro',
-         .before = datetime)
+         .before = fecha)
 
 data_clima <- bind_rows(data_clima_le,data_clima_rc)
 
@@ -114,12 +116,16 @@ data_turgor <- bind_rows(data_turgor_new) |>
 files_clima <- list.files('data/raw/clima/',full.names = T)
 
 data_clima <- bind_rows(lapply(files_clima,read_rds)) |> 
-  distinct(sitio,datetime, .keep_all=T) |> 
-  mutate(temporada = ifelse(datetime<'2023-06-01','2022-2023','2023-2024'),
-         .before = datetime) |> 
-  arrange(datetime,sitio)
+  mutate(fecha = ifelse(is.na(fecha),fecha_f(datetime),fecha),
+         hora = ifelse(is.na(hora),hora_f(datetime),hora)) |>
+  select(-datetime) |> 
+  distinct(sitio,fecha,hora, .keep_all=T) |> 
+  mutate(temporada = ifelse(fecha<'2023-06-01','2022-2023','2023-2024'),
+         .before = fecha) |> 
+  arrange(fecha,sitio)
 
 data_clima |> 
+  mutate(datetime = fecha_hora_f(fecha,hora)) |> 
   group_by(sitio,temporada,datetime = floor_date(datetime,'1 hour')) |> 
   summarise(t_media = mean(t_media,na.rm=T),
             t_max = max(t_max,na.rm=T),
@@ -136,7 +142,7 @@ data_clima |>
          hora = hora_f(datetime),
          .before = datetime) |> 
   select(-datetime) |> 
-  write_rds('data/processed/clima.rds')
+  write_rds('data/processed/clima_hora.rds')
 
 data_clima <- data_clima |> 
   mutate(fecha = fecha_f(datetime),
