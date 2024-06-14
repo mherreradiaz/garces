@@ -64,9 +64,9 @@ Rio Claro
 
 ## Conclusions
 
-- We develop a robust model to estimate spatially daily SWP.
+- We develop a robust model to estimate daily SWP spatially.
 
-- Our results improve over other methodologies that use infrared thermal imagery (Carrasco-Benavides et al., 2020).
+- Our results improve over other methodologies that use infrared thermal imagery (`Carrasco-Benavides et al., 2020;` $R^2=0.64$).
 
 - Other approaches are costly in comparison to ours (e.g., depend on UAV).
 

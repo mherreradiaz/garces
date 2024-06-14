@@ -9,7 +9,7 @@ get_rf_imp <- function(x) {
     vip::vi()
 }
 
-data <- read_rds('data/processed/modelo_potencial_old.rds') |>
+data <- read_rds('data/processed/modelo_potencial.rds') |>
   select(-(sitio:codigo))
 
 data <- data |>
