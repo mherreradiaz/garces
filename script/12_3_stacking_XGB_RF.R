@@ -58,18 +58,20 @@ set.seed(234)
 xgb_res <-tune_grid(
   xgb_wf,
   resamples = vb_folds,
-  grid = 10,
-  control = xgb_ctrl_grid)
+  grid = 4,
+  control = xgb_ctrl_grid
+)
+
 xgb_res
 
 ## Explorar resultados
 
 collect_metrics(xgb_res)
 
-xgb_res |> 
-  collect_metrics() |> 
-  filter(.metric == "rsq") |> 
-  select(mean, mtry:sample_size) |> 
+xgb_res %>%
+  collect_metrics() %>%
+  filter(.metric == "rsq") %>%
+  select(mean, mtry:sample_size) %>%
   pivot_longer(mtry:sample_size,
                names_to = "parameter",
                values_to = "value") %>%
@@ -90,9 +92,12 @@ final_xgb
 
 #train
 
-xgb_fit <- final_xgb |> fit(data = pot_train |> select(-sitio))
+xgb_wf <- 
+  workflow() |> 
+  add_model(xgb_spec) |> 
+  add_formula(potencial_bar~.) 
 
-write_rds(xgb_fit,'data/processed/modelos/xgboost.rds')
+xgb_fit <- final_xgb |> fit(data = pot_train |> select(-sitio))
 
 test_results <- 
   pot_test |> 
@@ -116,7 +121,6 @@ test_results |>
            x=21,y=8,size=5,parse = TRUE) +
   #annotate("text")
   theme_bw()
-ggsave('output/figs/pred_vs_obser_xgboost.png',scale=1.2)
 
 ## Tunning Random Forest
   
@@ -147,9 +151,9 @@ set.seed(234)
 rf_res <-tune_grid(
   rf_wf,
   resamples = vb_folds,
-  grid = 10,
+  grid = 4,
   control = rf_ctrl_grid
-)
+  )
 rf_res
 
 ## Explorar resultados
@@ -180,9 +184,12 @@ final_rf
 
 #train
 
-rf_fit <- final_rf |> fit(data = pot_train |> select(-sitio))
+rf_wf <- 
+  workflow() |> 
+  add_model(rf_spec) |> 
+  add_formula(potencial_bar~.) 
 
-write_rds(rf_fit,'data/processed/modelos/random_forest.rds')
+rf_fit <- final_rf |> fit(data = pot_train |> select(-sitio))
 
 test_results <- 
   pot_test |> 
@@ -206,98 +213,6 @@ test_results |>
            x=21,y=8,size=5,parse = TRUE) +
   #annotate("text")
   theme_bw()
-ggsave('output/figs/pred_vs_obser_random_forest.png',scale=1.2)
-
-# SVM
-
-svm_spec <-
-  svm_rbf(cost = tune(), 
-          rbf_sigma = tune())  |> 
-  set_mode("regression")  |> 
-  set_engine("kernlab")
-
-svm_ctrl_grid <- control_stack_grid()
-svm_ctrl_res <- control_stack_resamples()
-
-svm_wf <- workflow() |> 
-  add_model(svm_spec) |> 
-  add_formula(potencial_bar~.) 
-
-svm_wf
-
-set.seed(123)
-vb_folds <- vfold_cv(pot_train |> select(-sitio),v=5)
-
-vb_folds
-
-# library(finetune)
-# doParallel::registerDoParallel()
-
-set.seed(234)
-svm_res <-tune_grid(
-  svm_wf,
-  resamples = vb_folds,
-  grid = 10,
-  control = svm_ctrl_grid)
-svm_res
-
-## Explorar resultados
-
-collect_metrics(svm_res)
-
-svm_res |> 
-  collect_metrics() |> 
-  filter(.metric == "rsq") |> 
-  select(mean, cost:rbf_sigma) |> 
-  pivot_longer(cost:rbf_sigma,
-               names_to = "parameter",
-               values_to = "value") %>%
-  ggplot(aes(value, mean, color = parameter)) +
-  geom_point(show.legend = FALSE)+
-  facet_wrap(~parameter, scales = "free_x")
-
-show_best(xgb_res, "rsq")
-
-best_rsq <- select_best(svm_res, "rsq")
-
-final_svm <- finalize_workflow(
-  svm_wf,
-  best_rsq
-)
-
-final_svm
-
-#train
-
-
-svm_fit <- final_svm |> fit(data = pot_train |> select(-sitio))
-
-write_rds(svm_fit,'data/processed/modelos/support_vector_machine.rds')
-
-test_results <- 
-  pot_test |> 
-  select(potencial_bar) %>%
-  bind_cols(
-    predict(svm_fit, new_data = pot_test)
-  )
-
-met <- test_results  |>  
-  metrics(truth = potencial_bar, estimate = .pred) |> 
-  mutate(.estimate = round(.estimate,2))
-
-test_results |> 
-  ggplot(aes(x = .pred, y = potencial_bar)) + 
-  geom_abline(col = "green", lty = 2) + 
-  geom_point(alpha = .4) + 
-  labs(x = 'SWP estimated (kPA)', y= 'SWP observed (kPa)') +
-  annotate("text",label = paste0('RMSE = ',met[1,3],'\n MAE = ',met[3,3]),
-           x=20,y = 4,size=5) +
-  annotate("text",label = paste("R^{2}==",met[2,3]),
-           x=21,y=8,size=5,parse = TRUE) +
-  #annotate("text")
-  theme_bw()
-ggsave('output/figs/pred_vs_obser_support_vector_machine.png',scale=1.2)
-
 
 # ensemble models
 
@@ -306,17 +221,45 @@ data_potencial_st <- stacks() |>
   add_candidates(xgb_res) |> 
   add_candidates(rf_res)
 
-potencial_model_st <-
-  data_potencial_st %>%
+data_potencial_model_st <-
+  data_potencial_st  |> 
   blend_predictions()
 
-potencial_model_st <-
-  potencial_model_st %>%
+autoplot(data_potencial_model_st)
+autoplot(data_potencial_model_st, type = "weights")
+
+data_potencial_model_st <-
+  data_potencial_model_st |> 
   fit_members()
 
-potencial_test <- 
-  pot_test %>% 
-  bind_cols(predict(potencial_model_st, .))
 
-rsq(potencial_test,'potencial_bar','.pred')
-rmse(potencial_test,'potencial_bar','.pred')
+data_potencial_test <- 
+  pot_test  |> 
+  bind_cols(predict(data_potencial_model_st, .))
+
+rf_fit_resample <-
+  rf_wf |> 
+  fit_resamples(data_folds,control = ctrl_imp)
+
+rf_fit <- rf_wf |> fit(data = pot_train)
+
+df_met <- collect_metrics(rf_fit_resample) |> 
+  select(-.estimator,-.config)
+
+## Neural Nets
+
+nnet_spec <- mlp(
+  hidden_units = c(3,2),
+  #penalty = ,
+  epochs = 10
+) |>   
+  set_engine("nnet") |> 
+  set_mode("regression")  |>  
+  translate()
+
+nnet_wf <- workflow() |> 
+  add_model(nnet_spec) |> 
+  add_formula(potencial_bar~.) 
+
+nnet_fit <- nnet_wf |> 
+  fit(data = pot_train |> select(-sitio))
