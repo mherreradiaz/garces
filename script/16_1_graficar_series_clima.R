@@ -46,15 +46,15 @@ data |>
   filter(variable != 'pp') |> 
   ggplot(aes(x = fecha, y = valor, color = variable)) +
   geom_bar(data = data |> filter(variable == 'pp',valor != 0),
-           aes(as.Date(fecha),valor), stat = 'identity') +
+           aes(as.Date(fecha),valor), stat = 'identity', fill = 'darkolivegreen4') +
   geom_point(alpha = 0.5, size = .5) +  
   geom_smooth(method = "gam", se = FALSE) + 
-  facet_grid(sitio~temporada, scales = "free",labeller=as_labeller(names)) +
+  facet_grid(sitio~temporada, scales = "free_x",labeller=as_labeller(names)) +
   labs(title = "Series Diarias de Variables Climáticas",
        x = "mes",
        y = "valor",
        color = "variable") +
-  scale_x_date(labels = date_format("%b. %Y")) +
+  scale_x_date(labels = date_format("%b %Y")) +
   theme_light() +
   theme(strip.text = element_text(size = 10))
 ggsave(paste0('output/figs/series_clima.png'),scale =3:5)
