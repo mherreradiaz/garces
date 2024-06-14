@@ -53,7 +53,7 @@ riego |>
   geom_area(alpha = .6,position = "identity") +
   scale_fill_brewer(palette = "Set2") +
   facet_grid(sitio~temporada, scale = 'free_x',labeller = as_labeller(names)) +
-  labs(y = 'mm (cum)',
+  labs(y = 'cum mm',
        x = 'month',
        fill = 'treatment') +
   theme_light()
