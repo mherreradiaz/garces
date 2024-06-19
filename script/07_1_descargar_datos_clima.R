@@ -8,7 +8,7 @@ library(stringr)
 library(tidyverse)
 library(agvAPI)
 
-periodo <- c('2023-09-30',substr(now(),1,10))
+periodo <- c('2024-06-01',substr(now(),1,10))
 
 #periodo <- c('2023-02-08','2023-02-10')
 

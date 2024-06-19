@@ -1,5 +1,12 @@
 source('script/funciones/paquetes.R')
 
+names <- c(la_esperanza = 'La Esperanza',rio_claro = 'Rio Claro',
+           T1 = 'T1',T2 = 'T2',T3 = 'T3',T4 = 'T4',T0 = 'T0',
+           '1' = '1','2' = '2','3' = '3', 
+           '2022-2023' = '2022-2023', '2023-2024' = '2023-2024')
+
+Sys.setlocale("LC_TIME", "C")
+
 # valores mensuales
 
 data <- read_rds('data/processed/clima_dia.rds') |>
@@ -41,18 +48,22 @@ data <- read_rds('data/processed/clima_dia.rds') |>
   filter(!is.na(id)) |>
   select(-id)
 
+data_eto <- data |> 
+  filter(variable %in% c('pp','eto')) |> 
+  rename(acum = variable)
+
 data |> 
   mutate(fecha = as.Date(fecha)) |> 
-  filter(variable != 'pp') |> 
+  filter(!variable %in% c('pp','eto')) |> 
   ggplot(aes(x = fecha, y = valor, color = variable)) +
-  geom_bar(data = data |> filter(variable == 'pp',valor != 0),
-           aes(as.Date(fecha),valor), stat = 'identity', fill = 'darkolivegreen4') +
+  geom_point() +
+  geom_bar(data = data_eto,
+           aes(as.Date(fecha),valor,fill = acum), stat = 'identity') +
   geom_point(alpha = 0.5, size = .5) +  
-  geom_smooth(method = "gam", se = FALSE) + 
+  geom_smooth(method = "loess", span = .1,se = FALSE) + 
   facet_grid(sitio~temporada, scales = "free_x",labeller=as_labeller(names)) +
-  labs(title = "Series Diarias de Variables Climáticas",
-       x = "mes",
-       y = "valor",
+  labs(x = "month",
+       y = "value",
        color = "variable") +
   scale_x_date(labels = date_format("%b %Y")) +
   theme_light() +

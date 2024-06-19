@@ -8,7 +8,7 @@ library(glue)
 edl_netrc(username = 'frzambra@gmail.com',password = 'Traplozx398#')
 with_gdalcubes()
 
-sitio <- 'rio_claro'
+sitio <- 'la_esperanza'
 layers <- st_layers(glue('data/processed/espacial/{sitio}.gpkg'))
 pol <- read_sf(glue('data/processed/espacial/{sitio}.gpkg'),layer = 'cuartel')
 
@@ -113,3 +113,51 @@ dir_out <- 'data/raw/sentinel'
 
 raster_cube(col, v) |>
   write_tif(glue('{dir_out}/sen_1_{sitio}'))
+
+
+
+
+# descargar tid rgb
+
+edl_netrc(username = 'frzambra@gmail.com',password = 'Traplozx398#')
+with_gdalcubes()
+
+sitio <- 'la_esperanza'
+pol <- read_sf(glue('data/processed/espacial/sitios/{sitio}.gpkg'),layer = 'sitio')
+
+bb <- st_bbox(pol) |> 
+  as.numeric()
+
+inicio <- "2023-01-01"
+fin <- "2023-01-30"
+
+url <- "https://planetarycomputer.microsoft.com/api/stac/v1"
+
+items <- stac(url) |> 
+  stac_search(collections = "sentinel-2-l2a",
+              bbox = bb,
+              datetime = paste(inicio,fin, sep = "/")) |>
+  post_request() |>
+  items_sign(sign_fn = sign_planetary_computer()) |> 
+  items_fetch()
+
+bb <- pol |> 
+  st_transform(32719) |> 
+  st_bbox() |> 
+  as.numeric()
+
+v = cube_view(srs = "EPSG:32719",
+              extent = list(t0 = as.character(inicio), 
+                            t1 = as.character(fin),
+                            left = bb[1], right = bb[3],
+                            top = bb[4], bottom = bb[2]),
+              dx = 10, dy = 10, dt = "P5D")
+
+col <- stac_image_collection(items$features)
+
+cloud_mask <- image_mask("SCL", values=c(3,8,9))
+
+dir_out <- 'data/raw/sentinel_rgb'
+
+raster_cube(col, v, mask=cloud_mask) |>
+  write_tif(glue('{dir_out}/sentinel_{sitio}'))
