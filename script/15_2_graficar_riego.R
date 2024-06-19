@@ -1,6 +1,8 @@
 source('script/00_setup.R')
 library(wesanderson)
 
+Sys.setlocale("LC_TIME", "C")
+
 # -- setup
 
 pal <- c(wes_palette(n=5,name = 'Darjeeling2')[4],
