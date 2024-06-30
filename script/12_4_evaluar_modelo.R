@@ -62,7 +62,7 @@ df_var_imp |>
 ggsave(paste0('output/figs/fig_errorbar_resample_xgboost.png'),scale =1.5)
 
 # Random Forest
-data_folds <- vfold_cv(pot_train |> select(-sitio), v = 5)
+data_folds <- vfold_cv(pot_train, v = 5)
 
 rf_wf <- read_rds('data/processed/modelos/random_forest.rds')
 
@@ -90,4 +90,35 @@ df_var_imp |>
   labs(x = "Variable importance", y = NULL) +
   annotate("text",x=max(df_var_imp$Mean),y=1,label =paste0('r2=',round(df_met$mean[2],2))) +
   theme_bw()
-ggsave(paste0('output/figs/fig_errorbar_resample_xgboost.png'),scale =1.5)
+ggsave(paste0('output/figs/fig_errorbar_resample_random_forest.png'),scale =1.5)
+
+# Support Vector Machine
+data_folds <- vfold_cv(pot_train, v = 5)
+
+svm_wf <- read_rds('data/processed/modelos/support_vector_machine.rds')
+
+ctrl_imp <- control_grid(extract = get_rf_imp)
+
+svm_fit_resample <-
+  svm_wf |> 
+  fit_resamples(data_folds,control = ctrl_imp)
+
+df_met <- collect_metrics(rf_fit_resample) |> 
+  select(-.estimator,-.config)
+
+df_var_imp <- svm_fit_resample |> 
+  select(id, .extracts) %>%
+  unnest(.extracts) %>%
+  unnest(.extracts) %>%
+  group_by(Variable) %>%
+  summarise(Mean = mean(Importance),
+            Variance = sd(Importance))
+df_var_imp |>   
+  slice_max(Mean, n = 15) %>%
+  ggplot(aes(Mean, reorder(Variable, Mean))) +
+  geom_errorbar(aes(xmin = Mean - Variance, xmax = Mean + Variance)) +
+  geom_point(aes(Mean)) +
+  labs(x = "Variable importance", y = NULL) +
+  annotate("text",x=max(df_var_imp$Mean),y=1,label =paste0('r2=',round(df_met$mean[2],2))) +
+  theme_bw()
+ggsave(paste0('output/figs/fig_errorbar_resample_random_forest.png'),scale =1.5)
