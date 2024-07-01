@@ -90,20 +90,58 @@ df_var_imp |>
   labs(x = "Variable importance", y = NULL) +
   annotate("text",x=max(df_var_imp$Mean),y=1,label =paste0('r2=',round(df_met$mean[2],2))) +
   theme_bw()
+<<<<<<< HEAD
 ggsave(paste0('output/figs/fig_errorbar_resample_random_forest.png'),scale =1.5)
 
 # Support Vector Machine
+=======
+ggsave(paste0('output/figs/fig_errorbar_resample_xgboost.png'),scale =1.5)
+
+# Support Vector Machine
+
+get_rf_imp <- function(x,method='permute',train = pot_train) {
+  x |> 
+    extract_fit_parsnip() |> 
+    vip::vi(method = method,
+            train = )
+}
+
+>>>>>>> f12caae (update pc umayor)
 data_folds <- vfold_cv(pot_train, v = 5)
 
 svm_wf <- read_rds('data/processed/modelos/support_vector_machine.rds')
 
+<<<<<<< HEAD
+=======
+potencial_rec <- recipe(potencial_bar~.,data = pot_train)
+
+potencial_prep <- prep(potencial_rec)
+
+juice(potencial_prep)
+
+collect_metrics(svm_wf)
+
+potencial_imp <- svm_wf |> 
+  extract_fit_parsnip() |> 
+  vi(method = 'permute',nsim = 10,
+    target = 'potencial_bar', metric = 'rsq',
+     pred_wrapper = function(object, newdata) as.vector(kernlab::predict(object, newdata)),train = juice(potencial_prep))
+
+
+
+
+>>>>>>> f12caae (update pc umayor)
 ctrl_imp <- control_grid(extract = get_rf_imp)
 
 svm_fit_resample <-
   svm_wf |> 
   fit_resamples(data_folds,control = ctrl_imp)
 
+<<<<<<< HEAD
 df_met <- collect_metrics(rf_fit_resample) |> 
+=======
+df_met <- collect_metrics(svm_fit_resample) |> 
+>>>>>>> f12caae (update pc umayor)
   select(-.estimator,-.config)
 
 df_var_imp <- svm_fit_resample |> 
@@ -121,4 +159,8 @@ df_var_imp |>
   labs(x = "Variable importance", y = NULL) +
   annotate("text",x=max(df_var_imp$Mean),y=1,label =paste0('r2=',round(df_met$mean[2],2))) +
   theme_bw()
+<<<<<<< HEAD
 ggsave(paste0('output/figs/fig_errorbar_resample_random_forest.png'),scale =1.5)
+=======
+ggsave(paste0('output/figs/fig_errorbar_resample_xgboost.png'),scale =1.5)
+>>>>>>> f12caae (update pc umayor)
