@@ -2,8 +2,8 @@ source('script/funciones/paquetes.R')
 
 # Sentinel 2 bandas
 
-files_le <- sort(list.files('data/raw/sentinel/s2_la_esperanza',full.names=T))
-files_rc <- sort(list.files('data/raw/sentinel/s2_rio_claro',full.names=T))
+files_le <- sort(list.files('data/raw/sentinel/sentinel_2a_la_esperanza',full.names=T))
+files_rc <- sort(list.files('data/raw/sentinel/sentinel_2a_rio_claro',full.names=T))
 
 sitio <- c('la_esperanza','rio_claro')
 temporada <- c('2022-2023','2023-2024')
@@ -87,7 +87,7 @@ read_rds('data/processed/sentinel2_bands.rds') |>
 
 # Índices
 
-files <- list.files('data/processed/espacial/raster/index_smooth/',full.names=T)
+files <- list.files('data/processed/espacial/raster/vi_smooth/',full.names=T)
 
 files_le <- grep('la_esperanza',files,value=T)
 files_rc <- grep('rio_claro',files,value=T)
@@ -118,6 +118,7 @@ data_list_le <- lapply(files_le,function(x) {
   
   return(df)
 })
+
 data_list_rc <- lapply(files_rc,function(x) {
   r <- rast(x)
   r_fecha <- gsub('_','-',substr(x,nchar(x)-13,nchar(x)-4))
@@ -146,7 +147,7 @@ data <- bind_rows(data_le,data_rc) |>
   mutate(fecha = gsub('_','-',fecha)) |> 
   arrange(sitio,fecha,tratamiento,unidad)
 
-write_rds(data,'data/processed/sentinel2_index_smooth.rds')
+write_rds(data,'data/processed/sentinel2_vi_smooth.rds')
 
 # smooth <- read_rds('data/processed/sentinel2_index_smooth.rds') |> 
 #   mutate(fecha = as.Date(fecha))
@@ -227,53 +228,3 @@ data <- bind_rows(data_le,data_rc) |>
   arrange(sitio,fecha,tratamiento,unidad)
 
 write_rds(data,'data/processed/sentinel_1.rds')
-
-data <- read_rds('data/processed/sentinel_1.rds') |> 
-  group_by(sitio,temporada,fecha) |> 
-  summarise(vv = mean(vv,na.rm=T),
-            vh = mean(vh,na.rm=T)) |> 
-  ungroup() |> 
-  pivot_longer(cols=c('vv','vh'),names_to='onda',values_to='valor')
-
-data_potencial <- read_rds('data/processed/potencial.rds') |> 
-  mutate(fecha=as.Date(fecha))
-
-which(paste(data$fecha,data$sitio) %in% paste(data_potencial$fecha,data_potencial$sitio))
-
-data |> 
-  ggplot(aes(as.Date(fecha),valor,color=onda)) +
-  geom_point() +
-  geom_line() +
-  facet_grid(sitio~temporada,scales='free')
-
-ggplot() +
-  geom_point(data = data, aes(as.Date(fecha), valor, color = onda)) +
-  geom_line(data = data, aes(as.Date(fecha), valor, color = onda)) +
-  geom_point(data = data_potencial, aes(fecha, potencial_bar)) +
-  facet_grid(sitio ~ temporada, scales = 'free') +
-  labs(x = 'Fecha', y = 'Valor', color = 'Onda')
-
-data |> 
-  select(-vh) |> 
-  distinct(sitio,temporada,fecha) |> 
-  group_by(sitio,temporada) |> 
-  reframe(dif = diff(as.numeric(as.Date(fecha))))
-
-data |>
-  mutate(fecha = as.numeric(as.Date(fecha))) |> 
-  pivot_longer(cols=c('vv','vh'),names_to='banda',values_to='valor') |> 
-  distinct(sitio,temporada,fecha,banda) |> 
-  group_by(sitio,temporada,banda) |> 
-  reframe(dif = diff(fecha)) |> 
-  ggplot(aes(banda,dif)) +
-  geom_boxplot() +
-  labs(y='días entre imagenes') +
-  facet_grid(sitio~temporada,scales='free')
-
-data_potencial <- read_rds('data/processed/potencial.rds')
-
-data_potencial |> 
-  left_join(data,by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) |> 
-  na.omit() |> 
-  View()
-  

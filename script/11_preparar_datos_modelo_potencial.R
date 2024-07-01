@@ -13,7 +13,7 @@ data_sen2_bands <- read_rds('data/processed/sentinel2_bands.rds') |>
   mutate(fecha = as.character(fecha)) |> 
   select(sitio,temporada,fecha,everything())
 
-data_sen2_index <- read_rds('data/processed/sentinel2_index_smooth.rds')
+data_sen2_index <- read_rds('data/processed/sentinel2_vi_smooth.rds')
 
 data_sen2 <- data_sen2_index |> 
   left_join(data_sen2_bands,
