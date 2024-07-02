@@ -2,23 +2,19 @@ source('script/funciones/paquetes.R')
 library(mgcv)
 library(parallel)
 
-all_files <- sort(list.files('data/processed/espacial/raster/index_raw/',full.names=T))
+all_files <- sort(list.files('data/processed/espacial/raster/vi_raw/',full.names=T))
 all_fechas <- gsub('_','-',substr(all_files,nchar(all_files)-13,nchar(all_files)-4))
 
-fit_gam_model <- function(var_name, data_frame, i, dias) {
-  var_data <- data_frame[i, grep(paste0("^", var_name, "$"), colnames(data_frame))]
-  var_data <- data.frame(dias = dias, var_value = var_data)  
+fit_gam_model <- function(var_name,data_frame,i,dias) {
+  var_data <- data_frame[i,grep(paste0("^",var_name,"$"),colnames(data_frame))]
+  var_data <- data.frame(dias = dias,var_value = var_data)  
   colnames(var_data)[2] <- var_name 
-  formula <- as.formula(paste(var_name, "~ s(dias)"))
-  model <- gam(formula, data = var_data, method = "REML")
+  formula <- as.formula(paste(var_name,"~ s(dias)"))
+  model <- gam(formula,data = var_data,method = "REML")
   return(model)
 }
 
-variables <- c("ndwi", "ndmi", "msi", "gci", "ndvi", "nbr", "nmdi", "dwsi", "b_i")
-
-# files_le_2023 <- grep('la_esperanza',files[fechas > '2023-06-01'],value=T)
-# files_rc_2022 <- grep('rio_claro',files[fechas < '2023-06-01'],value=T)
-# files_rc_2023 <- grep('rio_claro',files[fechas > '2023-06-01'],value=T)
+variables <- c('ndwi','ndmi','msi','gci','ndvi','nbr','nmdi','dwsi','ndvi_705','b_i')
 
 ### La Esperanza Temporada 2022-2023
 
@@ -29,27 +25,27 @@ r <- values(rast(files))
 dias <- as.numeric(as.Date(fechas[fechas < '2023-06-01']))
 tb <- tibble(dias = seq(min(dias),max(dias)))
 
-modelos_df <- lapply(variables, function(x) tb)
-names(modelos_df) <- paste0(variables, "_df")
+modelos_df <- lapply(variables,function(x) tb)
+names(modelos_df) <- paste0(variables,"_df")
 
 fit_all_models <- function(i) {
-  modelos <- lapply(variables, function(var) fit_gam_model(var, r, i, dias))
-  predicciones <- lapply(modelos, function(model) predict(model, newdata = tb))
+  modelos <- lapply(variables,function(var) fit_gam_model(var,r,i,dias))
+  predicciones <- lapply(modelos,function(model) predict(model,newdata = tb))
   return(predicciones)
 }
 
 num_cores <- detectCores() - 1  # Usar todos los núcleos menos uno
 cl <- makeCluster(num_cores)
-clusterExport(cl, list("fit_gam_model", "variables", "r", "dias", "tb", "gam"))
-clusterEvalQ(cl, library(mgcv))
+clusterExport(cl,list("fit_gam_model","variables","r","dias","tb","gam"))
+clusterEvalQ(cl,library(mgcv))
 
-resultados <- parLapply(cl, 1:nrow(r), fit_all_models)
+resultados <- parLapply(cl,1:nrow(r),fit_all_models)
 
 stopCluster(cl)
 
 for (i in 1:nrow(r)) {
   for (j in seq_along(variables)) {
-    modelos_df[[j]][[paste0('pixel_', i)]] <- resultados[[i]][[j]]
+    modelos_df[[j]][[paste0('pixel_',i)]] <- resultados[[i]][[j]]
   }
 }
 
@@ -63,18 +59,18 @@ for (x in 1:length(dias_completos)) {
   for (i in seq_along(variables)) {
     r <- rast(files)[[1]] * NA
     names(r) <- variables[i]
-    values(r) <- as.numeric(modelos_df[[i]][x, -1])
+    values(r) <- as.numeric(modelos_df[[i]][x,-1])
     r_list[[i]] <- r
   }
     
   r <- rast(r_list)
-  writeRaster(r, 
-              file.path('data', 'processed', 'espacial', 'raster','index_smooth_iv', 
+  writeRaster(r,
+              file.path('data','processed','espacial','raster','index_smooth_iv',
                         glue('index_smooth_la_esperanza_{dias_completos[x]}.tif')))
 
 }
 
-### Temporada 2023-2024
+### La Esperanza Temporada 2023-2024
 
 files_le_2023 <- files_le[fechas_le > '2023-06-01']
 
@@ -95,33 +91,33 @@ b_i_df <- tibble(dias = seq(min(dias),max(dias)))
 for (i in 1:nrow(r_2023)) {
   
   {
-    ndwi_model <- gam(ndwi ~ s(dias), 
+    ndwi_model <- gam(ndwi ~ s(dias),
                       data = data.frame(dias = dias,
-                                        ndwi = r_2023[i, grep("^ndwi$", colnames(r_2023))]), 
+                                        ndwi = r_2023[i,grep("^ndwi$",colnames(r_2023))]),
                       method = "REML")
-    ndmi_model <- gam(ndwi ~ s(dias), 
+    ndmi_model <- gam(ndwi ~ s(dias),
                       data = data.frame(dias = dias,
-                                        ndwi = r_2023[i, grep("^ndmi$", colnames(r_2023))]), 
+                                        ndwi = r_2023[i,grep("^ndmi$",colnames(r_2023))]),
                       method = "REML")
-    msi_model <- gam(ndwi ~ s(dias), 
+    msi_model <- gam(ndwi ~ s(dias),
                      data = data.frame(dias = dias,
-                                       ndwi = r_2023[i, grep("^msi$", colnames(r_2023))]), 
+                                       ndwi = r_2023[i,grep("^msi$",colnames(r_2023))]),
                      method = "REML")
-    gci_model <- gam(ndwi ~ s(dias), 
+    gci_model <- gam(ndwi ~ s(dias),
                      data = data.frame(dias = dias,
-                                       ndwi = r_2023[i, grep("^gci$", colnames(r_2023))]), 
+                                       ndwi = r_2023[i,grep("^gci$",colnames(r_2023))]),
                      method = "REML")
-    ndvi_model <- gam(ndwi ~ s(dias), 
+    ndvi_model <- gam(ndwi ~ s(dias),
                       data = data.frame(dias = dias,
-                                        ndwi = r_2023[i, grep("^ndvi$", colnames(r_2023))]), 
+                                        ndwi = r_2023[i,grep("^ndvi$",colnames(r_2023))]),
                       method = "REML")
-    nbr_model <- gam(ndwi ~ s(dias), 
+    nbr_model <- gam(ndwi ~ s(dias),
                      data = data.frame(dias = dias,
-                                       ndwi = r_2023[i, grep("^nbr$", colnames(r_2023))]), 
+                                       ndwi = r_2023[i,grep("^nbr$",colnames(r_2023))]),
                      method = "REML")
-    b_i_model <- gam(ndwi ~ s(dias), 
+    b_i_model <- gam(ndwi ~ s(dias),
                      data = data.frame(dias = dias,
-                                       ndwi = r_2023[i, grep("^b_i$", colnames(r_2023))]), 
+                                       ndwi = r_2023[i,grep("^b_i$",colnames(r_2023))]),
                      method = "REML")
   }
   
@@ -189,33 +185,33 @@ b_i_df <- tibble(dias = seq(min(dias),max(dias)))
 for (i in 1:nrow(r_2022)) {
   
   {
-    ndwi_model <- gam(ndwi ~ s(dias), 
+    ndwi_model <- gam(ndwi ~ s(dias),
                       data = data.frame(dias = dias,
-                                        ndwi = r_2022[i, grep("^ndwi$", colnames(r_2022))]), 
+                                        ndwi = r_2022[i,grep("^ndwi$",colnames(r_2022))]),
                       method = "REML")
-    ndmi_model <- gam(ndwi ~ s(dias), 
+    ndmi_model <- gam(ndwi ~ s(dias),
                       data = data.frame(dias = dias,
-                                        ndwi = r_2022[i, grep("^ndmi$", colnames(r_2022))]), 
+                                        ndwi = r_2022[i,grep("^ndmi$",colnames(r_2022))]),
                       method = "REML")
-    msi_model <- gam(ndwi ~ s(dias), 
+    msi_model <- gam(ndwi ~ s(dias),
                      data = data.frame(dias = dias,
-                                       ndwi = r_2022[i, grep("^msi$", colnames(r_2022))]), 
+                                       ndwi = r_2022[i,grep("^msi$",colnames(r_2022))]),
                      method = "REML")
-    gci_model <- gam(ndwi ~ s(dias), 
+    gci_model <- gam(ndwi ~ s(dias),
                      data = data.frame(dias = dias,
-                                       ndwi = r_2022[i, grep("^gci$", colnames(r_2022))]), 
+                                       ndwi = r_2022[i,grep("^gci$",colnames(r_2022))]),
                      method = "REML")
-    ndvi_model <- gam(ndwi ~ s(dias), 
+    ndvi_model <- gam(ndwi ~ s(dias),
                       data = data.frame(dias = dias,
-                                        ndwi = r_2022[i, grep("^ndvi$", colnames(r_2022))]), 
+                                        ndwi = r_2022[i,grep("^ndvi$",colnames(r_2022))]),
                       method = "REML")
-    nbr_model <- gam(ndwi ~ s(dias), 
+    nbr_model <- gam(ndwi ~ s(dias),
                      data = data.frame(dias = dias,
-                                       ndwi = r_2022[i, grep("^nbr$", colnames(r_2022))]), 
+                                       ndwi = r_2022[i,grep("^nbr$",colnames(r_2022))]),
                      method = "REML")
-    b_i_model <- gam(ndwi ~ s(dias), 
+    b_i_model <- gam(ndwi ~ s(dias),
                      data = data.frame(dias = dias,
-                                       ndwi = r_2022[i, grep("^b_i$", colnames(r_2022))]), 
+                                       ndwi = r_2022[i,grep("^b_i$",colnames(r_2022))]),
                      method = "REML")
   }
   
@@ -280,33 +276,33 @@ b_i_df <- tibble(dias = seq(min(dias),max(dias)))
 for (i in 1:nrow(r_2023)) {
   
   {
-    ndwi_model <- gam(ndwi ~ s(dias), 
+    ndwi_model <- gam(ndwi ~ s(dias),
                       data = data.frame(dias = dias,
-                                        ndwi = r_2023[i, grep("^ndwi$", colnames(r_2023))]), 
+                                        ndwi = r_2023[i,grep("^ndwi$",colnames(r_2023))]),
                       method = "REML")
-    ndmi_model <- gam(ndwi ~ s(dias), 
+    ndmi_model <- gam(ndwi ~ s(dias),
                       data = data.frame(dias = dias,
-                                        ndwi = r_2023[i, grep("^ndmi$", colnames(r_2023))]), 
+                                        ndwi = r_2023[i,grep("^ndmi$",colnames(r_2023))]),
                       method = "REML")
-    msi_model <- gam(ndwi ~ s(dias), 
+    msi_model <- gam(ndwi ~ s(dias),
                      data = data.frame(dias = dias,
-                                       ndwi = r_2023[i, grep("^msi$", colnames(r_2023))]), 
+                                       ndwi = r_2023[i,grep("^msi$",colnames(r_2023))]),
                      method = "REML")
-    gci_model <- gam(ndwi ~ s(dias), 
+    gci_model <- gam(ndwi ~ s(dias),
                      data = data.frame(dias = dias,
-                                       ndwi = r_2023[i, grep("^gci$", colnames(r_2023))]), 
+                                       ndwi = r_2023[i,grep("^gci$",colnames(r_2023))]),
                      method = "REML")
-    ndvi_model <- gam(ndwi ~ s(dias), 
+    ndvi_model <- gam(ndwi ~ s(dias),
                       data = data.frame(dias = dias,
-                                        ndwi = r_2023[i, grep("^ndvi$", colnames(r_2023))]), 
+                                        ndwi = r_2023[i,grep("^ndvi$",colnames(r_2023))]),
                       method = "REML")
-    nbr_model <- gam(ndwi ~ s(dias), 
+    nbr_model <- gam(ndwi ~ s(dias),
                      data = data.frame(dias = dias,
-                                       ndwi = r_2023[i, grep("^nbr$", colnames(r_2023))]), 
+                                       ndwi = r_2023[i,grep("^nbr$",colnames(r_2023))]),
                      method = "REML")
-    b_i_model <- gam(ndwi ~ s(dias), 
+    b_i_model <- gam(ndwi ~ s(dias),
                      data = data.frame(dias = dias,
-                                       ndwi = r_2023[i, grep("^b_i$", colnames(r_2023))]), 
+                                       ndwi = r_2023[i,grep("^b_i$",colnames(r_2023))]),
                      method = "REML")
   }
   

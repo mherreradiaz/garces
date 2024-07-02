@@ -3,10 +3,10 @@ library(mgcv)
 library(parallel)
 library(future.apply)
 
-all_files <- sort(list.files('data/processed/espacial/raster/index_raw/',full.names=T))
+all_files <- sort(list.files('data/processed/espacial/raster/vi_raw/',full.names=T))
 all_fechas <- gsub('_','-',substr(all_files,nchar(all_files)-13,nchar(all_files)-4))
 
-index_name <- c("ndwi", "ndmi", "msi", "gci", "ndvi", "nbr", "nmdi", "dwsi", "b_i")
+index_name <- c('ndwi','ndmi','msi','gci','ndvi','nbr','nmdi','dwsi','ndvi_705','b_i')
 
 # La Esperanza 2022-2023
 
@@ -47,7 +47,7 @@ for (x in seq_along(fechas_completas)) {
   
   fecha_name <- gsub('-','_',fechas_completas[x])
   writeRaster(rast(index_r),paste0('data/processed/espacial/raster/',
-                                   'vi_smooth/vi_smooth_la_esperanza',fecha_name,'.tif'))
+                                   'vi_smooth/vi_smooth_la_esperanza_',fecha_name,'.tif'))
 }
 
 # La Esperanza 2023-2024
@@ -89,7 +89,7 @@ for (x in seq_along(fechas_completas)) {
   
   fecha_name <- gsub('-','_',fechas_completas[x])
   writeRaster(rast(index_r),paste0('data/processed/espacial/raster/',
-                                   'vi_smooth/vi_smooth_la_esperanza',fecha_name,'.tif'))
+                                   'vi_smooth/vi_smooth_la_esperanza_',fecha_name,'.tif'))
 }
 
 # Rio Claro 2022-2023
