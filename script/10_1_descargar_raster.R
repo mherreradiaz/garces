@@ -1,16 +1,19 @@
 source('script/funciones/paquetes.R')
 library(beepr)
 
+user <- Sys.getenv("EARTHDATA_USER")
+pass <- Sys.getenv("EARTHDATA_PASSWORD")
+
 # descargar imagenes (hacerlo dos veces, una para cada temporada)
 library(earthdatalogin)
 library(sf)
 library(glue)
-edl_netrc(username = 'frzambra@gmail.com',password = 'Traplozx398#')
+edl_netrc(username = user,password = pass)
 with_gdalcubes()
 
 sitio <- 'rio_claro'
-layers <- st_layers(glue('data/processed/espacial/{sitio}.gpkg'))
-pol <- read_sf(glue('data/processed/espacial/{sitio}.gpkg'),layer = 'cuartel')
+layers <- st_layers(glue('data/processed/espacial/sitios/{sitio}.gpkg'))
+pol <- read_sf(glue('data/processed/espacial/sitios/{sitio}.gpkg'),layer = 'cuartel')
 
 bb <- st_bbox(pol) |> 
   as.numeric()
