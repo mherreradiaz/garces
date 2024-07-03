@@ -1,10 +1,11 @@
 library(xgboost)
 library(tidymodels)
 library(tidyverse)
+library(stacks)
 
 ## Cargar los datos
 
-data <- read_rds('data/processed/modelo_potencial.rds') |>
+data <- read_rds('data/processed/modelo_potencial_rawbiopar.rds') |>
   select(-(temporada:codigo))
 
 data <- data |>
@@ -254,9 +255,9 @@ svm_res |>
   geom_point(show.legend = FALSE)+
   facet_wrap(~parameter, scales = "free_x")
 
-show_best(xgb_res, "rsq")
+show_best(xgb_res, metric = "rsq")
 
-best_rsq <- select_best(svm_res, "rsq")
+best_rsq <- select_best(svm_res, metric = "rsq")
 
 final_svm <- finalize_workflow(
   svm_wf,
@@ -266,7 +267,6 @@ final_svm <- finalize_workflow(
 final_svm
 
 #train
-
 
 svm_fit <- final_svm |> fit(data = pot_train |> select(-sitio))
 
