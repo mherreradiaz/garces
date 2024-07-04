@@ -23,3 +23,24 @@ lapply(seq_along(files_sel),\(i){
   im <- crop(im,pol)
   writeRaster(im,glue('data/processed/espacial/raster/biophysical/{var}/{names[i]}_{sitio}_{var}.tif'))
 })
+
+#cortar SCL
+#
+dir <- '/mnt/md0/raster_procesada/Sentinel2/GTIFF/SCL'
+files <- dir_ls(dir,regexp = 'tif$')
+sitio <- 'la_esperanza'
+tiles <- c('la_esperanza'='HBC','rio_claro'='HCB')
+tile <- tiles[sitio]
+files_sel <- files[str_detect(files,glue('19{tile}.*tif$'))]
+
+names <- str_extract(files_sel,'[0-9]{8}')
+
+scl <- rast(files_sel)
+pol <- st_read(glue('data/processed/espacial/sitios/{sitio}.gpkg'),'cuartel') |> 
+  st_transform(crs(scl))
+scl_crop <- crop(scl,pol)
+
+seq_along(files_sel) |> 
+  lapply(\(i){
+    writeRaster(scl_crop,glue('data/processed/espacial/raster/scl/scl_{names[i]}_{sitio}.tif'))
+  })

@@ -5,7 +5,7 @@ library(stacks)
 
 ## Cargar los datos
 
-data <- read_rds('data/processed/modelo_potencial_rawbiopar.rds') |>
+data <- read_rds('data/processed/modelo_potencial_smoothbiopar.rds') |>
   select(-(temporada:codigo))
 
 data <- data |>
