@@ -5,7 +5,7 @@ library(parallel)
 all_files <- sort(list.files('data/processed/espacial/raster/vi_raw/',full.names=T))
 all_fechas <- gsub('_','-',substr(all_files,nchar(all_files)-13,nchar(all_files)-4))
 
-index_name <- c('ndwi','ndmi','msi','gci','ndvi','nbr','nmdi','dwsi','ndvi_705','b_i')
+index_name <- c('ndwi','ndmi','msi','gci','ndvi','nbr','nmdi','dwsi','ndvi_705','ndci','b_i')
 
 # La Esperanza 2022-2023
 
@@ -26,10 +26,12 @@ for (i in seq_along(index_r)) {
   suavizado[[i]] <- app(index,\(y){
     dias <- as.numeric(fechas)
     data <- data.frame(x=dias,y=y)
-    model <- gam(y ~ s(x), data = data,method = "REML")
+    model <- loess(y ~ x, data = data,span = 0.5)
     new_data <- data.frame(x=seq(min(dias),max(dias)))
     predict(model,new_data) |> as.numeric()
   })
+  
+  print(index_name[i])
   
   names(suavizado[[i]]) <- fechas_completas
   
@@ -233,6 +235,7 @@ for (i in seq_along(index_r)) {
     dias <- as.numeric(fechas)
     data <- data.frame(x=dias,y=y)
     model <- gam(y ~ s(x), data = data,method = "REML")
+    # model <- loess(y ~ x, data = data, span = 7)
     new_data <- data.frame(x=seq(min(dias),max(dias)))
     predict(model,new_data) |> as.numeric()
   })
@@ -240,6 +243,53 @@ for (i in seq_along(index_r)) {
   names(suavizado[[i]]) <- fechas_completas
   
 }
+
+#
+
+index <- index_r[[i]]
+
+# sp = 7/length(fechas)
+
+suavizado <- app(index,\(y){
+  
+  hampel(y,k=1)
+  
+  
+  
+  dias <- as.numeric(fechas)
+  data <- data.frame(x=dias,y=y)
+  # model <- gam(y ~ s(x), data = data,method = "REML")
+  # model <- loess(y ~ x, data = data, span = sp)
+  model <- gam(y ~ s(x, k = 10), data = data)
+  new_data <- data.frame(x=seq(min(dias),max(dias)))
+  predict(model,new_data) |> as.numeric()
+})
+
+names(suavizado) <- fechas_completas
+
+# px <- sample(nrow(values(index)),1)
+px = 1089
+# px = 126
+
+tibble(fecha = as.Date(names(suavizado)), 
+       biopar_smooth = as.numeric(suavizado[px])) |> 
+  left_join(tibble(fecha = fechas,
+                   biopar_raw = as.numeric(index[px])),
+            by = 'fecha') |> 
+  mutate(temporada = ifelse(fecha < '2023-06-02','2022-2023','2023-2024')) |> 
+  pivot_longer(cols=c('biopar_smooth','biopar_raw'),names_to ='origin',values_to='value') |> 
+  ggplot(aes(fecha,value,color=origin)) +
+  geom_point() +
+  labs(y = index_name[i]) +
+  facet_grid(~temporada,scales='free_x')
+
+
+
+#
+
+
+
+
 
 names(suavizado) <- index_name
 

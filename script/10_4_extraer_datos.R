@@ -231,7 +231,8 @@ write_rds(data,'data/processed/sentinel_1.rds')
 
 # Parametros biofísicos
 
-files <- list.files('data/processed/espacial/raster/biopar_smooth/',full.names=T)
+# files <- list.files('data/processed/espacial/raster/biopar_smooth/',full.names=T)
+files <- list.files('data/processed/espacial/raster/biopar_raw/',full.names=T)
 
 files_le <- grep('la_esperanza',files,value=T)
 files_rc <- grep('rio_claro',files,value=T)
@@ -249,7 +250,11 @@ pol <- list(pol_2022,pol_2023)
 
 data_list_le <- lapply(files_le,function(x) {
   r <- rast(x)
-  r_fecha <- gsub('_','-',substr(x,nchar(x)-13,nchar(x)-4))
+  # r_fecha <- gsub('_','-',substr(x,nchar(x)-13,nchar(x)-4))
+  r_fecha <- substr(x,nchar(x)-11,nchar(x)-4)
+  r_fecha <- gsub('_','-',paste0(substr(r_fecha, 1, 4), "_", 
+                                 substr(r_fecha, 5, 6), "_", 
+                                 substr(r_fecha, 7, 8)))
   
   id_tiempo <- ifelse(r_fecha < '2023-06-01',1,2)
   
@@ -265,7 +270,11 @@ data_list_le <- lapply(files_le,function(x) {
 
 data_list_rc <- lapply(files_rc,function(x) {
   r <- rast(x)
-  r_fecha <- gsub('_','-',substr(x,nchar(x)-13,nchar(x)-4))
+  # r_fecha <- gsub('_','-',substr(x,nchar(x)-13,nchar(x)-4))
+  r_fecha <- substr(x,nchar(x)-11,nchar(x)-4)
+  r_fecha <- gsub('_','-',paste0(substr(r_fecha, 1, 4), "_", 
+                                 substr(r_fecha, 5, 6), "_", 
+                                 substr(r_fecha, 7, 8)))
   
   id_tiempo <- ifelse(r_fecha < '2023-06-01',1,2)
   
@@ -291,4 +300,4 @@ data <- bind_rows(data_le,data_rc) |>
   mutate(fecha = gsub('_','-',fecha)) |> 
   arrange(sitio,fecha,tratamiento,unidad)
 
-write_rds(data,'data/processed/sentinel2_biopar_smooth.rds')
+write_rds(data,'data/processed/sentinel2_biopar_raw.rds')

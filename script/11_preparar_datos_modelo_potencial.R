@@ -15,8 +15,12 @@ data_sen2_bands <- read_rds('data/processed/sentinel2_bands.rds') |>
 
 data_sen2_index <- read_rds('data/processed/sentinel2_vi_smooth.rds')
 
+data_sen2_bio_raw <- read_rds('data/processed/sentinel2_biopar_smooth.rds')
+
 data_sen2 <- data_sen2_index |> 
   left_join(data_sen2_bands,
+            by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) |> 
+  left_join(data_sen2_bio_raw,
             by=c('sitio','temporada','fecha','tratamiento','unidad','codigo'))
 
 data_potencial <- read_rds('data/processed/potencial.rds')
@@ -43,4 +47,4 @@ data <- data_sen2 |>
   select(sitio:codigo,potencial_bar,everything()) |> 
   arrange(temporada,fecha,sitio,tratamiento,unidad)
 
-write_rds(data,'data/processed/modelo_potencial.rds')
+write_rds(data,'data/processed/modelo_potencial_smoothbiopar.rds')
