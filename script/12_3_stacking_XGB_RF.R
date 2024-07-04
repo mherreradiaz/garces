@@ -1,11 +1,14 @@
 library(xgboost)
 library(tidymodels)
 library(tidyverse)
-library(stacks)
 
 ## Cargar los datos
 
+<<<<<<< HEAD
 data <- read_rds('data/processed/modelo_potencial_smoothbiopar.rds') |>
+=======
+data <- read_rds('data/processed/modelo_potencial.rds') |>
+>>>>>>> 9e60338 (actualizar 12_4)
   select(-(temporada:codigo))
 
 data <- data |>
@@ -255,9 +258,9 @@ svm_res |>
   geom_point(show.legend = FALSE)+
   facet_wrap(~parameter, scales = "free_x")
 
-show_best(xgb_res, metric = "rsq")
+show_best(xgb_res, "rsq")
 
-best_rsq <- select_best(svm_res, metric = "rsq")
+best_rsq <- select_best(svm_res, "rsq")
 
 final_svm <- finalize_workflow(
   svm_wf,
@@ -267,6 +270,7 @@ final_svm <- finalize_workflow(
 final_svm
 
 #train
+
 
 svm_fit <- final_svm |> fit(data = pot_train |> select(-sitio))
 
