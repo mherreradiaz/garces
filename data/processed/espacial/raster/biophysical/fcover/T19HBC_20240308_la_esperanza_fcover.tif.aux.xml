@@ -1,0 +1,12 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>fcover</Description>
+    <Metadata>
+      <MDI key="STATISTICS_MAXIMUM">0.89901405572891</MDI>
+      <MDI key="STATISTICS_MEAN">0.40421817115276</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.056983727961779</MDI>
+      <MDI key="STATISTICS_STDDEV">0.098378249363846</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">100</MDI>
+    </Metadata>
+  </PAMRasterBand>
+</PAMDataset>

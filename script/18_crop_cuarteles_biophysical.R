@@ -28,7 +28,7 @@ lapply(seq_along(files_sel),\(i){
 #
 dir <- '/mnt/md0/raster_procesada/Sentinel2/GTIFF/SCL'
 files <- dir_ls(dir,regexp = 'tif$')
-sitio <- 'la_esperanza'
+sitio <- 'rio_claro'
 tiles <- c('la_esperanza'='HBC','rio_claro'='HCB')
 tile <- tiles[sitio]
 files_sel <- files[str_detect(files,glue('19{tile}.*tif$'))]
@@ -42,5 +42,5 @@ scl_crop <- crop(scl,pol)
 
 seq_along(files_sel) |> 
   lapply(\(i){
-    writeRaster(scl_crop,glue('data/processed/espacial/raster/scl/scl_{names[i]}_{sitio}.tif'))
+    writeRaster(scl_crop[[i]],glue('data/processed/espacial/raster/scl/scl_{names[i]}_{sitio}.tif'),overwrite = TRUE)
   })

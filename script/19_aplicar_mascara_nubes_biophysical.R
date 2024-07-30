@@ -4,7 +4,7 @@ library(glue)
 
 dir_scl <- 'data/processed/espacial/raster/scl/'
 
-sitio <- 'rio_claro'
+sitio <- 'la_esperanza'
 files_scl <- dir_ls(dir_scl,regexp = glue('{sitio}.*tif$'))
 
 vars <- c('lai','lai_cab','lai_cw','fapar','fcover')
@@ -24,8 +24,8 @@ lapply(vars,\(var){
     bio <- rast(files_bio[i])
     scl <- rast(files_scl[i])
     scl_mask <- scl 
-    scl_mask[scl_mask == 3] <- NA
+    scl_mask[scl_mask %in% c(3,8,9)] <- NA
     bio_mask <- mask(bio,scl_mask)
-    writeRaster(bio_mask,files_bio[i],overwrite = TRUE)
+    writeRaster(bio_mask,str_replace(files_bio[i],'biophysical','biophysical_snubes'),overwrite = TRUE)
   })
 })
