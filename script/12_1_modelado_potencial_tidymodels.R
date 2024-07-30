@@ -12,11 +12,11 @@ get_rf_imp <- function(x) {
 data <- read_rds('data/processed/modelo_potencial.rds') |>
   select(-(sitio:codigo))
 
-data <- data |>
-  select(-vv,-vh)
-
-data <- data |> 
-  select(-(B01:B8A))
+# data <- data |>
+#   select(-vv,-vh)
+# 
+# data <- data |> 
+#   select(-(B01:B8A))
 
 # data <- data |> 
 #   select(-pp,-eto)
