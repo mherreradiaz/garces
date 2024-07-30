@@ -11,16 +11,19 @@ data <- read_rds('data/processed/modelo_potencial.rds') |>
          fecha = ymd(fecha)) |> 
   drop_na() 
 
-#set.seed(12) #buenos resultado
+# set.seed(12) #buenos resultado
 # set.seed(876) #mal
 # set.seed(123) #regular
 # set.seed(321) #regular
-set.seed(987)
+# set.seed(987)
 
 splits <- group_initial_split(data,fecha)
 
 pot_train <- training(splits) |> select(-(sitio:fecha))
 pot_test  <- testing(splits) |> select(-(sitio:fecha))
+
+cbind(pot_train$potencial_bar,pot_test$potencial_bar) |> boxplot()
+
 
 ## LightGBM
 
