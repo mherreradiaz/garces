@@ -1,180 +1,61 @@
 source('script/funciones/paquetes.R')
 library(mgcv)
-library(parallel)
 
-all_files <- sort(list.files('data/processed/espacial/raster/vi_raw/',full.names=T))
-all_fechas <- gsub('_','-',substr(all_files,nchar(all_files)-13,nchar(all_files)-4))
+files <- list.files('data/processed/espacial/raster/vi_raw/',full.names=T)
+name <- str_match(files, ".*/RAW_(.*?)\\.tif$")[,2]
 
-index_name <- c('ndwi','ndmi','msi','gci','ndvi','nbr','nmdi','dwsi','ndvi_705','ndci','b_i')
-
-# La Esperanza 2022-2023
-
-files <- grep('la_esperanza',all_files[all_fechas < '2023-06-01'],value=T)
-fechas <- as.Date(gsub('_','-',substr(files,nchar(files)-13,nchar(files)-4)))
-
-r <- rast(files)
-
-index_r <- lapply(index_name, function(x) r[x])
+vi_r <- lapply(files, function(x) rast(x))
 
 suavizado <- list()
-fechas_completas <- seq(min(fechas), max(fechas), by = "day")
+dir.out <- 'data/processed/espacial/raster/vi_smooth/'
 
-for (i in seq_along(index_r)) {
+for (i in seq_along(vi_r)) {
+  print(name[i])
+  vi <- vi_r[[i]]
+  names(vi)
+  fechas <- as.Date(names(vi))
   
-  index <- index_r[[i]]
-  
-  suavizado[[i]] <- app(index,\(y){
+  vi_suavizado <- app(vi,\(y){
+    y[which(y > 10)] <- NA
+    y[is.infinite(y)] <- NA
     dias <- as.numeric(fechas)
     data <- data.frame(x=dias,y=y)
-    model <- loess(y ~ x, data = data,span = 0.5)
+    model <- loess(y ~ x, data = data, span = .3)
     new_data <- data.frame(x=seq(min(dias),max(dias)))
     predict(model,new_data) |> as.numeric()
   })
-  
-  print(index_name[i])
-  
-  names(suavizado[[i]]) <- fechas_completas
-  
+  names(vi_suavizado) <- seq(min(fechas),max(fechas),by='1 day')
+  writeRaster(vi_suavizado,glue('{dir.out}SMOOTH_{name[i]}.tif'))
 }
 
-names(suavizado) <- index_name
+# visualizar
 
-for (x in seq_along(fechas_completas)) {
-  index_r <- list()
-  for (y in seq_along(suavizado)) {
-    index_r[[y]] <- suavizado[[y]][[x]]
-    names(index_r[[y]]) <- index_name[y]
-  }
+files_raw <- list.files('data/processed/espacial/raster/vi_raw/',full.names=T)
+files_smooth <- list.files('data/processed/espacial/raster/vi_smooth/',full.names=T)
+
+name <- unique(str_match(files_raw,".*/(.*?)_(.*?)_(\\d{4})\\.tif$")[,3])
+vi_name <- str_split(name, "_", n = 2, simplify = TRUE)[,1]
+sitio <- str_split(name, "_", n = 2, simplify = TRUE)[,2]
+
+for (i in seq_along(name)) {
   
-  fecha_name <- gsub('-','_',fechas_completas[x])
-  writeRaster(rast(index_r),paste0('data/processed/espacial/raster/',
-                                   'vi_smooth/vi_smooth_la_esperanza_',fecha_name,'.tif'))
-}
-
-# La Esperanza 2023-2024
-
-files <- grep('la_esperanza',all_files[all_fechas > '2023-06-01'],value=T)
-fechas <- as.Date(gsub('_','-',substr(files,nchar(files)-13,nchar(files)-4)))
-
-r <- rast(files)
-
-index_r <- lapply(index_name, function(x) r[x])
-
-suavizado <- list()
-fechas_completas <- seq(min(fechas), max(fechas), by = "day")
-
-for (i in seq_along(index_r)) {
+  plot <- lapply(grep(name[i],files_smooth,value=T), function(x) {
+    r <- rast(x)[2000]
+    tibble(fecha = names(r), smooth = as.numeric(r))}) |> 
+    bind_rows() |> 
+    left_join(lapply(grep(name[i],files_raw,value=T), function(x) {
+      r <- rast(x)[2000]
+      tibble(fecha = names(r), raw = as.numeric(r))}) |> 
+        bind_rows(),by= 'fecha') |> 
+    mutate(temporada=ifelse(fecha<'2023-06-01','2022-2023','2023-2024')) |> 
+    pivot_longer(cols=c('smooth','raw'),values_to='value',names_to='origin') |> 
+    ggplot(aes(fecha,value,color=origin)) +
+    geom_point() +
+    facet_grid(~temporada,scales='free_x') +
+    labs(title = sitio[i], y = vi_name[i])
   
-  index <- index_r[[i]]
+  print(plot)
   
-  suavizado[[i]] <- app(index,\(y){
-    dias <- as.numeric(fechas)
-    data <- data.frame(x=dias,y=y)
-    model <- gam(y ~ s(x), data = data,method = "REML")
-    new_data <- data.frame(x=seq(min(dias),max(dias)))
-    predict(model,new_data) |> as.numeric()
-  })
-  
-  names(suavizado[[i]]) <- fechas_completas
-  
-}
-
-names(suavizado) <- index_name
-
-for (x in seq_along(fechas_completas)) {
-  index_r <- list()
-  for (y in seq_along(suavizado)) {
-    index_r[[y]] <- suavizado[[y]][[x]]
-    names(index_r[[y]]) <- index_name[y]
-  }
-  
-  fecha_name <- gsub('-','_',fechas_completas[x])
-  writeRaster(rast(index_r),paste0('data/processed/espacial/raster/',
-                                   'vi_smooth/vi_smooth_la_esperanza_',fecha_name,'.tif'))
-}
-
-# Rio Claro 2022-2023
-
-files <- grep('rio_claro',all_files[all_fechas < '2023-06-01'],value=T)
-fechas <- as.Date(gsub('_','-',substr(files,nchar(files)-13,nchar(files)-4)))
-
-r <- rast(files)
-
-index_r <- lapply(index_name, function(x) r[x])
-
-suavizado <- list()
-fechas_completas <- seq(min(fechas), max(fechas), by = "day")
-
-for (i in seq_along(index_r)) {
-  
-  index <- index_r[[i]]
-  
-  suavizado[[i]] <- app(index,\(y){
-    dias <- as.numeric(fechas)
-    data <- data.frame(x=dias,y=y)
-    model <- gam(y ~ s(x), data = data,method = "REML")
-    new_data <- data.frame(x=seq(min(dias),max(dias)))
-    predict(model,new_data) |> as.numeric()
-  })
-  
-  names(suavizado[[i]]) <- fechas_completas
-  
-}
-
-names(suavizado) <- index_name
-
-for (x in seq_along(fechas_completas)) {
-  index_r <- list()
-  for (y in seq_along(suavizado)) {
-    index_r[[y]] <- suavizado[[y]][[x]]
-    names(index_r[[y]]) <- index_name[y]
-  }
-  
-  fecha_name <- gsub('-','_',fechas_completas[x])
-  writeRaster(rast(index_r),paste0('data/processed/espacial/raster/',
-                                   'vi_smooth/vi_smooth_rio_claro_',fecha_name,'.tif'))
-}
-
-# Rio Claro 2023-2024
-
-files <- grep('rio_claro',all_files[all_fechas > '2023-06-01'],value=T)
-fechas <- as.Date(gsub('_','-',substr(files,nchar(files)-13,nchar(files)-4)))
-
-r <- rast(files)
-
-index_r <- lapply(index_name, function(x) r[x])
-
-suavizado <- list()
-fechas_completas <- seq(min(fechas), max(fechas), by = "day")
-
-for (i in seq_along(index_r)) {
-  
-  index <- index_r[[i]]
-  
-  suavizado[[i]] <- app(index,\(y){
-    dias <- as.numeric(fechas)
-    data <- data.frame(x=dias,y=y)
-    model <- gam(y ~ s(x), data = data,method = "REML")
-    new_data <- data.frame(x=seq(min(dias),max(dias)))
-    predict(model,new_data) |> as.numeric()
-  })
-  
-  names(suavizado[[i]]) <- fechas_completas
-  
-}
-
-names(suavizado) <- index_name
-
-for (x in seq_along(fechas_completas)) {
-  index_r <- list()
-  for (y in seq_along(suavizado)) {
-    index_r[[y]] <- suavizado[[y]][[x]]
-    names(index_r[[y]]) <- index_name[y]
-  }
-  
-  fecha_name <- gsub('-','_',fechas_completas[x])
-  writeRaster(rast(index_r),paste0('data/processed/espacial/raster/',
-                                   'vi_smooth/vi_smooth_rio_claro_',fecha_name,'.tif'))
 }
 
 # parametros biofísicos
@@ -185,24 +66,41 @@ lai_files <- list.files('data/processed/espacial/raster/biophysical/lai/',full.n
 cab_files <- list.files('data/processed/espacial/raster/biophysical/lai_cab/',full.names=T)
 cw_files <- list.files('data/processed/espacial/raster/biophysical/lai_cw/',full.names=T)
 
-fecha <- str_extract(fapar_files,"\\d{8}")
+fecha <- as.Date(str_extract(fapar_files,"\\d{8}"),format="%Y%m%d")
+temporada <- ifelse(fecha<'2023-06-01','2022','2023')
 sitio <- str_extract(fapar_files,"(rio_claro|la_esperanza)")
 
-for (i in seq_along(fapar_files)) {
+name <- c('la_esperanza_2022','rio_claro_2022',
+          'la_esperanza_2023','rio_claro_2023')
+
+dir.out <- 'data/processed/espacial/raster/biopar_raw/'
+
+id <- list(which(temporada == '2022' & sitio == 'la_esperanza'),
+           which(temporada == '2022' & sitio == 'rio_claro'),
+           which(temporada == '2023' & sitio == 'la_esperanza'),
+           which(temporada == '2023' & sitio == 'rio_claro'))
+
+for (i in seq_along(id)) {
   
-  r <- c(
-    rast(fapar_files[i]),
-    rast(fcover_files[i]),
-    rast(lai_files[i]),
-    rast(cab_files[i]),
-    rast(cw_files[i])
-  )
+  fapar <- rast(fapar_files[id[[i]]])
+  fcover <- rast(fcover_files[id[[i]]])
+  lai <- rast(lai_files[id[[i]]])
+  cab <- rast(cab_files[id[[i]]])
+  cw <- rast(cw_files[id[[i]]])
   
-  writeRaster(r,paste0('data/processed/espacial/raster/biopar_raw/bio_',
-                       sitio[i],'_',fecha[i],'.tif'))
+  names(fapar) <- fecha[id[[i]]]
+  names(fcover) <- fecha[id[[i]]]
+  names(lai) <- fecha[id[[i]]]
+  names(cab) <- fecha[id[[i]]]
+  names(cw) <- fecha[id[[i]]]
+  
+  writeRaster(fapar,glue('{dir.out}RAW_FAPAR_{name[i]}.tif'))
+  writeRaster(fcover,glue('{dir.out}RAW_FCOVER_{name[i]}.tif'))
+  writeRaster(lai,glue('{dir.out}RAW_LAI_{name[i]}.tif'))
+  writeRaster(cab,glue('{dir.out}RAW_CAB_{name[i]}.tif'))
+  writeRaster(cw,glue('{dir.out}RAW_CW_{name[i]}.tif'))
   
 }
-
 
 #
 
@@ -212,231 +110,59 @@ all_fechas <- gsub('_','-',paste0(substr(all_fechas, 1, 4), "_", substr(all_fech
 
 index_name <- c('fapar','fcover','lai','lai_cab','lai_cw')
 
-# La Esperanza 2022-2023
+files <- list.files('data/processed/espacial/raster/biopar_raw/',full.names=T)
+name <- str_match(files, ".*/RAW_(.*?)\\.tif$")[,2]
 
-files <- grep('la_esperanza',all_files[all_fechas < '2023-06-01'],value=T)
-fechas <- substr(files,nchar(files)-11,nchar(files)-4)
-fechas <- as.Date(gsub('_','-',paste0(substr(fechas, 1, 4), "_", 
-                                      substr(fechas, 5, 6), "_", 
-                                      substr(fechas, 7, 8))))
-
-r <- rast(files)
-
-index_r <- lapply(index_name, function(x) subset(r,which(names(r)==x)))
+biopar_r <- lapply(files, function(x) rast(x))
 
 suavizado <- list()
-fechas_completas <- seq(min(fechas), max(fechas), by = "day")
+dir.out <- 'data/processed/espacial/raster/biopar_smooth/'
 
-for (i in seq_along(index_r)) {
+for (i in seq_along(biopar_r)) {
+  print(name[i])
+  biopar <- biopar_r[[i]]
+  fechas <- as.Date(names(biopar))
   
-  index <- index_r[[i]]
-  
-  suavizado[[i]] <- app(index,\(y){
+  biopar_suavizado <- app(biopar,\(y){
+    y[is.infinite(y)] <- NA
     dias <- as.numeric(fechas)
     data <- data.frame(x=dias,y=y)
-    model <- gam(y ~ s(x), data = data,method = "REML")
-    # model <- loess(y ~ x, data = data, span = 7)
+    model <- loess(y ~ x, data = data, span = .3)
     new_data <- data.frame(x=seq(min(dias),max(dias)))
     predict(model,new_data) |> as.numeric()
   })
-  
-  names(suavizado[[i]]) <- fechas_completas
-  
+  names(biopar_suavizado) <- seq(min(fechas),max(fechas),by='1 day')
+  writeRaster(biopar_suavizado,glue('{dir.out}SMOOTH_{name[i]}.tif'))
 }
 
-#
+# visualizar
 
-index <- index_r[[i]]
+files_raw <- list.files('data/processed/espacial/raster/biopar_raw/',full.names=T)
+files_smooth <- list.files('data/processed/espacial/raster/biopar_smooth/',full.names=T)
 
-# sp = 7/length(fechas)
+name <- unique(str_match(files_raw,".*/(.*?)_(.*?)_(\\d{4})\\.tif$")[,3])
+vi_name <- str_split(name, "_", n = 2, simplify = TRUE)[,1]
+sitio <- str_split(name, "_", n = 2, simplify = TRUE)[,2]
 
-suavizado <- app(index,\(y){
+px <- sample(47*47,1)
+
+for (i in seq_along(name)) {
   
-  hampel(y,k=1)
+  plot <- lapply(grep(name[i],files_smooth,value=T), function(x) {
+    r <- rast(x)[px]
+    tibble(fecha = names(r), smooth = as.numeric(r))}) |> 
+    bind_rows() |> 
+    left_join(lapply(grep(name[i],files_raw,value=T), function(x) {
+      r <- rast(x)[px]
+      tibble(fecha = names(r), raw = as.numeric(r))}) |> 
+        bind_rows(),by= 'fecha') |> 
+    mutate(temporada=ifelse(fecha<'2023-06-01','2022-2023','2023-2024')) |> 
+    pivot_longer(cols=c('smooth','raw'),values_to='value',names_to='origin') |> 
+    ggplot(aes(fecha,value,color=origin)) +
+    geom_point() +
+    facet_grid(~temporada,scales='free_x') +
+    labs(title = sitio[i], y = vi_name[i])
   
-  
-  
-  dias <- as.numeric(fechas)
-  data <- data.frame(x=dias,y=y)
-  # model <- gam(y ~ s(x), data = data,method = "REML")
-  # model <- loess(y ~ x, data = data, span = sp)
-  model <- gam(y ~ s(x, k = 10), data = data)
-  new_data <- data.frame(x=seq(min(dias),max(dias)))
-  predict(model,new_data) |> as.numeric()
-})
-
-names(suavizado) <- fechas_completas
-
-# px <- sample(nrow(values(index)),1)
-px = 1089
-# px = 126
-
-tibble(fecha = as.Date(names(suavizado)), 
-       biopar_smooth = as.numeric(suavizado[px])) |> 
-  left_join(tibble(fecha = fechas,
-                   biopar_raw = as.numeric(index[px])),
-            by = 'fecha') |> 
-  mutate(temporada = ifelse(fecha < '2023-06-02','2022-2023','2023-2024')) |> 
-  pivot_longer(cols=c('biopar_smooth','biopar_raw'),names_to ='origin',values_to='value') |> 
-  ggplot(aes(fecha,value,color=origin)) +
-  geom_point() +
-  labs(y = index_name[i]) +
-  facet_grid(~temporada,scales='free_x')
-
-
-
-#
-
-
-
-
-
-names(suavizado) <- index_name
-
-for (x in seq_along(fechas_completas)) {
-  index_r <- list()
-  for (y in seq_along(suavizado)) {
-    index_r[[y]] <- suavizado[[y]][[x]]
-    names(index_r[[y]]) <- index_name[y]
-  }
-  
-  fecha_name <- gsub('-','_',fechas_completas[x])
-  writeRaster(rast(index_r),paste0('data/processed/espacial/raster/',
-                                   'biopar_smooth/biopar_smooth_la_esperanza_',fecha_name,'.tif'))
-}
-
-# La Esperanza 2023-2024
-
-files <- grep('la_esperanza',all_files[all_fechas > '2023-06-01'],value=T)
-fechas <- substr(files,nchar(files)-11,nchar(files)-4)
-fechas <- as.Date(gsub('_','-',paste0(substr(fechas, 1, 4), "_", 
-                                      substr(fechas, 5, 6), "_", 
-                                      substr(fechas, 7, 8))))
-
-r <- rast(files)
-
-index_r <- lapply(index_name, function(x) subset(r,which(names(r)==x)))
-
-suavizado <- list()
-fechas_completas <- seq(min(fechas), max(fechas), by = "day")
-
-for (i in seq_along(index_r)) {
-  
-  index <- index_r[[i]]
-  
-  suavizado[[i]] <- app(index,\(y){
-    dias <- as.numeric(fechas)
-    data <- data.frame(x=dias,y=y)
-    model <- gam(y ~ s(x), data = data,method = "REML")
-    new_data <- data.frame(x=seq(min(dias),max(dias)))
-    predict(model,new_data) |> as.numeric()
-  })
-  
-  names(suavizado[[i]]) <- fechas_completas
+  print(plot)
   
 }
-
-names(suavizado) <- index_name
-
-for (x in seq_along(fechas_completas)) {
-  index_r <- list()
-  for (y in seq_along(suavizado)) {
-    index_r[[y]] <- suavizado[[y]][[x]]
-    names(index_r[[y]]) <- index_name[y]
-  }
-  
-  fecha_name <- gsub('-','_',fechas_completas[x])
-  writeRaster(rast(index_r),paste0('data/processed/espacial/raster/',
-                                   'biopar_smooth/biopar_smooth_la_esperanza_',fecha_name,'.tif'))
-}
-
-# Rio Claro 2022-2023
-
-files <- grep('rio_claro',all_files[all_fechas < '2023-06-01'],value=T)
-fechas <- substr(files,nchar(files)-11,nchar(files)-4)
-fechas <- as.Date(gsub('_','-',paste0(substr(fechas, 1, 4), "_", 
-                                      substr(fechas, 5, 6), "_", 
-                                      substr(fechas, 7, 8))))
-
-r <- rast(files)
-
-index_r <- lapply(index_name, function(x) subset(r,which(names(r)==x)))
-
-suavizado <- list()
-fechas_completas <- seq(min(fechas), max(fechas), by = "day")
-
-for (i in seq_along(index_r)) {
-  
-  index <- index_r[[i]]
-  
-  suavizado[[i]] <- app(index,\(y){
-    dias <- as.numeric(fechas)
-    data <- data.frame(x=dias,y=y)
-    model <- gam(y ~ s(x), data = data,method = "REML")
-    new_data <- data.frame(x=seq(min(dias),max(dias)))
-    predict(model,new_data) |> as.numeric()
-  })
-  
-  names(suavizado[[i]]) <- fechas_completas
-  
-}
-
-names(suavizado) <- index_name
-
-for (x in seq_along(fechas_completas)) {
-  index_r <- list()
-  for (y in seq_along(suavizado)) {
-    index_r[[y]] <- suavizado[[y]][[x]]
-    names(index_r[[y]]) <- index_name[y]
-  }
-  
-  fecha_name <- gsub('-','_',fechas_completas[x])
-  writeRaster(rast(index_r),paste0('data/processed/espacial/raster/',
-                                   'biopar_smooth/biopar_smooth_rio_claro_',fecha_name,'.tif'))
-}
-
-# Rio Claro 2023-2024
-
-files <- grep('rio_claro',all_files[all_fechas > '2023-06-01'],value=T)
-fechas <- substr(files,nchar(files)-11,nchar(files)-4)
-fechas <- as.Date(gsub('_','-',paste0(substr(fechas, 1, 4), "_", 
-                                      substr(fechas, 5, 6), "_", 
-                                      substr(fechas, 7, 8))))
-
-r <- rast(files)
-
-index_r <- lapply(index_name, function(x) subset(r,which(names(r)==x)))
-
-suavizado <- list()
-fechas_completas <- seq(min(fechas), max(fechas), by = "day")
-
-for (i in seq_along(index_r)) {
-  
-  index <- index_r[[i]]
-  
-  suavizado[[i]] <- app(index,\(y){
-    dias <- as.numeric(fechas)
-    data <- data.frame(x=dias,y=y)
-    model <- gam(y ~ s(x), data = data,method = "REML")
-    new_data <- data.frame(x=seq(min(dias),max(dias)))
-    predict(model,new_data) |> as.numeric()
-  })
-  
-  names(suavizado[[i]]) <- fechas_completas
-  
-}
-
-names(suavizado) <- index_name
-
-for (x in seq_along(fechas_completas)) {
-  index_r <- list()
-  for (y in seq_along(suavizado)) {
-    index_r[[y]] <- suavizado[[y]][[x]]
-    names(index_r[[y]]) <- index_name[y]
-  }
-  
-  fecha_name <- gsub('-','_',fechas_completas[x])
-  writeRaster(rast(index_r),paste0('data/processed/espacial/raster/',
-                                   'biopar_smooth/biopar_smooth_rio_claro_',fecha_name,'.tif'))
-}
-

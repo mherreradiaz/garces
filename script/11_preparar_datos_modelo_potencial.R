@@ -13,15 +13,15 @@ data_sen2_bands <- read_rds('data/processed/sentinel2_bands.rds') |>
   mutate(fecha = as.character(fecha)) |> 
   select(sitio,temporada,fecha,everything())
 
-data_sen2_index <- read_rds('data/processed/sentinel2_vi_smooth.rds')
+data_sen2_index <- read_rds('data/processed/sentinel_vi_smooth.rds')
 
 data_sen2_bio_raw <- read_rds('data/processed/sentinel2_biopar_smooth.rds')
 
 data_sen2 <- data_sen2_index |> 
   left_join(data_sen2_bands,
-            by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) |> 
-  left_join(data_sen2_bio_raw,
-            by=c('sitio','temporada','fecha','tratamiento','unidad','codigo'))
+            by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) 
+  # left_join(data_sen2_bio_raw,
+  #           by=c('sitio','temporada','fecha','tratamiento','unidad','codigo'))
 
 data_potencial <- read_rds('data/processed/potencial.rds')
 
@@ -43,8 +43,8 @@ data_clima <- read_rds('data/processed/clima_hora.rds') |>
 data <- data_sen2 |> 
   left_join(data_potencial,by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) |> 
   left_join(data_clima,by=c('sitio','temporada','fecha')) |> 
-  left_join(data_sen1,by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) |> 
+  # left_join(data_sen1,by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) |> 
   select(sitio:codigo,potencial_bar,everything()) |> 
   arrange(temporada,fecha,sitio,tratamiento,unidad)
 
-write_rds(data,'data/processed/modelo_potencial_smoothbiopar.rds')
+write_rds(data,'data/processed/modelo_potencial.rds')

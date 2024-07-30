@@ -16,8 +16,11 @@ bb <- st_bbox(pol) |>
 # inicio <- "2022-08-20"
 # fin <- "2023-05-01"
 
-inicio <- "2023-08-20"
-fin <- "2024-05-01"
+# inicio <- "2023-08-20"
+# fin <- "2024-05-01"
+
+inicio <- "2023-04-01"
+fin <- "2023-05-15"
 
 url <- "https://planetarycomputer.microsoft.com/api/stac/v1"
 
@@ -45,7 +48,7 @@ col <- stac_image_collection(items$features)
 
 cloud_mask <- image_mask("SCL", values=c(3,8,9))
 
-dir_out <- 'data/raw/sentinel'
+dir_out <- 'data/raw/prueba'
 
 raster_cube(col, v, mask=cloud_mask) |>
   write_tif(glue('{dir_out}/sentinel_2a_{sitio}'))
