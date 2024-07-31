@@ -5,7 +5,7 @@ library(tidyverse)
 ## Cargar los datos
 
 # split 
-data <- read_rds('data/processed/modelo_potencial.rds') |> 
+data <- read_rds('data/processed/modelo_potencial_smooth.rds') |> 
   select(-(tratamiento:codigo),-(sitio:temporada)) |> 
   mutate(potencial_bar = -potencial_bar,
          fecha = ymd(fecha)) |> 
