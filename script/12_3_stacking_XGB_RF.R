@@ -11,11 +11,11 @@ data <- read_rds('data/processed/modelo_potencial.rds') |>
          fecha = ymd(fecha)) |> 
   drop_na() 
 
-# set.seed(12) #buenos resultado
+set.seed(12) #buenos resultado
 # set.seed(876) #mal
-# set.seed(123) #regular
-# set.seed(321) #regular
-# set.seed(987)
+#set.seed(123) #regular
+#set.seed(321) #regular
+# set.seed(3)
 
 splits <- group_initial_split(data,fecha)
 
@@ -403,8 +403,9 @@ test_results |>
   ggplot(aes(x = .pred, y = potencial_bar)) + 
   geom_abline(col = "green", lty = 2) + 
   geom_point(alpha = .4) + 
-  labs(x = 'SWP estimated (kPA)', y= 'SWP observed (kPa)') +
+  labs(x = 'SWP estimated (kPA)', y = 'SWP observed (kPa)') +
   geom_text(data = met,aes(x,y,label = paste0(.metric,'=',.estimate))) +
+  geom_smooth(method = 'lm') +
   #annotate("text",aes(label = paste0(.metric,'=',.estimate))) +
   # RMSE = ',met[1,3],'\n MAE = ',met[3,3]),
   #          x=-10,y = 0,size=5) +
