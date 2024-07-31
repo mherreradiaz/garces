@@ -1,27 +1,29 @@
 source('script/funciones/paquetes.R')
 
-data_sen1 <- read_rds('data/processed/sentinel_1.rds') |> 
-  distinct(sitio,temporada,fecha,tratamiento,unidad,codigo,.keep_all=T)
+# data_sen1 <- read_rds('data/processed/sentinel_1.rds') |> 
+#   distinct(sitio,temporada,fecha,tratamiento,unidad,codigo,.keep_all=T)
+# 
+# data_sen2_bands <- read_rds('data/processed/sentinel2_bands.rds') |> 
+#   distinct() |> 
+#   mutate(fecha = as.Date(fecha)) |> 
+#   group_by(sitio,temporada,tratamiento,unidad,codigo) |> 
+#   complete(fecha = seq.Date(min(fecha), max(fecha), by = "day")) |>
+#   mutate(across(B01:B8A, ~ zoo::na.approx(., na.rm = FALSE))) |> 
+#   ungroup() |> 
+#   mutate(fecha = as.character(fecha)) |> 
+#   select(sitio,temporada,fecha,everything())
 
-data_sen2_bands <- read_rds('data/processed/sentinel2_bands.rds') |> 
-  distinct() |> 
-  mutate(fecha = as.Date(fecha)) |> 
-  group_by(sitio,temporada,tratamiento,unidad,codigo) |> 
-  complete(fecha = seq.Date(min(fecha), max(fecha), by = "day")) |>
-  mutate(across(B01:B8A, ~ zoo::na.approx(., na.rm = FALSE))) |> 
-  ungroup() |> 
-  mutate(fecha = as.character(fecha)) |> 
-  select(sitio,temporada,fecha,everything())
+data_vi <- read_rds('data/processed/sentinel_vi_smooth.rds')
+data_biopar <- read_rds('data/processed/sentinel_biopar_smooth.rds')
 
-data_sen2_index <- read_rds('data/processed/sentinel_vi_smooth.rds')
+data_sen2 <- data_vi |> 
+  left_join(data_biopar,by=c('sitio','temporada','fecha','tratamiento','unidad','codigo'))
 
-data_sen2_bio_raw <- read_rds('data/processed/sentinel2_biopar_smooth.rds')
-
-data_sen2 <- data_sen2_index |> 
-  left_join(data_sen2_bands,
-            by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) 
-  # left_join(data_sen2_bio_raw,
-  #           by=c('sitio','temporada','fecha','tratamiento','unidad','codigo'))
+# data_sen2 <- data_sen2_index |> 
+#   left_join(data_sen2_bands,
+#             by=c('sitio','temporada','fecha','tratamiento','unidad','codigo')) 
+#   # left_join(data_sen2_bio_raw,
+#   #           by=c('sitio','temporada','fecha','tratamiento','unidad','codigo'))
 
 data_potencial <- read_rds('data/processed/potencial.rds')
 

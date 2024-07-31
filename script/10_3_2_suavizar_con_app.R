@@ -37,26 +37,42 @@ name <- unique(str_match(files_raw,".*/(.*?)_(.*?)_(\\d{4})\\.tif$")[,3])
 vi_name <- str_split(name, "_", n = 2, simplify = TRUE)[,1]
 sitio <- str_split(name, "_", n = 2, simplify = TRUE)[,2]
 
+plot_list <- list()
+
 for (i in seq_along(name)) {
   
-  plot <- lapply(grep(name[i],files_smooth,value=T), function(x) {
-    r <- rast(x)[2000]
+  px <- ifelse(sitio[i] == 'la_esperanza',5998,7982)
+  
+  plot_list[[i]] <- lapply(grep(name[i],files_smooth,value=T), function(x) {
+    r <- rast(x)[px]
     tibble(fecha = names(r), smooth = as.numeric(r))}) |> 
     bind_rows() |> 
     left_join(lapply(grep(name[i],files_raw,value=T), function(x) {
-      r <- rast(x)[2000]
+      r <- rast(x)[px]
       tibble(fecha = names(r), raw = as.numeric(r))}) |> 
         bind_rows(),by= 'fecha') |> 
     mutate(temporada=ifelse(fecha<'2023-06-01','2022-2023','2023-2024')) |> 
-    pivot_longer(cols=c('smooth','raw'),values_to='value',names_to='origin') |> 
+    pivot_longer(cols=c('smooth','raw'),values_to='value',names_to='origin') |>
+    mutate(fecha = as.Date(fecha)) |> 
     ggplot(aes(fecha,value,color=origin)) +
-    geom_point() +
+    geom_point(size = .7) +
     facet_grid(~temporada,scales='free_x') +
-    labs(title = sitio[i], y = vi_name[i])
-  
-  print(plot)
-  
+    labs(title = sitio[i], y = vi_name[i]) +
+    scale_x_date(date_breaks = "2 months", date_labels = "%b") +
+    theme(legend.position = "none",
+          plot.title = element_blank(),
+          axis.title.x = element_blank())
+
 }
+
+plot_le <- plot_list[1:length(plot_list) %% 2 != 0]
+plot_rc <- plot_list[1:length(plot_list) %% 2 == 0]
+
+wrap_plots(plot_le, ncol = 4, nrow = 4)
+ggsave(paste0('output/figs/vi_suavizado_la_esperanza.png'), width = 15, height = 10)
+wrap_plots(plot_rc, ncol = 4, nrow = 4)
+ggsave(paste0('output/figs/vi_suavizado_rio_claro.png'), width = 15, height = 10)
+
 
 # parametros biofísicos
 
@@ -144,11 +160,13 @@ name <- unique(str_match(files_raw,".*/(.*?)_(.*?)_(\\d{4})\\.tif$")[,3])
 vi_name <- str_split(name, "_", n = 2, simplify = TRUE)[,1]
 sitio <- str_split(name, "_", n = 2, simplify = TRUE)[,2]
 
-px <- sample(47*47,1)
+plot_list <- list()
 
 for (i in seq_along(name)) {
   
-  plot <- lapply(grep(name[i],files_smooth,value=T), function(x) {
+  px <- ifelse(sitio[i] == 'la_esperanza',1541,1910)
+  
+  plot_list[[i]] <- lapply(grep(name[i],files_smooth,value=T), function(x) {
     r <- rast(x)[px]
     tibble(fecha = names(r), smooth = as.numeric(r))}) |> 
     bind_rows() |> 
@@ -157,12 +175,23 @@ for (i in seq_along(name)) {
       tibble(fecha = names(r), raw = as.numeric(r))}) |> 
         bind_rows(),by= 'fecha') |> 
     mutate(temporada=ifelse(fecha<'2023-06-01','2022-2023','2023-2024')) |> 
-    pivot_longer(cols=c('smooth','raw'),values_to='value',names_to='origin') |> 
+    pivot_longer(cols=c('smooth','raw'),values_to='value',names_to='origin') |>
+    mutate(fecha = as.Date(fecha)) |> 
     ggplot(aes(fecha,value,color=origin)) +
-    geom_point() +
+    geom_point(size = .3) +
     facet_grid(~temporada,scales='free_x') +
-    labs(title = sitio[i], y = vi_name[i])
-  
-  print(plot)
+    labs(title = sitio[i], y = vi_name[i]) +
+    scale_x_date(date_breaks = "2 months", date_labels = "%b") +
+    theme(legend.position = "none",
+          plot.title = element_blank(),
+          axis.title.x = element_blank())
   
 }
+
+plot_le <- plot_list[1:length(plot_list) %% 2 != 0]
+plot_rc <- plot_list[1:length(plot_list) %% 2 == 0]
+
+wrap_plots(plot_le, ncol = 2, nrow = 3)
+ggsave(paste0('output/figs/biopar_suavizado_la_esperanza.png'), width = 10, height = 5)
+wrap_plots(plot_rc, ncol = 2, nrow = 3)
+ggsave(paste0('output/figs/biopar_suavizado_rio_claro.png'), width = 10, height = 5)
