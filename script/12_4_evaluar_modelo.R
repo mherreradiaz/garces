@@ -7,7 +7,7 @@ get_rf_imp <- function(x) {
     vip::vi(scale = TRUE)
 }
 
-data <- read_rds('data/processed/modelo_potencial.rds') |> 
+data <- read_rds('data/processed/modelo_potencial_smooth.rds') |> 
   select(-(tratamiento:codigo),-(sitio:temporada)) |> 
   mutate(potencial_bar = -potencial_bar,
          fecha = ymd(fecha)) |> 
@@ -24,13 +24,13 @@ set.seed(12) #$rsq=.446
 splits <- group_initial_split(data,fecha)
 #splits <- initial_split(data)
 
-pot_train <- training(splits) 
-pot_test  <- testing(splits) 
+pot_train <- training(splits) |> select(-fecha)
+pot_test  <- testing(splits) |> select(-fecha)
 
 # XGBoost
 library(vip)
 
-data_folds <- vfold_cv(pot_train |> select(-fecha), v = 5)
+data_folds <- vfold_cv(pot_train, v = 5)
 
 xgb_wf <- read_rds('data/processed/modelos/xgboost.rds')
 
@@ -104,25 +104,17 @@ potencial_prep <- prep(potencial_rec)
 
 juice(potencial_prep)
 
-pfun <- function(object, newdata) predict(object, new_data = newdata)
+pfun <- function(object, newdata) predict(object, new_data = newdata) |> pull(.pred)
 
-potencial_imp <- svm_wf |> 
-  fit(pot_train) |> 
-  extract_fit_parsnip() |> 
-  vip::vi(
-    method = 'permute',nsim = 10,
-    target = 'potencial_bar',metric = 'rsq',
-    pred_wrapper = pfun, train = juice(potencial_prep)
-  )
-
-potencial_imp <- svm_wf |> 
+df_va_imp <- 
+       svm_wf |> 
   extract_fit_parsnip() |> 
   vip::vi(method = 'permute',nsim = 10,
-    target = 'potencial_bar', metric = 'rsq',
-    all_permutations = TRUE,
-    scale = TRUE,
-    pred_wrapper = function(object, newdata) as.vector(kernlab::predict(object, newdata)),train = juice(potencial_prep)) 
+          target = 'potencial_bar', metric = 'rsq',
+          scale = TRUE,
+          pred_wrapper = pfun, train =pot_train ) 
 
+### borrar de aquí abajo ?
 
 ctrl_imp <- control_grid(extract = get_rf_imp)
 

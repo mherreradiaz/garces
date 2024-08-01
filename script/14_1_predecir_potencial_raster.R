@@ -2,15 +2,26 @@ library(tidyverse)
 library(fs)
 library(terra)
 
-files <- dir_ls('data/processed/espacial/raster/index_smooth')
+files_vi <- dir_ls('data/processed/espacial/raster/vi_smooth')
+files_bio <- dir_ls('data/processed/espacial/raster/biopar_smooth')
 
-data_clima_1 <- read_rds('data/processed/clima.rds') |> 
+dates_vi <- str_extract(files_vi,'[0-9]{4}_[0-9]{2}_[0-9]{2}') |> ymd()
+dates_bio <- str_extract(files_bio,'[0-9]{4}_[0-9]{2}_[0-9]{2}') |> ymd()
+
+dates_inter <- lubridate::intersect(dates_vi,dates_bio) |> as_date()
+
+files_vi[dates_vi %in% dates_inter] |> length()
+
+files_bio[dates_bio %in% dates_inter] |> length()
+
+
+data_clima_1 <- read_rds('data/processed/clima_hora.rds') |> 
   group_by(sitio,temporada,fecha) |> 
   summarise(eto = max(eto,na.rm=T),
             pp = sum(pp,na.rm=T)) |> 
   ungroup()
 
-data_clima <- read_rds('data/processed/clima.rds') |> 
+data_clima <- read_rds('data/processed/clima_hora.rds') |> 
   filter(hora %in% c('13:00','14:00')) |> 
   group_by(sitio,temporada,fecha) |> 
   summarise(t_media = mean(t_media,na.rm=T),
@@ -26,7 +37,8 @@ data_clima <- read_rds('data/processed/clima.rds') |>
   mutate(fecha = as.character(fecha)) |> 
   select(sitio,temporada,fecha,everything())
 
-modelo <- read_rds('data/processed/modelos/xgboost.rds')
+#utilizamos el modelo sobreajustado para espacializar SWP
+modelo <- read_rds('data/processed/modelos/xgboost_over.rds')
 
 # data_clima |> 
 #   pivot_longer(cols=c('t_media','vpd_medio','rh_media'),values_to='valor',names_to='var') |> 
