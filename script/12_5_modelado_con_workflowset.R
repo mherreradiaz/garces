@@ -19,8 +19,8 @@ set.seed(12) #$rsq=.446
 # set.seed(4567) #rsq 0.528
 #
 
-#splits <- group_initial_split(data,fecha) #independiente de la fecha
-splits <- initial_split(data) #aleatorio, sobreajusta
+splits <- group_initial_split(data,fecha) #independiente de la fecha
+#splits <- initial_split(data) #aleatorio, sobreajusta
 
 pot_train <- training(splits) 
 pot_test  <- testing(splits) 
@@ -84,17 +84,16 @@ pot_rec_pca <- pot_rec |>
 
 ctrl <- control_grid(parallel_over = "everything")
 
-#vb_folds <- group_vfold_cv(pot_train,fecha,v=5)
-vb_folds <- vfold_cv(pot_train,v=5)
-
+set.seed(432)
+vb_folds <- group_vfold_cv(pot_train,fecha,v=5)
+#vb_folds <- vfold_cv(pot_train,v=5)
 
 pot_res <- 
   workflow_set(
     preproc = list(rec = pot_rec, rec_pca = pot_rec_pca), 
-    models = list(rf = rf_spec, 
-                  svm = svm_spec,
-                  xgb = xgb_spec, 
-                  lgbm = lgbm_spec)
+    models = list(RF = rf_spec, 
+                  SVM = svm_spec,
+                  XGBoost = xgb_spec) 
   ) |>  
   workflow_map(
     verbose = TRUE,
@@ -120,41 +119,42 @@ filter(rankings, rank <= 20) |>
   ggplot(aes(rank,mean,color = Model,shape = Model)) + 
   geom_errorbar(aes(ymin = mean - std_err,ymax = mean + std_err)) +
   scale_x_continuous(breaks = 1:8) +
-  scale_y_continuous(breaks = seq(0.5,0.8,0.05)) +
+  scale_y_continuous(breaks = seq(0.25,0.55,0.05)) +
   scale_color_viridis_d() +
   labs(y = expression(R^2)) +
   geom_point() + 
-  theme_bw()
-ggsave('output/figs/fig_res_train_modelos_over.png',scale = 1.2)
+  theme_bw() + 
+  theme(legend.position = 'bottom')
+ggsave('output/figs/fig_res_train_modelos_over.png',scale = 1,width=8,height=5)
 
 # fit and test the best model y extraer los mejores modelos
 
 xgb_res <- 
   pot_res |>  
-  extract_workflow("rec_xgb") %>% 
+  extract_workflow("rec_XGBoost") %>% 
   finalize_workflow(
     pot_res |>  
-      extract_workflow_set_result("rec_xgb") %>% 
+      extract_workflow_set_result("rec_XGBoost") %>% 
       select_best(metric = "rsq")
   ) |>  
   last_fit(split = splits, metrics = metric_set(rsq,rmse,mae))
 
 rf_res <- 
   pot_res |>  
-  extract_workflow("rec_rf") %>% 
+  extract_workflow("rec_RF") %>% 
   finalize_workflow(
     pot_res |>  
-      extract_workflow_set_result("rec_rf") %>% 
+      extract_workflow_set_result("rec_RF") %>% 
       select_best(metric = "rsq")
   ) |>  
   last_fit(split = splits, metrics = metric_set(rsq,rmse,mae))
 
 svm_res <- 
   pot_res |>  
-  extract_workflow("rec_svm") %>% 
+  extract_workflow("rec_SVM") %>% 
   finalize_workflow(
     pot_res |>  
-      extract_workflow_set_result("rec_pca_svm") %>% 
+      extract_workflow_set_result("rec_SVM") %>% 
       select_best(metric = "rsq")
   ) |>  
   last_fit(split = splits, metrics = metric_set(rsq,rmse,mae))
@@ -245,7 +245,7 @@ tst_res |>
 # ggsave('output/figs/pred_vs_obser_models_random_split.png',
 #        scale=1.5,width = 10,height = 6,
 #        device = cairo_pdf)
-ggsave('output/figs/pred_vs_obser_models_group_split_over.png',
+ggsave('output/figs/pred_vs_obser_models_group_split.png',
        scale=1.2,width = 8,height = 6, device = png, type = "cairo",
        dpi = 300)
 
