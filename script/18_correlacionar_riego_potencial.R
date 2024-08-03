@@ -107,7 +107,7 @@ data <- potencial |>
   mutate(fecha=as.Date(fecha)) |> 
   left_join(riego,by=c('sitio','temporada','fecha','tratamiento'))
 
-# delta potencial
+# delta potencial boxplot [dia de riego; i día a partir del riego]
 
 plot = list()
 
@@ -120,10 +120,10 @@ for (i in 1:5) { # sacar delta en i días a partir del riego
     arrange(sitio,temporada,tratamiento,unidad,fecha) |> 
     mutate(diferencia_dias = ifelse(as.numeric(lead(fecha,i)-fecha) == i,1,NA),
            indicador_riego = ifelse(!is.na(lamina_mm) & diferencia_dias == 1, 1, NA),
-           indicador_riego = ifelse(indicador_riego == 1 | lag(indicador_riego,i) == 1,1,NA)) |> 
-    filter(indicador_riego == 1) |> 
-    select(-diferencia_dias,-indicador_riego) |> 
-    mutate(delta_potencial = lead(potencial)-potencial) |> 
+           indicador_riego = ifelse(indicador_riego == 1 | lag(indicador_riego,i) == 1,1,NA)) |>
+    filter(indicador_riego == 1) |>
+    select(-diferencia_dias,-indicador_riego) |>
+    mutate(delta_potencial = lead(potencial)-potencial) |>
     na.omit() |> 
     select(sitio:codigo,lamina_mm,delta_potencial)
   
@@ -133,6 +133,7 @@ for (i in 1:5) { # sacar delta en i días a partir del riego
               n = n())
   
   plot[[i]] <- delta_data |> 
+    filter(tratamiento == 'T0') |> 
     ggplot(aes(sitio,delta_potencial)) +
     geom_boxplot() +
     geom_text(data=n,aes(sitio,q3,label = paste0('n = ',n)),hjust = 1.3, size = 3) +
@@ -145,3 +146,76 @@ for (i in 1:5) { # sacar delta en i días a partir del riego
 
 wrap_plots(plot, ncol = 3, nrow = 2)
 ggsave(glue('output/figs/delta_potencial.png'), width = 15, height = 10)
+
+# delta potencial boxplot [dia antes del riego; día después del riego]
+  
+delta_data <- data |> 
+  left_join(fechas) |> 
+  filter(filter==1) |> 
+  select(-filter) |> 
+  arrange(sitio,temporada,tratamiento,unidad,fecha) |> 
+  mutate(diferencia_dias = ifelse(as.numeric(lead(fecha,i)-fecha) == i,1,NA),
+         indicador_riego = ifelse(!is.na(lamina_mm) & diferencia_dias == 1
+                                  & lag(diferencia_dias) == 1
+                                  & lead(diferencia_dias) == 1,1,NA)) |> 
+  mutate(delta_potencial = ifelse(indicador_riego==1,lead(potencial)-lag(potencial),NA)) |> 
+  na.omit() |> 
+  select(sitio:codigo,lamina_mm,delta_potencial)
+
+n <- delta_data |>
+  filter(tratamiento == 'T0') |> 
+  group_by(sitio,temporada) |> 
+  summarise(q3 = quantile(delta_potencial,.75)*2,
+            n = n())
+
+delta_data |> 
+  filter(tratamiento == 'T0') |> 
+  ggplot(aes(sitio,delta_potencial)) +
+  geom_boxplot() +
+  geom_text(data=n,aes(sitio,q3,label = paste0('n = ',n)),hjust = 1.3, size = 3) +
+  facet_grid(~temporada,labeller = as_labeller(names)) +
+  labs(title = 'Día antes y día después del riego') +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.title.x = element_blank())
+
+ggsave(glue('output/figs/delta_potencial_diasantesdespues.png'), width = 10, height = 7)
+
+# delta potencial scatterplot
+
+plot = list()
+
+for (i in 1:5) { # sacar delta en i días a partir del riego
+  
+  delta_data <- data |> 
+    left_join(fechas) |> 
+    filter(filter==1,
+           lamina_mm < 10) |> 
+    select(-filter) |> 
+    arrange(sitio,temporada,tratamiento,unidad,fecha) |> 
+    mutate(diferencia_dias = ifelse(as.numeric(lead(fecha,i)-fecha) == i,1,NA),
+           indicador_riego = ifelse(!is.na(lamina_mm) & diferencia_dias == 1, 1, NA),
+           indicador_riego = ifelse(indicador_riego == 1 | lag(indicador_riego,i) == 1,1,NA)) |> 
+    filter(indicador_riego == 1) |> 
+    select(-diferencia_dias,-indicador_riego) |> 
+    mutate(delta_potencial = lead(potencial)-potencial) |> 
+    na.omit() |> 
+    select(sitio:codigo,lamina_mm,delta_potencial)
+  
+  # n <- delta_data |> 
+  #   group_by(sitio,temporada) |> 
+  #   summarise(q3 = quantile(delta_potencial,.75)*2,
+  #             n = n())
+  
+  plot[[i]] <- delta_data |> 
+    filter(tratamiento == 'T0') |> 
+    ggplot(aes(lamina_mm,delta_potencial)) +
+    geom_point(size = 1) +
+    geom_smooth(method = "lm", se = FALSE, color = "blue",linewidth=.7) +
+    facet_grid(sitio~temporada,labeller = as_labeller(names),scales='free_x') +
+    labs(title = glue('{i} día/s después del riego')) +
+    theme(plot.title = element_text(hjust = 0.5))
+  
+}
+
+wrap_plots(plot, ncol = 3, nrow = 2)
+ggsave(glue('output/figs/delta_potencial_scatterplot.png'), width = 15, height = 10)
