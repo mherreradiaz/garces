@@ -19,8 +19,8 @@ set.seed(12) #$rsq=.446
 # set.seed(4567) #rsq 0.528
 #
 
-splits <- group_initial_split(data,fecha) #independiente de la fecha
-#splits <- initial_split(data) #aleatorio, sobreajusta
+#splits <- group_initial_split(data,fecha) #independiente de la fecha
+splits <- initial_split(data |> select(-fecha)) #aleatorio, sobreajusta
 
 pot_train <- training(splits) 
 pot_test  <- testing(splits) 
@@ -75,7 +75,7 @@ svm_spec <-
 ## Recipe
 
 pot_rec <- recipe(potencial_bar ~ . ,data = pot_train) |> 
-  update_role(fecha, new_role = 'dont_use') |> 
+  #update_role(fecha, new_role = 'dont_use') |> 
   step_zv(all_numeric_predictors()) |>
   step_normalize(all_numeric_predictors())
 
@@ -85,8 +85,8 @@ pot_rec_pca <- pot_rec |>
 ctrl <- control_grid(parallel_over = "everything")
 
 set.seed(432)
-vb_folds <- group_vfold_cv(pot_train,fecha,v=5)
-#vb_folds <- vfold_cv(pot_train,v=5)
+#vb_folds <- group_vfold_cv(pot_train,fecha,v=5)
+vb_folds <- vfold_cv(pot_train,v=5)
 
 pot_res <- 
   workflow_set(
@@ -119,7 +119,7 @@ filter(rankings, rank <= 20) |>
   ggplot(aes(rank,mean,color = Model,shape = Model)) + 
   geom_errorbar(aes(ymin = mean - std_err,ymax = mean + std_err)) +
   scale_x_continuous(breaks = 1:8) +
-  scale_y_continuous(breaks = seq(0.25,0.55,0.05)) +
+  scale_y_continuous(breaks = seq(0.25,0.85,0.05)) +
   scale_color_viridis_d() +
   labs(y = expression(R^2)) +
   geom_point() + 
@@ -164,9 +164,9 @@ xgb_wflow_fit <- extract_workflow(xgb_res)
 rf_wflow_fit <- extract_workflow(rf_res)
 svm_wflow_fit <- extract_workflow(svm_res)
 
-write_rds(xgb_wflow_fit,'data/processed/modelos/xgboost.rds')
-write_rds(rf_wflow_fit,'data/processed/modelos/random_forest.rds')
-write_rds(svm_wflow_fit,'data/processed/modelos/support_vector_machine.rds')
+write_rds(xgb_wflow_fit,'data/processed/modelos/xgboost_over.rds')
+write_rds(rf_wflow_fit,'data/processed/modelos/random_forest_over.rds')
+write_rds(svm_wflow_fit,'data/processed/modelos/support_vector_machine_over.rds')
 
 df_metrics <- bind_rows(
   tibble(collect_metrics(xgb_res),model = 'XGBoost'),
