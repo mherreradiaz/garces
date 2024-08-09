@@ -245,7 +245,8 @@ data_rank |>
   geom_point() +
   facet_grid(.~split) +
   theme_bw() +
-  theme(legend.position = 'bottom')
+  theme(legend.position = 'bottom',
+        strip.background = element_rect(fill = 'white'))
 ggsave('output/figs/fig_rankings_models.png',scale = 1,width=8,height=5)
 
 
