@@ -1,0 +1,2169 @@
+---
+title: "Modelación de potencial"
+filters:
+   - lightbox
+lang: es
+author: "M. Abel Herrera"
+format: 
+  html:
+    mermaid:
+      theme: neutral
+execute:
+  echo: false
+  warning: false
+  message: false
+editor: visual
+toc: true
+toc-depth: 4
+toc-location: left
+---
+
+```{r}
+
+source('C:/Hemera/garces/script/funciones/paquetes.R')
+
+data_pca <- read_rds('C:/Hemera/garces/data/data_processed/clima_pca.rds')
+
+data_pca_dia <- data_pca |> 
+  filter(hora %in% c('13:00','14:00')) |> 
+  group_by(sitio,temporada,fecha) |> 
+  summarise(PC1 = mean(PC1,na.rm=T),
+            PC2 = mean(PC2,na.rm=T)) |> 
+  ungroup()
+  
+data_cor_dia <- read_rds('C:/Hemera/garces/data/data_processed/turgor_potencial_dia.rds') |> 
+  left_join(data_pca_dia,by=c('sitio','temporada','fecha'))
+  
+data_cor_hora <- read_rds('C:/Hemera/garces/data/data_processed/turgor_potencial_hora.rds') |> 
+  left_join(data_pca,by=c('sitio','temporada','fecha','hora'))
+```
+
+## Serie de datos diarios
+
+Las series diarias fueron construidas con los valores diarios de turgor y potencial. Los datos de potencial representan las mediciones diarias únicas tomadas entre las 13:00 y 14:00, mientras que los de turgor corresponden al valor promediado entre las 13:00 y las 14:00 de cada día.
+
+Todas las series están promediadas a nivel de unidad, es decir, las series de cada zim fueron promediadas para obtener un valor único por cada árbol. Debido a esto, los valores de turgor filtrado pueden diferenciarse de los valores originales, ya que en algunos periodos de tiempo, las series de turgor original fueron el promedio de los valores de ambos sensores, mientras que los filtrados pudiese ser de solo uno de ellos.
+
+::: panel-tabset
+# Temporada 2022-2023
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |>
+  mutate(fecha = as.Date(fecha)) |> 
+  filter(temporada == '2022-2023') |>
+  pivot_longer(cols = c('turgor','turgor_filtrado','turgor_modelado','potencial'),
+               names_to = 'turgor',values_to = 'valor') |>
+  group_by(sitio,temporada,unidad,turgor) |> 
+  mutate(valor = as.numeric(scale(valor))) |> 
+  ggplot(aes(fecha,valor,color=turgor)) +
+  geom_point(size = .5) +
+  facet_grid(tratamiento+unidad~sitio, labeller = as_labeller(names), scale = 'free') +
+  scale_color_hue(labels = c('Potencial',"Turgor", "Turgor filtrado",'Turgor modelado')) +
+  scale_x_date(date_breaks = "2 month", date_labels = "%b %Y") +
+  labs(y = 'Presión (est)',
+       x = 'Fecha',
+       color = 'Turgor') +
+  guides(color = guide_legend(override.aes = list(size = 3)))
+
+```
+
+# Temporada 2023-2024
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |>
+  mutate(fecha = as.Date(fecha)) |> 
+  filter(temporada == '2023-2024') |>
+  pivot_longer(cols = c('turgor','turgor_filtrado','turgor_modelado','potencial'),
+               names_to = 'turgor',values_to = 'valor') |>
+  group_by(sitio,temporada,unidad,turgor) |> 
+  mutate(valor = as.numeric(scale(valor))) |> 
+  ggplot(aes(fecha,valor,color=turgor)) +
+  geom_point(size = .5) +
+  facet_grid(tratamiento+unidad~sitio, labeller = as_labeller(names), scale = 'free') +
+  scale_color_hue(labels = c('Potencial',"Turgor", "Turgor filtrado",'Turgor modelado')) +
+  scale_x_date(date_breaks = "2 month", date_labels = "%b %Y") +
+  labs(y = 'Presión (est)',
+       x = 'Fecha',
+       color = 'Turgor') +
+  guides(color = guide_legend(override.aes = list(size = 3)))
+
+```
+:::
+
+## Serie de datos horarios
+
+Las siguientes series representan el comportamiento horario del ciclo diario del turgor y potencial. Los datos de potencial fueron recopilados cada una hora entre 7:00 y 20:00, mientras que los datos de turgor corresponden a las mediciones continuas de los sensores ZIM promediados cada una hora.
+
+Todas las series están promediadas a nivel de unidad, es decir, las series de cada zim fueron promediadas para obtener un valor único por cada árbol. Debido a esto, los valores de turgor filtrado pueden diferenciarse de los valores originales, ya que en algunos periodos de tiempo, las series de turgor original fueron el promedio de los valores de ambos sensores, mientras que los filtrados pudiese ser de solo uno de ellos.
+
+::: panel-tabset
+
+# Temporada 2022-2023
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |>
+  mutate(hora = as.numeric(substr(hora,1,2))) |> 
+  pivot_longer(cols = c('turgor','turgor_filtrado','turgor_modelado','potencial'),
+               names_to = 'tipo',values_to = 'valor') |>
+  group_by(temporada,sitio,codigo,fecha,tipo) |> 
+  mutate(valor = as.numeric(scale(valor))) |> 
+  ggplot(aes(hora,valor,color=tipo)) +
+  geom_point(size=.7) +
+  geom_line()+
+  scale_color_hue(labels = c('Potencial',"Turgor", "Turgor filtrado",'Turgor modelado')) +
+  facet_grid(tratamiento+unidad~sitio, labeller = as_labeller(names)) +
+  labs(y = 'Presión (est)',
+       x = 'Hora',
+       color = 'Turgor') +
+  guides(color = guide_legend(override.aes = list(size = 3)))
+```
+
+# Temporada 2023-2024
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |>
+  mutate(hora = as.numeric(substr(hora,1,2))) |> 
+  pivot_longer(cols = c('turgor','turgor_filtrado','turgor_modelado','potencial'),
+               names_to = 'tipo',values_to = 'valor') |>
+  group_by(temporada,sitio,codigo,fecha,tipo) |> 
+  mutate(valor = as.numeric(scale(valor))) |> 
+  ggplot(aes(hora,valor,color=tipo)) +
+  geom_point(size=.7) +
+  geom_line() +
+  scale_color_hue(labels = c('Potencial',"Turgor", "Turgor filtrado",'Turgor modelado')) +
+  facet_grid(tratamiento+unidad~sitio, labeller = as_labeller(names)) +
+  labs(y = 'Presión (est)',
+       x = 'Hora',
+       color = 'Turgor') +
+  guides(color = guide_legend(override.aes = list(size = 3)))
+```
+:::
+
+## Correlación de datos diarios
+
+### Turgor original
+
+#### Temporada 2022-2023
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor))) |> 
+  ggplot(aes(turgor,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor))) |> 
+  ggplot(aes(turgor,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor))) |> 
+  ggplot(aes(turgor,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor))) |> 
+  ggplot(aes(turgor,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" (est)"),
+       y = 'Potencial (MPa)')
+```
+:::
+
+#### Temporada 2023-2024
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor))) |> 
+  ggplot(aes(turgor,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor))) |> 
+  ggplot(aes(turgor,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor))) |> 
+  ggplot(aes(turgor,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor))) |> 
+  ggplot(aes(turgor,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" (est)"),
+       y = 'Potencial (MPa)')
+```
+:::
+
+### Turgor filtrado
+
+#### Temporada 2022-2023
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor_filtrado))) |> 
+  ggplot(aes(turgor_filtrado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" filtrado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor_filtrado))) |> 
+  ggplot(aes(turgor_filtrado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" filtrado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor_filtrado))) |> 
+  ggplot(aes(turgor_filtrado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" filtrado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor_filtrado))) |> 
+  ggplot(aes(turgor_filtrado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" filtrado (est)"),
+       y = 'Potencial (MPa)')
+```
+:::
+
+#### Temporada 2023-2024
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor_filtrado))) |> 
+  ggplot(aes(turgor_filtrado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" filtrado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor_filtrado))) |> 
+  ggplot(aes(turgor_filtrado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" filtrado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor_filtrado))) |> 
+  ggplot(aes(turgor_filtrado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" filtrado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor_filtrado))) |> 
+  ggplot(aes(turgor_filtrado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" filtrado (est)"),
+       y = 'Potencial (MPa)')
+```
+:::
+
+### Turgor modelado
+
+#### Temporada 2022-2023
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(turgor_modelado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(turgor_modelado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(turgor_modelado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(turgor_modelado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)')
+```
+:::
+
+#### Temporada 2023-2024
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(turgor_modelado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(turgor_modelado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(turgor_modelado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(turgor_modelado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)')
+```
+:::
+
+### Turgor modelado estandarizado
+
+Los datos de turgor modelado estandarizado corresponden al promedio de las series modeladas de cada cluster después de realizar la estandarización. Es decir, representa el promedio de las series estandarizadas de cada cluster a nivel de sensor, y posteriormente a nivel de cada unidad.
+
+#### Temporada 2022-2023
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(turgor_modelado_sc,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(turgor_modelado_sc,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(turgor_modelado_sc,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(turgor_modelado_sc,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)')
+```
+:::
+
+#### Temporada 2023-2024
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(turgor_modelado_sc,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(turgor_modelado_sc,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(turgor_modelado_sc,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(turgor_modelado_sc,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)')
+```
+:::
+
+### PC1
+
+#### Temporada 2022-2023
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(PC1,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = 'PC1',
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(PC1,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = 'PC1',
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(PC1,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = 'PC1',
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(PC1,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = 'PC1',
+       y = 'Potencial (MPa)')
+```
+:::
+
+#### Temporada 2023-2024
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(PC1,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = 'PC1',
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(PC1,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = 'PC1',
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(PC1,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = 'PC1',
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_dia |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(PC1,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = 'PC1',
+       y = 'Potencial (MPa)')
+```
+:::
+
+## Correlación de datos horarios
+
+### Turgor original
+
+#### Temporada 2022-2023
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor))) |> 
+  ggplot(aes(turgor,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor))) |> 
+  ggplot(aes(turgor,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor))) |> 
+  ggplot(aes(turgor,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor))) |> 
+  ggplot(aes(turgor,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" (est)"),
+       y = 'Potencial (MPa)')
+```
+:::
+
+#### Temporada 2023-2024
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor))) |> 
+  ggplot(aes(turgor,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor))) |> 
+  ggplot(aes(turgor,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor))) |> 
+  ggplot(aes(turgor,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor))) |> 
+  ggplot(aes(turgor,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" (est)"),
+       y = 'Potencial (MPa)')
+```
+:::
+
+### Turgor filtrado
+
+#### Temporada 2022-2023
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor_filtrado))) |> 
+  ggplot(aes(turgor_filtrado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" filtrado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor_filtrado))) |> 
+  ggplot(aes(turgor_filtrado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" filtrado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor_filtrado))) |> 
+  ggplot(aes(turgor_filtrado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" filtrado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor_filtrado))) |> 
+  ggplot(aes(turgor_filtrado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" filtrado (est)"),
+       y = 'Potencial (MPa)')
+```
+:::
+
+#### Temporada 2023-2024
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor_filtrado))) |> 
+  ggplot(aes(turgor_filtrado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" filtrado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor_filtrado))) |> 
+  ggplot(aes(turgor_filtrado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" filtrado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor_filtrado))) |> 
+  ggplot(aes(turgor_filtrado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" filtrado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  group_by(sitio,temporada,unidad) |> 
+  mutate(turgor = as.numeric(scale(turgor_filtrado))) |> 
+  ggplot(aes(turgor_filtrado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" filtrado (est)"),
+       y = 'Potencial (MPa)')
+```
+:::
+
+### Turgor modelado
+
+#### Temporada 2022-2023
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(turgor_modelado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(turgor_modelado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(turgor_modelado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(turgor_modelado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)')
+```
+:::
+
+#### Temporada 2023-2024
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(turgor_modelado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(turgor_modelado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(turgor_modelado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(turgor_modelado,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)')
+```
+:::
+
+### Turgor modelado estandarizado
+
+Los datos de turgor modelado estandarizado corresponden al promedio de las series modeladas de cada cluster después de realizar la estandarización. Es decir, representa el promedio de las series estandarizadas de cada cluster a nivel de sensor, y posteriormente a nivel de cada unidad.
+
+#### Temporada 2022-2023
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(turgor_modelado_sc,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(turgor_modelado_sc,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(turgor_modelado_sc,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(turgor_modelado_sc,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)')
+```
+:::
+
+#### Temporada 2023-2024
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(turgor_modelado_sc,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(turgor_modelado_sc,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(turgor_modelado_sc,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(turgor_modelado_sc,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = expression("P"[p]*" modelado (est)"),
+       y = 'Potencial (MPa)')
+```
+:::
+
+### PC1
+
+#### Temporada 2022-2023
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(PC1,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = 'PC1',
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(PC1,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = 'PC1',
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(PC1,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = 'PC1',
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2022-2023') |> 
+  ggplot(aes(PC1,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = 'PC1',
+       y = 'Potencial (MPa)')
+```
+:::
+
+#### Temporada 2023-2024
+
+::: panel-tabset
+
+# Por unidad
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(PC1,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = 'PC1',
+       y = 'Potencial (MPa)') +
+  facet_grid(unidad~sitio+tratamiento, labeller = as_labeller(names))
+```
+
+# Por tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(PC1,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = 'PC1',
+       y = 'Potencial (MPa)') +
+  facet_grid(sitio~tratamiento, labeller = as_labeller(names))
+```
+
+# Por sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(PC1,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = 'PC1',
+       y = 'Potencial (MPa)') +
+  facet_grid(~sitio, labeller = as_labeller(names))
+```
+
+# Por temporada
+
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_cor_hora |> 
+  filter(temporada == '2023-2024') |> 
+  ggplot(aes(PC1,potencial)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  stat_cor(aes(label = paste(after_stat(rr.label), sep = "~`,`~")),
+           method = 'pearson', color = 'black',geom = 'label') +
+  labs(x = 'PC1',
+       y = 'Potencial (MPa)')
+```
+:::
+
+## Modelo de potencial con variables climáticas
+
+Los siguientes gráficos corresponden a las comparaciones entre los valores de potencial observados y el potencial modelado a través de una regresión lineal mpultiple, utilizando los dos componentes principales de las variables climáticas (i.e. temperatura media, humedad relativa media y vpd medio).
+
+Para construir y validar el modelo se aplicó una crosvalidación, utilizando el 80% de los datos diarios (valores horarios únicos a las 13:00 del día) y horarios (valores horarios tomados desde las 7:00 a las 20:00) para construir el modelo, y el 20% restante para validar. La validación, por su parte, se distinguió entre este 20% construido con ambos tipos de datos (validación general), pero también para el 20% de los diarios y el 20% de los horarios de forma excluyente.
+
+```{r}
+data_pca <- read_rds('C:/Hemera/garces/data/data_processed/clima_pca.rds')
+
+data_pca_dia <- data_pca |> 
+  filter(hora %in% c('13:00','14:00')) |> 
+  group_by(sitio,temporada,fecha) |> 
+  summarise(PC1 = mean(PC1,na.rm=T),
+            PC2 = mean(PC2,na.rm=T)) |> 
+  ungroup()
+  
+data_dia <- read_rds('C:/Hemera/garces/data/data_processed/turgor_potencial_dia.rds') |>
+  select(sitio:codigo,potencial) |> 
+  na.omit() |> 
+  left_join(data_pca_dia,by=c('sitio','temporada','fecha')) |>
+  mutate(hora = '13:00',
+         tipo = 'dia',
+         .before = tratamiento)
+  
+data_hora <- read_rds('C:/Hemera/garces/data/data_processed/turgor_potencial_hora.rds') |>
+  select(sitio:codigo,potencial) |> 
+  na.omit() |> 
+  left_join(data_pca,by=c('sitio','temporada','fecha','hora')) |> 
+  mutate(tipo = 'hora',
+         .before = tratamiento)
+
+data_modelo <- data_dia |> 
+  sample_frac(0.8, replace = FALSE) |> 
+  bind_rows(data_hora |> 
+              sample_frac(0.8, replace = FALSE))
+
+data_validacion <- bind_rows(data_dia,data_hora) |> 
+  anti_join(data_modelo)
+
+data_coef <- data_modelo |> 
+  select(sitio,temporada,potencial,PC1,PC2) |> 
+  na.omit() |> 
+  group_by(sitio,temporada) |> 
+  summarise(m1 = coeficientes(PC1,PC2,potencial)$m1,
+            m2 = coeficientes(PC1,PC2,potencial)$m2,
+            int = coeficientes(PC1,PC2,potencial)$int,
+            r = coeficientes(PC1,PC2,potencial)$r) |> 
+  ungroup()
+
+data_val_mod <- data_validacion |>
+  select(sitio:tratamiento,potencial,PC1,PC2) |> 
+  na.omit() |> 
+  left_join(data_coef,by=c('sitio','temporada')) |> 
+  mutate(potencial_modelado = PC1*m1+PC2*m2+int) |> 
+  select(sitio:potencial,potencial_modelado)
+
+escala <- c('temporada','sitio','tratamiento')
+
+data_metrica <- list()
+for (x in 1:length(escala)) {
+  
+  data_metrica[[x]] <- data_val_mod |> 
+    select(sitio,temporada,tratamiento,potencial,potencial_modelado) |> 
+    group_by(!!!syms(escala[1:min(x, 3)])) |> 
+    summarise(r2 = cor(potencial,potencial_modelado, use = 'na.or.complete')^2,
+              rmse = rmse(potencial,potencial_modelado),
+              mae = mae(potencial,potencial_modelado)) |> 
+    ungroup() |> 
+    mutate(texto = paste("R2:", round(r2, 2), 
+                         "\nRMSE:", round(rmse, 2), 
+                         "\nMAE:", round(mae, 2)))
+}
+names(data_metrica) <- escala
+
+data_metrica_dia <- list()
+for (x in 1:length(escala)) {
+  
+  data_metrica_dia[[x]] <- data_val_mod |> 
+    filter(tipo == 'dia') |> 
+    select(sitio,temporada,tratamiento,potencial,potencial_modelado) |> 
+    group_by(!!!syms(escala[1:min(x, 3)])) |> 
+    summarise(r2 = cor(potencial,potencial_modelado, use = 'na.or.complete')^2,
+              rmse = rmse(potencial,potencial_modelado),
+              mae = mae(potencial,potencial_modelado)) |> 
+    ungroup() |> 
+    mutate(texto = paste("R2:", round(r2, 2), 
+                         "\nRMSE:", round(rmse, 2), 
+                         "\nMAE:", round(mae, 2)))
+}
+names(data_metrica_dia) <- escala
+
+data_metrica_hora <- list()
+for (x in 1:length(escala)) {
+  
+  data_metrica_hora[[x]] <- data_val_mod |> 
+    filter(tipo == 'hora') |> 
+    select(sitio,temporada,tratamiento,potencial,potencial_modelado) |> 
+    group_by(!!!syms(escala[1:min(x, 3)])) |> 
+    summarise(r2 = cor(potencial,potencial_modelado, use = 'na.or.complete')^2,
+              rmse = rmse(potencial,potencial_modelado),
+              mae = mae(potencial,potencial_modelado)) |> 
+    ungroup() |> 
+    mutate(texto = paste("R2:", round(r2, 2), 
+                         "\nRMSE:", round(rmse, 2), 
+                         "\nMAE:", round(mae, 2)))
+}
+names(data_metrica_hora) <- escala
+```
+
+### Validación general
+
+::: panel-tabset
+
+# Tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_val_mod |> 
+  left_join(data_metrica$tratamiento,by=c('temporada','sitio','tratamiento')) |> 
+  ggplot(aes(potencial,potencial_modelado)) +
+  geom_point() +
+  facet_grid(temporada~sitio+tratamiento,labeller = as_labeller(names)) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  geom_text(aes(label = texto), 
+            x = max(data_val_mod$potencial)*.95, 
+            y = min(data_val_mod$potencial_modelado)*1.1, 
+            hjust = 1, size = 3) +
+  theme_light()
+```
+
+# Sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_val_mod |> 
+  left_join(data_metrica$sitio,by=c('temporada','sitio')) |> 
+  ggplot(aes(potencial,potencial_modelado)) +
+  geom_point() +
+  facet_grid(temporada~sitio,labeller = as_labeller(names)) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  geom_text(aes(label = texto), 
+            x = max(data_val_mod$potencial)*.99, 
+            y = min(data_val_mod$potencial_modelado)*1.1, 
+            hjust = 1, vjust = 0,size = 5) +
+  theme_light()
+```
+
+# Temporada
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_val_mod |> 
+  left_join(data_metrica$temporada,by=c('temporada')) |> 
+  ggplot(aes(potencial,potencial_modelado)) +
+  geom_point() +
+  facet_wrap(~temporada,labeller = as_labeller(names)) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  geom_text(aes(label = texto), 
+            x = max(data_val_mod$potencial)*.99, 
+            y = min(data_val_mod$potencial_modelado)*1.1, 
+            hjust = 1, vjust = 0,size = 5) +
+  theme_light()
+```
+:::
+
+### Validación solo con datos diarios
+
+::: panel-tabset
+
+# Tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_val_mod |> 
+  left_join(data_metrica_dia$tratamiento,by=c('temporada','sitio','tratamiento')) |> 
+  filter(tipo == 'dia') |> 
+  ggplot(aes(potencial,potencial_modelado)) +
+  geom_point() +
+  facet_grid(temporada~sitio+tratamiento,labeller = as_labeller(names)) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  geom_text(aes(label = texto), 
+            x = max(data_val_mod$potencial)*.95, 
+            y = min(data_val_mod$potencial_modelado)*1.1, 
+            hjust = 1, size = 3) +
+  theme_light()
+```
+
+# Sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_val_mod |> 
+  left_join(data_metrica_dia$sitio,by=c('temporada','sitio')) |> 
+  filter(tipo == 'dia') |> 
+  ggplot(aes(potencial,potencial_modelado)) +
+  geom_point() +
+  facet_grid(temporada~sitio,labeller = as_labeller(names)) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  geom_text(aes(label = texto), 
+            x = max(data_val_mod$potencial)*.99, 
+            y = min(data_val_mod$potencial_modelado)*1.1, 
+            hjust = 1, vjust = 0,size = 5) +
+  theme_light()
+```
+
+# Temporada
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_val_mod |> 
+  left_join(data_metrica_dia$temporada,by=c('temporada')) |>
+  filter(tipo == 'dia') |> 
+  ggplot(aes(potencial,potencial_modelado)) +
+  geom_point() +
+  facet_wrap(~temporada,labeller = as_labeller(names)) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  geom_text(aes(label = texto), 
+            x = max(data_val_mod$potencial)*.99, 
+            y = min(data_val_mod$potencial_modelado)*1.1, 
+            hjust = 1, vjust = 0,size = 5) +
+  theme_light()
+```
+:::
+
+### Validación solo con datos horarios
+
+::: panel-tabset
+
+# Tratamiento
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_val_mod |> 
+  left_join(data_metrica_hora$tratamiento,by=c('temporada','sitio','tratamiento')) |> 
+  filter(tipo == 'hora') |> 
+  ggplot(aes(potencial,potencial_modelado)) +
+  geom_point() +
+  facet_grid(temporada~sitio+tratamiento,labeller = as_labeller(names)) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  geom_text(aes(label = texto), 
+            x = max(data_val_mod$potencial)*.95, 
+            y = min(data_val_mod$potencial_modelado)*1.1, 
+            hjust = 1, size = 3) +
+  theme_light()
+```
+
+# Sitio
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_val_mod |> 
+  left_join(data_metrica_hora$sitio,by=c('temporada','sitio')) |> 
+  filter(tipo == 'hora') |> 
+  ggplot(aes(potencial,potencial_modelado)) +
+  geom_point() +
+  facet_grid(temporada~sitio,labeller = as_labeller(names)) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  geom_text(aes(label = texto), 
+            x = max(data_val_mod$potencial)*.99, 
+            y = min(data_val_mod$potencial_modelado)*1.1, 
+            hjust = 1, vjust = 0,size = 5) +
+  theme_light()
+```
+
+# Temporada
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-align: center
+#| lightbox: true
+
+data_val_mod |> 
+  left_join(data_metrica_hora$temporada,by=c('temporada')) |> 
+  filter(tipo == 'hora') |> 
+  ggplot(aes(potencial,potencial_modelado)) +
+  geom_point() +
+  facet_wrap(~temporada,labeller = as_labeller(names)) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  geom_text(aes(label = texto), 
+            x = max(data_val_mod$potencial)*.99, 
+            y = min(data_val_mod$potencial_modelado)*1.1, 
+            hjust = 1, vjust = 0,size = 5) +
+  theme_light()
+```
+:::

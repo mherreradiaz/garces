@@ -51,7 +51,7 @@ data |>
         legend.direction = "horizontal") +
   facet_grid(sitio~temporada,scales='free_x')
 
-ggsave(paste0('output/figs/series_vi_smooth_norm.png'), width = 8, height = 5)
+ggsave('output/figs/series_vi_smooth_norm.png', width = 8, height = 5)
 
 
 stats <- data |> 

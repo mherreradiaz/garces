@@ -25,10 +25,11 @@ data_clima <- read_rds('data/processed/clima_hora.rds') |>
   ungroup() |> 
   left_join(data_clima_1,by=c('sitio','temporada','fecha'))
   
-data <- data_potencial |>
+data <- data_sen2|>
   left_join(data_clima) |> 
-  left_join(data_sen2) |> 
-  arrange(temporada,fecha,sitio,tratamiento,unidad)
+  left_join(data_potencial) |> 
+  arrange(temporada,fecha,sitio,tratamiento,unidad) |> 
+  select(sitio:codigo,potencial_bar,everything())
 
 write_rds(data,'data/processed/modelo_potencial_smooth.rds')
 
@@ -82,12 +83,15 @@ data_clima <- read_rds('data/processed/clima_hora.rds') |>
   ungroup() |> 
   left_join(data_clima_1,by=c('sitio','temporada','fecha'))
 
-data <- data_potencial |>
+data <- data_sen2|>
   left_join(data_clima) |> 
-  left_join(data_sen2) |> 
-  arrange(temporada,fecha,sitio,tratamiento,unidad)
+  left_join(data_potencial) |> 
+  arrange(temporada,fecha,sitio,tratamiento,unidad) |> 
+  select(sitio:codigo,potencial_bar,everything())
 
 write_rds(data,'data/processed/modelo_potencial_raw.rds')
+
+# visualizar
 
 smooth <- read_rds('data/processed/modelo_potencial_smooth.rds')
 raw <- read_rds('data/processed/modelo_potencial_raw.rds')
