@@ -40,6 +40,14 @@ items <- stac(url) |>
   items_sign(sign_fn = sign_planetary_computer()) |> 
   items_fetch()
 
+
+download_items <- items |> 
+  assets_download(assets_name = "vv", items_max = 1,overwrite = TRUE)
+
+
+####
+
+
 bb <- pol |> 
   st_transform(32719) |> 
   st_bbox() |> 
