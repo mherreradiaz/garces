@@ -10,8 +10,10 @@ split <- 'tme_split'
 # split 
 data <- read_rds('data/processed/modelo_potencial_smooth.rds') |> 
   select(-(tratamiento:codigo),-(sitio:temporada)) |> 
+  # mutate(across(3:28,.fns = \(x)dplyr::lag(x,1),.names = "{.col}_{.fn}")) |> 
   mutate(potencial_bar = -potencial_bar,
-         fecha = ymd(fecha)) |> 
+         fecha = ymd(fecha),
+         month = month(fecha)) |> 
   drop_na() 
 
 set.seed(12) #$rsq=.446
@@ -85,7 +87,7 @@ pot_rec <- recipe(potencial_bar ~ . ,data = pot_train) |>
   step_zv(all_numeric_predictors()) |>
   step_normalize(all_numeric_predictors())
 
-pot_rec_pca <- pot_rec |> 
+pot_rec_pls <- pot_rec |> 
   step_pls(all_numeric_predictors(),outcome = 'potencial_bar')
 
 ctrl <- control_grid(parallel_over = "everything")
@@ -99,7 +101,7 @@ if (split =='rnd_split'){
 
 pot_res <- 
   workflow_set(
-    preproc = list(rec = pot_rec, rec_pca = pot_rec_pca), 
+    preproc = list(rec = pot_rec, rec_pls = pot_rec_pls), 
     models = list(RF = rf_spec, 
                   SVM = svm_spec,
                   XGBoost = xgb_spec) 
