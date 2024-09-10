@@ -90,7 +90,9 @@ riego |>
   scale_fill_manual(values=pal) +
   scale_x_date(date_breaks = "1 month", date_labels = "%b") +
   theme_bw() +
-  theme(strip.background = element_rect(fill = 'white'))
+  theme(strip.background = element_rect(fill = 'white'),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_line(linetype = "dashed"))
 
 ggsave(paste0('output/figs/riego_lamina.png'), width = 8, height = 4)
 
