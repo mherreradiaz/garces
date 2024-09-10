@@ -8,6 +8,11 @@ data_biopar <- read_rds('data/processed/sentinel_biopar_smooth.rds')
 data_sen2 <- data_vi |> 
   left_join(data_biopar,by=c('sitio','temporada','fecha','tratamiento','unidad','codigo'))
 
+data_sen2 <- bind_rows(data_vi,data_biopar) |> 
+  distinct(across(sitio:codigo)) |> 
+  left_join(data_vi) |> 
+  left_join(data_biopar)
+
 data_potencial <- read_rds('data/processed/potencial.rds')
 
 data_clima_1 <- read_rds('data/processed/clima_hora.rds') |> 

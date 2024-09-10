@@ -85,11 +85,12 @@ riego |>
   facet_grid(sitio~temporada, scale = 'fixed',labeller = as_labeller(names)) +
   geom_text(data = per[-(8:10),], aes(fecha_max+days(10),lamina_sum,label = paste0(round(porcentaje,0),'%')),size=1.8) +
   labs(y = 'daily cumulative water depth (mm)',
-       x = 'month',
-       fill = 'group') +
+       x = NULL,
+       fill = 'Treatment') +
   scale_fill_manual(values=pal) +
   scale_x_date(date_breaks = "1 month", date_labels = "%b") +
-  theme_light()
+  theme_bw() +
+  theme(strip.background = element_rect(fill = 'white'))
 
 ggsave(paste0('output/figs/riego_lamina.png'), width = 8, height = 4)
 
@@ -104,6 +105,12 @@ per <- riego |>
   select(-ET0) |> 
   pivot_longer(cols=c('T0','T1','T2','T3','T4'),names_to='tratamiento',values_to='porcentaje') |> 
   mutate(sitio=factor(sitio,levels=c('rio_claro','la_esperanza')))
+
+riego |> 
+  group_by(sitio,temporada,tratamiento) |>
+  reframe(max=max(lamina_acum,na.rm=T)) |>
+  mutate(volume = max*10) |> 
+  View()
 
 # volumen aplicado
 
@@ -172,3 +179,8 @@ per_2023 <- riego |>
 
 per <- bind_rows(per_2022,per_2023) |> 
   mutate(sitio=factor(sitio,levels=c('rio_claro','la_esperanza')))
+
+read_rds('data/processed/potencial.rds') |> 
+  group_by(sitio,temporada,fecha) |> 
+  reframe(n = n()) |> 
+  View()

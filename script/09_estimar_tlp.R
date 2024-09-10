@@ -15,7 +15,7 @@ data_tlp <- read_csv2('data/metadata/codigos_arboles.csv') |>
 
 codigos <- data_pv |>
   left_join(data_tlp, by= NULL) |>
-  select(sitio,tratamiento,codigo, unidad,-tlp) |>
+  dplyr::select(sitio,tratamiento,codigo, unidad,-tlp) |>
   distinct()
 
 for (n in 1:nrow(codigos)) {
