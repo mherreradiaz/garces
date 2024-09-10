@@ -52,10 +52,24 @@ modelo_rf <- randomForest(rendimiento ~ ., data = train_data,
                           importance = TRUE,
                           ntree = x)   
 # print(modelo_rf)
-# importance(modelo_rf)
+importancia <- importance(modelo_rf)
 varImpPlot(modelo_rf)
 
-ggsave(paste0('output/reunion/importancia_metabolitos.png'), width = 10, height = 6)
+df <- as.data.frame(importancia)
+df$variable <- rownames(df)
+df <- df %>% select(variable, everything())
+tibble_df <- as_tibble(df)
+
+tibble_df |> 
+  arrange(`%IncMSE`) |> 
+  ggplot(aes(`%IncMSE`,factor(variable,levels=variable))) +
+  geom_point(shape = 21,size = 3,stroke=.7) +
+  theme_bw() +
+  labs(y = 'metabolitos') +
+  theme(panel.grid.major.y = element_line(linetype = "dashed"),
+        panel.grid.minor.y = element_blank())
+
+ggsave(paste0('output/reunion/importancia_metabolitos.png'), width = 6, height = 6)
 
 predicciones <- predict(modelo_rf, newdata = test_data)
 postResample(pred = predicciones, obs = test_data$rendimiento)
@@ -106,23 +120,25 @@ ggsave(paste0('output/reunion/rendimiento_metabolitos.png'), width = 10, height 
 11000kg 15ha lappins
 
 
-data_tlp <- read_rds('C:/Hemera/garces/data/processed/tlp.rds') |>
-  mutate(tlp = -10*tlp)
+data_tlp <- read_rds('C:/Hemera/garces/data/processed/tlp.rds') |> 
+  mutate(sitio = sitio_reclass(sitio))
 
-tlp_info <- data_tlp |>
-  select(-tlp) |>
-  distinct() |>
-  arrange(temporada,sitio,tratamiento,unidad)
+tlp_mean <- data_tlp |>
+  group_by(sitio) |> 
+  reframe(tlp = mean(tlp,na.rm=T))
 
 data_tlp |>
-  ggplot(aes(unidad,tlp, fill = sitio)) +
-  geom_bar(stat = "identity", alpha = .7) +
-  geom_text(data = tlp_info, aes(unidad,40,label = codigo),size=3) +
-  facet_grid(temporada+sitio~tratamiento, labeller = as_labeller(names)) +
-  labs(y = expression(paste("Potencial ", (kPa^-1))),
-       x = 'Unidad') +
+  group_by(sitio,tratamiento) |> 
+  reframe(mean = mean(tlp,na.rm=T),
+          sd = sd(tlp,na.rm=T)) |> 
+  ggplot(aes(tratamiento,mean)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - sd/sqrt(3), ymax = mean + sd/sqrt(3)), width = 0.2, position = position_dodge(0.9)) +
+  geom_hline(data = tlp_mean, aes(yintercept = tlp, color = sitio), linetype = "dashed") +
+  facet_grid(~sitio) +  # Facetear por sitio y temporada
+  labs(x = "Tratamiento", y = expression(Psi[s])) +
   theme_bw() +
-  theme(legend.position = "none",
-        strip.background = element_rect(fill= 'white'))
+  theme(strip.background = element_rect(fill = 'white'),
+        panel.grid.major.x = element_line(linetype = "dashed"))
 
-ggsave(paste0('output/reunion/rendimiento_metabolitos.png'), width = 10, height = 6)
+ggsave(paste0('output/reunion/tlp_sitios.png'), width = 10, height = 6)
