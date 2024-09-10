@@ -1,4 +1,5 @@
 source('script/00_setup.R')
+library(viridis)
 
 sitio_reclass <- function(x) {
   factor(case_when(x == 'la_esperanza' ~ 'La Esperanza',
@@ -25,6 +26,7 @@ data |>
   geom_line(linewidth = .7,alpha = .6) +
   facet_grid(sitio~temporada,scales='free_x') +
   scale_x_date(date_breaks = "1 month", date_labels = "%b", expand = c(.15,0)) +
+  scale_color_viridis_d(option = "viridis") +
   labs(x = NULL, y = expression(Phi[P0]), color = 'Tratamiento') +
   theme_bw() +
   theme(strip.background = element_rect(fill = 'white'),
@@ -60,8 +62,9 @@ data |>
   ggplot(aes(fecha,value,color=tratamiento)) +
   geom_point(alpha=.5,size=.9) +
   geom_line(linewidth = .7,alpha = .6) +
-  geom_hline(data = tlp, aes(yintercept = tlp, color = sitio), 
+  geom_hline(data = tlp, aes(yintercept = tlp), 
              linetype = "dashed", linewidth = 0.6) + 
+  scale_color_viridis_d(option = "viridis") +
   facet_grid(sitio~temporada,scales='free_x') +
   geom_text(data = tlp,aes(x=as.Date(case_when(
     temporada=='2022-2023'~'2022-11-01',
@@ -71,7 +74,8 @@ data |>
   theme_bw() +
   theme(strip.background = element_rect(fill = 'white'),
         panel.grid.minor.x = element_blank(),
-        panel.grid.major.x = element_line(linetype = "dashed")) +
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        legend.position = 'bottom') +
   scale_x_date(date_breaks = "1 month", date_labels = "%b", expand = c(.15,0)) +
   labs(x = NULL, y = expression(Psi[s]), color = 'Tratamiento')
 
@@ -99,15 +103,17 @@ data |>
   ggplot(aes(hora,value,color=tratamiento)) +
   geom_point(alpha=.5,size=.9) +
   geom_line(linewidth = .7,alpha = .6) +
-  geom_hline(data = tlp, aes(yintercept = tlp, color = sitio), 
+  geom_hline(data = tlp, aes(yintercept = tlp), 
              linetype = "dashed", linewidth = 0.6) + 
+  scale_color_viridis_d(option = "viridis") +
   facet_grid(sitio~temporada,scales='free_x') +
   geom_text(data = dia_info,aes(x=-Inf,y=-Inf,label=fecha),
             hjust = -.2, vjust = -1.3, size = 4, inherit.aes = FALSE) +
   theme_bw() +
   theme(strip.background = element_rect(fill = 'white'),
         panel.grid.minor.x = element_blank(),
-        panel.grid.major.x = element_line(linetype = "dashed")) +
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        legend.position = 'bottom') +
   scale_x_continuous(breaks = c(7:20), expand = c(.1,0)) +
   labs(x = NULL, y = expression(Psi[s]), color = 'Tratamiento')
 
@@ -126,11 +132,13 @@ data |>
   ggplot(aes(fecha,lai,color=tratamiento)) +
   geom_point(alpha=.5,size=.9) +
   geom_line(linewidth = .7,alpha = .6) +
+  scale_color_viridis_d(option = "viridis") +
   facet_grid(sitio~temporada,scales='free_x') +
   theme_bw() +
   theme(strip.background = element_rect(fill = 'white'),
         panel.grid.minor.x = element_blank(),
-        panel.grid.major.x = element_line(linetype = "dashed")) +
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        legend.position = 'bottom') +
   scale_x_date(date_breaks = "1 month", date_labels = "%b", expand = c(.15,0)) +
   labs(x = NULL, y = 'LAI', color = 'Tratamiento')
 
@@ -146,14 +154,16 @@ data_produccion |>
   group_by(sitio,temporada,tratamiento) |> 
   reframe(mean = mean(rendimiento,na.rm=T),
           sd = sd(rendimiento,na.rm=T)) |> 
-  ggplot(aes(tratamiento,mean)) +
+  ggplot(aes(tratamiento,mean,color = tratamiento)) +
   geom_point() +
   geom_errorbar(aes(ymin = mean - sd/sqrt(3), ymax = mean + sd/sqrt(3)), width = 0.2, position = position_dodge(0.9)) +
-  facet_grid(sitio ~ temporada) +  # Facetear por sitio y temporada
+  scale_color_viridis_d(option = "viridis") +
+  facet_grid(sitio ~ temporada) + 
   labs(x = "Tratamiento", y = "Rendimiento (ton/ha)") +
   theme_bw() +
   theme(strip.background = element_rect(fill = 'white'),
-        panel.grid.major.x = element_line(linetype = "dashed"))
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        legend.position = 'none')
 
 ggsave(paste0('output/reunion/rendimiento.png'), width = 10, height = 6)
 
@@ -166,14 +176,16 @@ data_apariencia |>
   group_by(sitio,temporada,tratamiento) |> 
   reframe(mean = mean(diametro,na.rm=T),
           sd = sd(diametro,na.rm=T)) |> 
-  ggplot(aes(tratamiento,mean)) +
+  ggplot(aes(tratamiento,mean,color = tratamiento)) +
   geom_point() +
   geom_errorbar(aes(ymin = mean - sd/sqrt(20), ymax = mean + sd/sqrt(20)), width = 0.2, position = position_dodge(0.9)) +
+  scale_color_viridis_d(option = "viridis") +
   facet_grid(sitio ~ temporada) +  # Facetear por sitio y temporada
   labs(x = "Tratamiento", y = "Calibre (mm)") +
   theme_bw() +
   theme(strip.background = element_rect(fill = 'white'),
-        panel.grid.major.x = element_line(linetype = "dashed"))
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        legend.position = 'none')
 
 ggsave(paste0('output/reunion/calibre.png'), width = 10, height = 6)
 
@@ -184,34 +196,64 @@ data_apariencia |>
   group_by(sitio,temporada,tratamiento) |> 
   reframe(mean = mean(color,na.rm=T),
           sd = sd(color,na.rm=T)) |> 
-  ggplot(aes(tratamiento,mean)) +
+  ggplot(aes(tratamiento,mean,color = tratamiento)) +
   geom_point() +
   geom_errorbar(aes(ymin = mean - sd/sqrt(20), ymax = mean + sd/sqrt(20)), width = 0.2, position = position_dodge(0.9)) +
+  scale_color_viridis_d(option = "viridis") +
   facet_grid(sitio ~ temporada) +  # Facetear por sitio y temporada
   labs(x = "Tratamiento", y = "Color") +
   theme_bw() +
   theme(strip.background = element_rect(fill = 'white'),
-        panel.grid.major.x = element_line(linetype = "dashed"))
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        legend.position = 'none')
 
 ggsave(paste0('output/reunion/color.png'), width = 10, height = 6)
 
 data_brix <- read_rds('data/processed/cosecha/brix.rds')
 
-data_apariencia |>
+data_brix |>
   mutate(sitio = sitio_reclass(sitio)) |> 
   group_by(sitio,temporada,tratamiento) |> 
   reframe(mean = mean(brix,na.rm=T),
           sd = sd(brix,na.rm=T)) |> 
-  ggplot(aes(tratamiento,mean)) +
+  ggplot(aes(tratamiento,mean,color=tratamiento)) +
   geom_point() +
   geom_errorbar(aes(ymin = mean - sd/sqrt(5), ymax = mean + sd/sqrt(5)), width = 0.2, position = position_dodge(0.9)) +
-  facet_grid(sitio ~ temporada) +  # Facetear por sitio y temporada
+  scale_color_viridis_d(option = "viridis") +
+  facet_grid(sitio ~ temporada) + 
   labs(x = "Tratamiento", y = "Grados Brix") +
   theme_bw() +
   theme(strip.background = element_rect(fill = 'white'),
-        panel.grid.major.x = element_line(linetype = "dashed"))
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        legend.position = 'none')
 
 ggsave(paste0('output/reunion/brix.png'), width = 10, height = 6)
 
+# TLP
+
+data_tlp <- read_rds('C:/Hemera/garces/data/processed/tlp.rds') |> 
+  mutate(sitio = sitio_reclass(sitio))
+
+tlp_mean <- data_tlp |>
+  group_by(sitio) |> 
+  reframe(tlp = mean(tlp,na.rm=T))
+
+data_tlp |>
+  group_by(sitio,tratamiento) |> 
+  reframe(mean = mean(tlp,na.rm=T),
+          sd = sd(tlp,na.rm=T)) |> 
+  ggplot(aes(tratamiento,mean,color=tratamiento)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - sd/sqrt(3), ymax = mean + sd/sqrt(3)), width = 0.2, position = position_dodge(0.9)) +
+  geom_hline(data = tlp_mean, aes(yintercept = tlp), linetype = "dashed") +
+  scale_color_viridis_d(option = "viridis") +
+  facet_grid(~sitio) +
+  labs(x = "Tratamiento", y = expression(Psi[s])) +
+  theme_bw() +
+  theme(strip.background = element_rect(fill = 'white'),
+        panel.grid.major.x = element_line(linetype = "dashed"),
+        legend.position = 'none')
+
+ggsave(paste0('output/reunion/tlp_sitios.png'), width = 10, height = 6)
 
 

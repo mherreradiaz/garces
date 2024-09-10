@@ -118,27 +118,3 @@ ggsave(paste0('output/reunion/rendimiento_metabolitos.png'), width = 10, height 
 
 6000kg 32ha regina
 11000kg 15ha lappins
-
-
-data_tlp <- read_rds('C:/Hemera/garces/data/processed/tlp.rds') |> 
-  mutate(sitio = sitio_reclass(sitio))
-
-tlp_mean <- data_tlp |>
-  group_by(sitio) |> 
-  reframe(tlp = mean(tlp,na.rm=T))
-
-data_tlp |>
-  group_by(sitio,tratamiento) |> 
-  reframe(mean = mean(tlp,na.rm=T),
-          sd = sd(tlp,na.rm=T)) |> 
-  ggplot(aes(tratamiento,mean)) +
-  geom_point() +
-  geom_errorbar(aes(ymin = mean - sd/sqrt(3), ymax = mean + sd/sqrt(3)), width = 0.2, position = position_dodge(0.9)) +
-  geom_hline(data = tlp_mean, aes(yintercept = tlp, color = sitio), linetype = "dashed") +
-  facet_grid(~sitio) +  # Facetear por sitio y temporada
-  labs(x = "Tratamiento", y = expression(Psi[s])) +
-  theme_bw() +
-  theme(strip.background = element_rect(fill = 'white'),
-        panel.grid.major.x = element_line(linetype = "dashed"))
-
-ggsave(paste0('output/reunion/tlp_sitios.png'), width = 10, height = 6)
