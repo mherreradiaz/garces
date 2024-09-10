@@ -28,7 +28,8 @@ data |>
   labs(x = NULL, y = expression(Phi[P0]), color = 'Tratamiento') +
   theme_bw() +
   theme(strip.background = element_rect(fill = 'white'),
-        legend.position = 'bottom')
+        legend.position = 'bottom',
+        panel.grid.minor.x = element_blank())
 
 # cambiar scale_color_manual a paleta viridis
 
@@ -67,7 +68,8 @@ data |>
     y=tlp,label='TLP'),
             hjust = 2, vjust = -1.3, size = 4, inherit.aes = FALSE) +
   theme_bw() +
-  theme(strip.background = element_rect(fill = 'white')) +
+  theme(strip.background = element_rect(fill = 'white'),
+        panel.grid.minor.x = element_blank()) +
   scale_x_date(date_breaks = "1 month", date_labels = "%b", expand = c(.15,0)) +
   labs(x = NULL, y = expression(Psi[s]), color = 'Tratamiento')
 
@@ -101,13 +103,14 @@ data |>
   geom_text(data = dia_info,aes(x=-Inf,y=-Inf,label=fecha),
             hjust = -.2, vjust = -1.3, size = 4, inherit.aes = FALSE) +
   theme_bw() +
-  theme(strip.background = element_rect(fill = 'white')) +
+  theme(strip.background = element_rect(fill = 'white'),
+        panel.grid.minor.x = element_blank()) +
   scale_x_continuous(breaks = c(7:20), expand = c(.1,0)) +
   labs(x = NULL, y = expression(Psi[s]), color = 'Tratamiento')
 
 ggsave(paste0('output/reunion/potencial_hora.png'), width = 10, height = 6)
 
-# fluorescencia
+# lai
 
 data <- read_rds('data/processed/ceptometro.rds')
 
@@ -122,7 +125,8 @@ data |>
   geom_line(linewidth = .7,alpha = .6) +
   facet_grid(sitio~temporada,scales='free_x') +
   theme_bw() +
-  theme(strip.background = element_rect(fill = 'white')) +
+  theme(strip.background = element_rect(fill = 'white'),
+        panel.grid.minor.x = element_blank()) +
   scale_x_date(date_breaks = "1 month", date_labels = "%b", expand = c(.15,0)) +
   labs(x = NULL, y = 'LAI', color = 'Tratamiento')
 
