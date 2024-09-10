@@ -53,7 +53,9 @@ modelo_rf <- randomForest(rendimiento ~ ., data = train_data,
                           ntree = x)   
 # print(modelo_rf)
 # importance(modelo_rf)
-# varImpPlot(modelo_rf)
+varImpPlot(modelo_rf)
+
+ggsave(paste0('output/reunion/importancia_metabolitos.png'), width = 10, height = 6)
 
 predicciones <- predict(modelo_rf, newdata = test_data)
 postResample(pred = predicciones, obs = test_data$rendimiento)
@@ -85,20 +87,42 @@ rendimiento <- data |>
   mutate(sitio = sitio_reclass(sitio),
          valor = valor/1000)
 
-
-
 rendimiento |> 
   arrange(desc(valor)) |> 
   ggplot(aes(tratamiento,valor, fill = Rendimiento)) +
-  geom_col(position = 'identity') +
+  geom_col(position = 'dodge') +
   facet_grid(sitio ~ temporada) +
   theme_bw() +
   theme(strip.background = element_rect(fill = 'white')) +
   labs(x = 'Tratamiento',
        y = 'Rendimiento predicho (ton/ha)')
+
+ggsave(paste0('output/reunion/rendimiento_metabolitos.png'), width = 10, height = 6)
   
 9000kg 32ha regina
 16000kg 15ha lappins
 
 6000kg 32ha regina
 11000kg 15ha lappins
+
+
+data_tlp <- read_rds('C:/Hemera/garces/data/processed/tlp.rds') |>
+  mutate(tlp = -10*tlp)
+
+tlp_info <- data_tlp |>
+  select(-tlp) |>
+  distinct() |>
+  arrange(temporada,sitio,tratamiento,unidad)
+
+data_tlp |>
+  ggplot(aes(unidad,tlp, fill = sitio)) +
+  geom_bar(stat = "identity", alpha = .7) +
+  geom_text(data = tlp_info, aes(unidad,40,label = codigo),size=3) +
+  facet_grid(temporada+sitio~tratamiento, labeller = as_labeller(names)) +
+  labs(y = expression(paste("Potencial ", (kPa^-1))),
+       x = 'Unidad') +
+  theme_bw() +
+  theme(legend.position = "none",
+        strip.background = element_rect(fill= 'white'))
+
+ggsave(paste0('output/reunion/rendimiento_metabolitos.png'), width = 10, height = 6)

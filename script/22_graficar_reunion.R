@@ -24,10 +24,13 @@ data |>
   geom_point(alpha=.5,size=.9) +
   geom_line(linewidth = .7,alpha = .6) +
   facet_grid(sitio~temporada,scales='free_x') +
-  theme_bw() +
-  theme(strip.background = element_rect(fill = 'white')) +
   scale_x_date(date_breaks = "1 month", date_labels = "%b", expand = c(.15,0)) +
-  labs(x = NULL, y = expression(Phi[P0]), color = 'Tratamiento')
+  labs(x = NULL, y = expression(Phi[P0]), color = 'Tratamiento') +
+  theme_bw() +
+  theme(strip.background = element_rect(fill = 'white'),
+        legend.position = 'bottom')
+
+# cambiar scale_color_manual a paleta viridis
 
 ggsave(paste0('output/reunion/fluorescencia.png'), width = 10, height = 6)
 
