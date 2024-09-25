@@ -1,4 +1,4 @@
-source('script/funciones/paquetes.R')
+source('script/00_setup.R')
 
 data_potencial <- read_rds('data/processed/potencial.rds')
 
@@ -37,3 +37,35 @@ data_potencial <- data_potencial |>
   arrange(fecha, tratamiento, unidad)
 
 write_rds(data_potencial,'data/processed/potencial.rds')
+
+# agregar del drive
+
+drive <- read_csv('data/raw/potencial/potencial_drive.csv') |> 
+  rename(tratamiento = treatment,
+         sitio = field,
+         fecha = data,
+         potencial_bar = `water_potential (bar)`) |>
+  separate(col='tratamiento',into = c('tratamiento','codigo'),sep=2) |> 
+  mutate(temporada = '2022-2023',
+         sitio = case_when(sitio == 'La Esperanza' ~ 'la_esperanza',
+                           sitio == 'Rio Claro' ~ 'rio_claro',
+                           .default = sitio),
+         fecha = as.character(fecha),
+         potencial_bar = as.numeric(potencial_bar),
+         codigo = gsub('H0','H',codigo),
+         codigo = gsub('H104A','H103A',codigo),
+         codigo = gsub('H106A','H104A',codigo)) |> 
+  select(sitio,temporada,fecha,tratamiento,codigo,potencial_bar) |> 
+  left_join(pote |> 
+              mutate(unidad = as.numeric(as.character(unidad))) |> 
+              distinct(sitio,temporada,tratamiento,unidad,codigo)) |> 
+  mutate(unidad = factor(unidad,levels=1:3))
+
+pote |> 
+  bind_rows(drive) |> 
+  distinct(sitio,temporada,fecha,tratamiento,codigo,unidad,
+           .keep_all = T) |> 
+  arrange(sitio,fecha,tratamiento,unidad)
+  distinct(sitio,temporada,tratamiento,unidad,codigo) |> 
+  arrange(sitio,temporada,tratamiento,unidad) |> View()
+
