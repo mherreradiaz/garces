@@ -1,4 +1,4 @@
-source('script/funciones/paquetes.R')
+source('C:/Hemera/garces/script/00_setup.R')
 
 # descargar imagenes (hacerlo dos veces, una para cada temporada)
 library(earthdatalogin)
@@ -10,6 +10,8 @@ with_gdalcubes()
 sitio <- 'rio_claro'
 pol <- read_sf(glue('data/processed/espacial/sitios/{sitio}.gpkg'),layer = 'cuartel')
 
+pol <- read_sf('data/vectorial/comunas.shp')
+
 bb <- st_bbox(pol) |> 
   as.numeric()
 
@@ -19,8 +21,8 @@ bb <- st_bbox(pol) |>
 # inicio <- "2023-08-20"
 # fin <- "2024-05-01"
 
-inicio <- "2023-04-01"
-fin <- "2023-05-15"
+inicio <- "2022-11-01"
+fin <- "2022-11-02"
 
 url <- "https://planetarycomputer.microsoft.com/api/stac/v1"
 
@@ -33,11 +35,11 @@ items <- stac(url) |>
   items_fetch()
 
 bb <- pol |> 
-  st_transform(32719) |> 
+  st_transform(4326) |> 
   st_bbox() |> 
   as.numeric()
 
-v = cube_view(srs = "EPSG:32719",
+v = cube_view(srs = "EPSG:4326",
               extent = list(t0 = as.character(inicio), 
                             t1 = as.character(fin),
                             left = bb[1], right = bb[3],
@@ -46,12 +48,16 @@ v = cube_view(srs = "EPSG:32719",
 
 col <- stac_image_collection(items$features)
 
+col <- stac_image_collection(items$features,
+                             asset_names = c("B02", "B03", "B04"))
+
 cloud_mask <- image_mask("SCL", values=c(3,8,9))
 
-dir_out <- 'data/raw/prueba'
+dir_out <- 'data/raster'
 
-raster_cube(col, v, mask=cloud_mask) |>
-  write_tif(glue('{dir_out}/sentinel_2a_{sitio}'))
+raster_cube(col, v) |>
+  write_tif(glue('{dir_out}/sentinel_2a'))
+
 
 # Sentinel 1
 source('script/funciones/paquetes.R')
