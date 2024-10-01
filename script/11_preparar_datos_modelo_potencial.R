@@ -2,11 +2,23 @@ source('script/funciones/paquetes.R')
 
 # smooth índices y biopar
 
-data_vi <- read_rds('data/processed/sentinel_vi_smooth.rds')
-data_biopar <- read_rds('data/processed/sentinel_biopar_smooth.rds')
+data_vi_smooth <- read_rds('data/processed/sentinel_vi_smooth.rds')
+data_vi_raw <- read_rds('data/processed/sentinel_vi_raw.rds')
 
-data_sen2 <- data_vi |> 
-  left_join(data_biopar,by=c('sitio','temporada','fecha','tratamiento','unidad','codigo'))
+data_vi <- data_vi_smooth |> 
+  anti_join(data_vi_raw, by = c("sitio", "temporada", "fecha", "tratamiento", 
+                                "unidad", "codigo")) |> 
+  bind_rows(data_vi_raw) |> 
+  arrange(sitio,fecha,tratamiento,unidad)
+
+data_biopar_smooth <- read_rds('data/processed/sentinel_biopar_smooth.rds')
+data_biopar_raw <- read_rds('data/processed/sentinel_biopar_raw.rds')
+
+data_biopar <- data_biopar_smooth |> 
+  anti_join(data_biopar_raw, by = c("sitio", "temporada", "fecha", "tratamiento", 
+                                "unidad", "codigo")) |> 
+  bind_rows(data_biopar_raw) |> 
+  arrange(sitio,fecha,tratamiento,unidad)
 
 data_sen2 <- bind_rows(data_vi,data_biopar) |> 
   distinct(across(sitio:codigo)) |> 
@@ -36,7 +48,7 @@ data <- data_sen2|>
   arrange(temporada,fecha,sitio,tratamiento,unidad) |> 
   select(sitio:codigo,potencial_bar,everything())
 
-write_rds(data,'data/processed/modelo_potencial_smooth.rds')
+write_rds(data,'data/processed/modelo_potencial_combinado.rds')
 
 # raw índices y biopar
 

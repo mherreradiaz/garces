@@ -257,3 +257,30 @@ data_tlp |>
 ggsave(paste0('output/reunion/tlp_sitios.png'), width = 10, height = 6)
 
 
+
+
+
+# puntos tlp
+
+data_tlp <- read_rds('C:/Hemera/garces/data/processed/tlp.rds')
+
+umbrales <- data_tlp |> 
+  # filter(sitio == 'rio_claro' & tratamiento == 'T4' |
+  #          sitio == 'la_esperanza' & tratamiento == 'T0') |> 
+  # ggplot(aes(sitio,tlp)) +
+  # geom_boxplot()
+  na.omit() |> 
+  group_by(sitio) |> 
+  reframe(mediana = median(tlp),
+          q3 = quantile(tlp,.75),
+          iqr = quantile(tlp,.75)-quantile(tlp,.25),
+          min = boxplot.stats(tlp)$stats[5]) |> 
+  mutate(u_minimo = min+iqr,
+         u_medio = min,
+         u_maximo = q3)
+
+write_rds(umbrales,'data/processed/umbral_tlp.rds')
+
+umbrales |> 
+  select(sitio,u_minimo:u_maximo)
+
