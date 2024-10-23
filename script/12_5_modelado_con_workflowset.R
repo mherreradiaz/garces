@@ -8,10 +8,10 @@ library(glue)
 split <- 'tme_split'
 
 # split 
-data <- read_rds('data/processed/modelo_potencial_smooth.rds') |> 
+data <- read_rds('data/processed/modelo_potencial_combinado.rds') |> 
   select(-(tratamiento:codigo),-(sitio:temporada)) |> 
   # mutate(across(3:28,.fns = \(x)dplyr::lag(x,1),.names = "{.col}_{.fn}")) |> 
-  mutate(potencial_bar = -potencial_bar,
+  mutate(potencial_bar = -0.1*potencial_bar,
          fecha = ymd(fecha),
          month = month(fecha)) |> 
   drop_na() 
@@ -237,7 +237,8 @@ data_rank <- bind_rows(
   read_rds('data/processed/eval_modelos/tme_split_rankings.rds')
 )
 
-data_rank |> 
+data_rank |>
+  filter(.metric == 'rsq') |> 
   ggplot(aes(rank,mean,color = Model)) +
   geom_errorbar(aes(ymin = mean - std_err,ymax = mean + std_err)) +
   scale_x_continuous(breaks = 1:8) +
@@ -263,7 +264,7 @@ df_metrics <- bind_rows(
   )
 
 data_test |> 
-  ggplot(aes(x = .pred*0.1, y = potencial_bar*0.1)) + 
+  ggplot(aes(x = .pred, y = potencial_bar)) + 
   geom_abline(col = "darkgreen", lty = 2,lwd=1) + 
   geom_point(alpha = .4) + 
   labs(x = expression(paste(Psi[s],' estimated (MPa)')), 
