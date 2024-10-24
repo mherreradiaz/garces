@@ -9,11 +9,10 @@ split <- 'tme_split'
 
 # split 
 data <- read_rds('data/processed/modelo_potencial_combinado.rds') |> 
-  select(-(tratamiento:codigo),-(sitio:temporada)) |> 
+  select(-(tratamiento:codigo),-(temporada)) |> 
   # mutate(across(3:28,.fns = \(x)dplyr::lag(x,1),.names = "{.col}_{.fn}")) |> 
   mutate(potencial_bar = -0.1*potencial_bar,
-         fecha = ymd(fecha),
-         month = month(fecha)) |> 
+         fecha = ymd(fecha)) |> 
   drop_na() 
 
 set.seed(12) #$rsq=.446
@@ -84,6 +83,7 @@ svm_spec <-
 
 pot_rec <- recipe(potencial_bar ~ . ,data = pot_train) |> 
   update_role(fecha, new_role = 'dont_use') |> 
+  update_role(sitio, new_role = 'dont_use') |> 
   step_zv(all_numeric_predictors()) |>
   step_normalize(all_numeric_predictors())
 
@@ -179,11 +179,11 @@ df_metrics <- df_metrics |>
   mutate(
     split = split,
     .metric = toupper(.metric),
-    x = -1.2,
+    x = -1,
     y = case_when(
-      .metric == 'RSQ' ~ -3,
-      .metric == 'MAE' ~ -3.1,
-      .default = -3.2),
+      .metric == 'RSQ' ~ -2.5,
+      .metric == 'MAE' ~ -2.7,
+      .default = -2.9),
     unit = case_when(
       .metric == 'RSQ' ~ '',
       .default = '~~MPa'),
@@ -202,7 +202,7 @@ test_results_xgb <-
   bind_cols(
     predict(xgb_wflow_fit, new_data = pot_test)
   ) |> 
-  bind_cols(model = 'XGBoost')
+  bind_cols(model = 'XGBoost',pot_test['sitio'])
 
 test_results_rf <- 
   pot_test |> 
@@ -210,7 +210,7 @@ test_results_rf <-
   bind_cols(
     predict(rf_wflow_fit, new_data = pot_test)
   ) |> 
-  bind_cols(model = 'RF')
+  bind_cols(model = 'RF',pot_test['sitio'])
 
 test_results_svm <- 
   pot_test |> 
@@ -218,7 +218,7 @@ test_results_svm <-
   bind_cols(
     predict(xgb_wflow_fit, new_data = pot_test)
   ) |> 
-  bind_cols(model = 'SVM')
+  bind_cols(model = 'SVM',pot_test['sitio'])
 
 
 tst_res <- bind_rows(test_results_rf,
@@ -266,7 +266,8 @@ df_metrics <- bind_rows(
 data_test |> 
   ggplot(aes(x = .pred, y = potencial_bar)) + 
   geom_abline(col = "darkgreen", lty = 2,lwd=1) + 
-  geom_point(alpha = .4) + 
+  geom_point(alpha = .4,aes(col=sitio)) + 
+  scale_color_manual(name = "Orchards",values = c('darkblue','red'),labels = c('La Esperanza','Río Claro')) +
   labs(x = expression(paste(Psi[s],' estimated (MPa)')), 
        y = expression(paste(Psi[s],' observed (MPa)'))) +
   geom_text(data = df_metrics,
@@ -281,8 +282,9 @@ data_test |>
   # #annotate("text")
   facet_grid(split~model) +
   theme_bw() +
-  theme(strip.background = element_rect(fill = 'white'))
+  theme(strip.background = element_rect(fill = 'white'),
+        legend.position = 'bottom')
 ggsave('output/figs/pred_vs_obser_models.png',
-       scale=1.5,width = 10,height = 8, device = png, type = "cairo",
+       scale=1.2,width = 10,height = 8, device = png, type = "cairo",
        dpi = 300)
 
