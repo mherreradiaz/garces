@@ -5,10 +5,10 @@ library(glue)
 
 ## Cargar los datos
 # rnd_split or tme_split
-split <- 'tme_split'
+split <- 'rnd_split'
 
 # split 
-data <- read_rds('data/processed/modelo_potencial_combinado.rds') |> 
+data <- read_rds('data/processed/modelo_potencial_smooth.rds') |> 
   select(-(tratamiento:codigo),-(temporada)) |> 
   # mutate(across(3:28,.fns = \(x)dplyr::lag(x,1),.names = "{.col}_{.fn}")) |> 
   mutate(potencial_bar = -0.1*potencial_bar,

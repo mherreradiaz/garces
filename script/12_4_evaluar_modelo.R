@@ -16,7 +16,7 @@ models <- c('random_forest','xgboost')
 
 # split 
 data <- read_rds('data/processed/modelo_potencial_smooth.rds') |> 
-  select(-(tratamiento:codigo),-(sitio:temporada)) |> 
+  select(-(tratamiento:codigo),-(temporada)) |> 
   mutate(potencial_bar = -potencial_bar,
          fecha = ymd(fecha)) |> 
   drop_na() 
@@ -70,11 +70,10 @@ d <- map_df(splts,\(split){
 })
   
 
-  
 # Support Vector Machine
 d2 <- map_df(splts,\(split){
   
-  set.seed(12)
+  #set.seed(12)
   
   if(split == 'rnd_split'){
     splits <- initial_split(data) #aleatorio, sobreajusta
@@ -87,15 +86,15 @@ d2 <- map_df(splts,\(split){
   
   svm_wf <- read_rds(glue('data/processed/modelos/support_vector_machine_{split}.rds'))
 
-  pfun <- function(object, newdata) predict(object, new_data = newdata) |> pull(1)
+  pfun <- function(object, newdata) predict(object, new_data = newdata)$.pred
   
   df_var_imp_svm <- 
          svm_wf |> 
     extract_fit_parsnip() |> 
-    vip::vi(method = 'permute',nsim = 10,
+    vip::vi(method = 'permute',nsim = 1,
             target = 'potencial_bar', 
-            metric = ifelse(split == 'rnd_split', 'rsq_trad', 'rsq'),
-            scale = TRUE,
+            metric = 'rsq',
+            scale = FALSE,
             pred_wrapper = pfun, train =pot_test) |> 
     mutate(model = 'SVM',
            split = split,
@@ -121,7 +120,7 @@ df_vimp |>
            Variable == 'VPD_MEDIO' ~ 'VPD',
            Variable == 'T_MEDIA' ~ 'Temp',
            Variable == 'ETO' ~ 'ET0',
-           Variable == 'CAB' ~ 'Cab',
+           Variable == 'CAB' ~ 'CCC',
            .default = Variable),
          ) |> 
   filter(Mean > 0.05) |> 
