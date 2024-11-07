@@ -1,6 +1,5 @@
 source('C:/Hemera/garces/script/00_setup.R')
 
-# descargar imagenes (hacerlo dos veces, una para cada temporada)
 library(earthdatalogin)
 library(sf)
 library(glue)
@@ -9,8 +8,6 @@ with_gdalcubes()
 
 sitio <- 'rio_claro'
 pol <- read_sf(glue('data/processed/espacial/sitios/{sitio}.gpkg'),layer = 'cuartel')
-
-pol <- read_sf('data/vectorial/comunas.shp')
 
 bb <- st_bbox(pol) |> 
   as.numeric()
@@ -21,8 +18,8 @@ bb <- st_bbox(pol) |>
 # inicio <- "2023-08-20"
 # fin <- "2024-05-01"
 
-inicio <- "2022-11-01"
-fin <- "2022-11-02"
+inicio <- "2023-09-11"
+fin <- "2023-11-11"
 
 url <- "https://planetarycomputer.microsoft.com/api/stac/v1"
 
@@ -159,4 +156,7 @@ cloud_mask <- image_mask("SCL", values=c(3,8,9))
 dir_out <- 'data/raw/sentinel_rgb'
 
 raster_cube(col, v, mask=cloud_mask) |>
-  write_tif(glue('{dir_out}/sentinel_{sitio}'))
+  write_tif(glue('C:/prueba/sentinel_{sitio}'))
+
+
+rast(list.files('C:/prueba/sentinel_rio_claro/',full.names=T)[[1]])

@@ -29,7 +29,9 @@ var_names_plot <- c('ET0','VPD','T','RH','CCC','MSI','DWSI','mSR705','NDMI','NMD
 
 data <- read_rds('data/processed/modelo_potencial_smooth.rds') |> 
   select(sitio:potencial_bar,all_of(var_names)) |> 
-  mutate(potencial_bar = -potencial_bar/10)
+  mutate(potencial_mpa = -potencial_bar/10,
+         .before = eto) |> 
+  select(-potencial_bar)
 
 # variabiliadd temporal
 
@@ -69,7 +71,7 @@ ggsave('output/figs/series_vi_smooth_signific.png', width = 8, height = 5)
 
 data_cor <- data |>
   group_by(sitio, temporada) |> 
-  reframe(across(var_names, ~ cor(.x, potencial_bar, use = "complete.obs"), 
+  reframe(across(var_names, ~ cor(.x, potencial_mpa, use = "complete.obs"), 
                    .names = "{.col}")) |> 
   pivot_longer(cols = eto:pp,names_to = "variable",values_to = "cor") |> 
   rowwise() |> 
@@ -95,16 +97,34 @@ ggsave(paste0('output/figs/cor_variables_signif.png'), width = 5, height = 5)
 
 # correlación meteo
 
+data_cor <- data |> 
+  group_by(sitio,temporada,tratamiento,unidad) |> 
+  reframe(across(c(all_of(meteo_names)), ~ cor(.x, potencial_mpa, use = "complete.obs"), 
+                 .names = '{.col}')) |> 
+  group_by(sitio,temporada) |> 
+  reframe(across(eto:pp, ~ mean(.x,na.rm=T),
+                 .names = '{.col}'))
+
+data |> 
+  filter(sitio == "la_esperanza", 
+         temporada == "2023-2024", 
+         tratamiento == "T0", 
+         unidad == 1) |> 
+  na.omit() |>
+  group_by(sitio,temporada,tratamiento,unidad,codigo) |> 
+  reframe(cor = cor(potencial_mpa,eto))
+
+
 library(paletteer)
 
 meteo_names <- c('eto','vpd_medio','t_media','rh_media','pp')
 
 cor_meteo <- data |>
   group_by(sitio, temporada,fecha) |>
-  reframe(across(c(potencial_bar,all_of(meteo_names)), ~ mean(.x,na.rm=T),
+  reframe(across(c(potencial_mpa,all_of(meteo_names)), ~ mean(.x,na.rm=T),
                  .names = '{.col}')) |> 
   group_by(sitio, temporada) |> 
-  reframe(across(eto:pp, ~ cor(.x, potencial_bar, use = "complete.obs"), 
+  reframe(across(eto:pp, ~ cor(.x, potencial_mpa, use = "complete.obs"), 
                  .names = '{.col}')) |> 
   pivot_longer(cols = eto:pp,names_to = "variable",values_to = "cor") |> 
   rowwise() |> 
@@ -113,6 +133,16 @@ cor_meteo <- data |>
                         ,levels=c('Rio Claro','La Esperanza')),
          variable = reclasificar(variable,tibble(var_names,var_names_plot)),
          variable = factor(variable,levels=rev(var_names_plot)))
+
+data |> 
+  mutate(fecha = as.Date(fecha)) |> 
+  filter(sitio == 'rio_claro',
+         temporada == '2022-2023') |> 
+  ggplot(aes(fecha,eto)) + 
+  geom_point(col = 'blue') +
+  geom_point(aes(fecha,potencial_mpa),col = 'red') +
+  scale_x_date(breaks = '1 month', date_labels = "%b") +
+  theme_bw()
 
 cor_meteo |> 
   ggplot(aes(temporada,variable,fill=cor)) +
@@ -194,8 +224,7 @@ data_long <- left_join(data, data |>
             reframe(n = n()) |> 
             filter(n==5)) |> 
   filter(n==5) |> 
-  select(-n) |>
-  mutate(potencial_bar = -potencial_bar/10)
+  select(-n)
 
 cor_vi <- data_long |> 
   group_by(sitio,temporada,fecha) |> 
