@@ -5,7 +5,7 @@ library(glue)
 
 ## Cargar los datos
 # rnd_split or tme_split
-split <- 'rnd_split'
+split <- 'tme_split'
 
 # split 
 data <- read_rds('data/processed/modelo_potencial_smooth.rds') |> 
@@ -132,10 +132,10 @@ rankings |>
 
 xgb_res <- 
   pot_res |>  
-  extract_workflow("rec_XGBoost") %>% 
+  extract_workflow("rec_XGBoost") |>  
   finalize_workflow(
     pot_res |>  
-      extract_workflow_set_result("rec_XGBoost") %>% 
+      extract_workflow_set_result("rec_XGBoost") |>  
       select_best(metric = "rsq")
   ) |>  
   last_fit(split = splits, metrics = metric_set(rsq,rmse,mae))
@@ -216,7 +216,7 @@ test_results_svm <-
   pot_test |> 
   select(potencial_bar) %>%
   bind_cols(
-    predict(xgb_wflow_fit, new_data = pot_test)
+    predict(svm_wflow_fit, new_data = pot_test)
   ) |> 
   bind_cols(model = 'SVM',pot_test['sitio'])
 

@@ -91,7 +91,7 @@ d2 <- map_df(splts,\(split){
   df_var_imp_svm <- 
          svm_wf |> 
     extract_fit_parsnip() |> 
-    vip::vi(method = 'permute',nsim = 1,
+    vip::vi(method = 'permute',nsim = 5,
             target = 'potencial_bar', 
             metric = 'rsq',
             scale = FALSE,
