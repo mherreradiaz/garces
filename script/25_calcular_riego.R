@@ -27,12 +27,15 @@ for (i in 1:4) {
   
   writeRaster(riego,glue('data/processed/espacial/raster/ETc/ETc_{sitio_grupo[[i]]}_{substr(temporada_grupo[[i]],1,4)}.tif'),
               overwrite=T)
+  writeRaster(r,glue('data/processed/espacial/raster/ETc/Kc_{sitio_grupo[[i]]}_{substr(temporada_grupo[[i]],1,4)}.tif'),
+              overwrite=T)
   
 }
 
 # extraer en sectores
 
-r <- list.files('data/processed/espacial/raster/ETc',full.names=T)
+etc_r <- grep('ETc_',list.files('data/processed/espacial/raster/ETc',full.names=T),value=T)
+kc_r <- grep('Kc_',list.files('data/processed/espacial/raster/ETc',full.names=T),value=T)
 
 sector <- list(vect('data/processed/espacial/sitios/la_esperanza.gpkg',layer = 'sectores_riego'),
                vect('data/processed/espacial/sitios/la_esperanza.gpkg',layer = 'sectores_riego'),
@@ -42,23 +45,31 @@ sector <- list(vect('data/processed/espacial/sitios/la_esperanza.gpkg',layer = '
 sitio_grupo <- c(rep('la_esperanza',2),rep('rio_claro',2))
 temporada_grupo <- c(rep(c('2022-2023','2023-2024'),2))
 
-riego_grupo <- list()
+etc_riego_grupo <- list()
+kc_riego_grupo <- list()
 
 for (i in 1:4) {
   
-  riego_grupo[[i]] <- extract(rast(r[i]),sector[[i]],fun = mean) |> 
-    pivot_longer(cols=-1,names_to = 'fecha', values_to = 'riego') |> 
+  etc_riego_grupo[[i]] <- extract(rast(etc_r[i]),sector[[i]],fun = mean) |> 
+    pivot_longer(cols=-1,names_to = 'fecha', values_to = 'ETc') |> 
     rename(sector = ID) |>
     mutate(sitio = sitio_grupo[[i]],
            temporada = temporada_grupo[i]) |> 
-    select(sitio,temporada,fecha,sector,riego)
+    select(sitio,temporada,fecha,sector,ETc)
+  
+  kc_riego_grupo[[i]] <- extract(rast(kc_r[i]),sector[[i]],fun = mean) |> 
+    pivot_longer(cols=-1,names_to = 'fecha', values_to = 'Kc') |> 
+    rename(sector = ID) |>
+    mutate(sitio = sitio_grupo[[i]],
+           temporada = temporada_grupo[i]) |> 
+    select(sitio,temporada,fecha,sector,Kc)
     
 }
 
-riego <- bind_rows(riego_grupo) |> 
+riego <- bind_rows(etc_riego_grupo) |> 
+  left_join(bind_rows(kc_riego_grupo)) |> 
   arrange(sitio,temporada,fecha,sector) |> 
-  rename(sector_id = sector,
-         ETc = riego) |> 
+  rename(sector_id = sector) |> 
   mutate(fecha = as.Date(fecha))
 
 write_rds(riego,'data/processed/ETc.rds')
