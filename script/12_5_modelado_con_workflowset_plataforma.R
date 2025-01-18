@@ -5,15 +5,15 @@ library(glue)
 
 ## Cargar los datos
 # rnd_split or tme_split
-split <- 'rnd_split'
+split <- 'tme_split'
 
 # split 
 data <- read_rds('data/processed/modelo_potencial_smooth.rds') |> 
-  select(sitio,fecha,potencial_bar,ndmi,
+  select(fecha,potencial_bar,ndmi,
          msi,nmdi,dwsi,msr705,t_media:eto) |> 
   # mutate(across(3:28,.fns = \(x)dplyr::lag(x,1),.names = "{.col}_{.fn}")) |> 
-  mutate(potencial_bar = -0.1*potencial_bar,
-         fecha = ymd(fecha)) |> 
+  mutate(potencial_bar = -0.1*potencial_bar
+         ) |> 
   drop_na() 
 
 set.seed(12) #$rsq=.446
@@ -31,7 +31,7 @@ if(split == 'rnd_split'){
   }
 
 pot_train <- training(splits) 
-pot_test  <- testing(splits) 
+pot_test  <- testing(splits)
 
 #pot_val <- validation_set(splits) |> select(-(sitio:fecha))
 
@@ -84,7 +84,7 @@ svm_spec <-
 
 pot_rec <- recipe(potencial_bar ~ . ,data = pot_train) |> 
   update_role(fecha, new_role = 'dont_use') |> 
-  update_role(sitio, new_role = 'dont_use') |> 
+  #update_role(sitio, new_role = 'dont_use') |> 
   step_zv(all_numeric_predictors()) |>
   step_normalize(all_numeric_predictors())
 
